@@ -37,6 +37,7 @@ public class Index extends JFrame {
 
 	private JPanel contentPane;
 	private JTable table;
+	FrmEstadisticas estadistica =new FrmEstadisticas();
 
 	/**
 	 * Launch the application.
@@ -90,7 +91,6 @@ public class Index extends JFrame {
 		JButton btnRevisar = new JButton("Estadisticas");
 		btnRevisar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				FrmEstadisticas estadistica =new FrmEstadisticas();
 				panelCentral.add(estadistica);
 				estadistica.setVisible(true);
 			}
