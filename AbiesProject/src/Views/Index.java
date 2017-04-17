@@ -29,6 +29,9 @@ import javax.swing.JLabel;
 import javax.swing.SpringLayout;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.UIManager;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class Index extends JFrame {
 
@@ -39,6 +42,11 @@ public class Index extends JFrame {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		try {
+			UIManager.setLookAndFeel("com.jtattoo.plaf.noire.NoireLookAndFeel");
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -68,51 +76,7 @@ public class Index extends JFrame {
 		contentPane.add(panelCentral, BorderLayout.CENTER);
 		panelCentral.setLayout(new GridLayout(0, 1, 0, 0));
 		
-		JInternalFrame internalFrame = new JInternalFrame("Estadisticas");
-		panelCentral.add(internalFrame);
 		
-		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		internalFrame.getContentPane().add(tabbedPane, BorderLayout.CENTER);
-		
-		JLayeredPane layeredPaneUPM = new JLayeredPane();
-		tabbedPane.addTab("UPM", null, layeredPaneUPM, null);
-		layeredPaneUPM.setLayout(null);
-		
-		JLabel lblUpmsPorEstado = new JLabel("UPMs por estado");
-		lblUpmsPorEstado.setBounds(30, 5, 95, 16);
-		layeredPaneUPM.add(lblUpmsPorEstado);
-		
-		table = new JTable();
-		table.setBounds(30, 33, 150, 105);
-		table.setShowVerticalLines(true);
-		table.setShowHorizontalLines(true);
-		table.setModel(new DefaultTableModel(
-			new Object[][] {
-				{null, null},
-			},
-			new String[] {
-				"Estado", "Conteo UPMs"
-			}
-		) {
-			Class[] columnTypes = new Class[] {
-				String.class, Integer.class
-			};
-			public Class getColumnClass(int columnIndex) {
-				return columnTypes[columnIndex];
-			}
-			boolean[] columnEditables = new boolean[] {
-				true, false
-			};
-			public boolean isCellEditable(int row, int column) {
-				return columnEditables[column];
-			}
-		});
-		table.getColumnModel().getColumn(1).setPreferredWidth(171);
-		layeredPaneUPM.add(table);
-		
-		JLayeredPane layeredPaneSitio = new JLayeredPane();
-		tabbedPane.addTab("Sitio", null, layeredPaneSitio, null);
-		internalFrame.setVisible(true);
 		
 		JPanel panelIzquierdo = new JPanel();
 		contentPane.add(panelIzquierdo, BorderLayout.WEST);
@@ -124,6 +88,13 @@ public class Index extends JFrame {
 		panelIzquierdo.setLayout(gbl_panelIzquierdo);
 		
 		JButton btnRevisar = new JButton("Estadisticas");
+		btnRevisar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				FrmEstadisticas estadistica =new FrmEstadisticas();
+				panelCentral.add(estadistica);
+				estadistica.setVisible(true);
+			}
+		});
 		GridBagConstraints gbc_btnRevisar = new GridBagConstraints();
 		gbc_btnRevisar.anchor = GridBagConstraints.NORTHWEST;
 		gbc_btnRevisar.gridx = 0;
@@ -148,7 +119,19 @@ public class Index extends JFrame {
 		JMenu mnVentana = new JMenu("Ventana");
 		menuBar.add(mnVentana);
 		
-		JCheckBoxMenuItem chckbxmntmOcultarPanelIzquierdo = new JCheckBoxMenuItem("Ocultar panel izquierdo");
-		mnVentana.add(chckbxmntmOcultarPanelIzquierdo);
+		JCheckBoxMenuItem chckboxOcultarPanelIzquierdo = new JCheckBoxMenuItem("Ocultar panel izquierdo");
+		chckboxOcultarPanelIzquierdo.setState(true);
+		chckboxOcultarPanelIzquierdo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(chckboxOcultarPanelIzquierdo.getState()==true){
+					panelIzquierdo.setVisible(true);
+				}
+				if(chckboxOcultarPanelIzquierdo.getState()==false){
+					chckboxOcultarPanelIzquierdo.setText("Mostrar panel izquierdo");
+					panelIzquierdo.setVisible(false);
+				}
+			}
+		});
+		mnVentana.add(chckboxOcultarPanelIzquierdo);
 	}
 }
