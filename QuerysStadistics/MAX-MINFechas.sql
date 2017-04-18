@@ -1,0 +1,1 @@
+SELECT MIN(FechaInicio), MAX(FechaFin) FROM UPM_UPM 
