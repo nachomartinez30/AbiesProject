@@ -248,6 +248,14 @@ public class FrmEstadisticas extends JInternalFrame {
 
 	}
 
+	public String getRuta() {
+		return ruta;
+	}
+
+	public void setRuta(String ruta) {
+		this.ruta = ruta;
+	}
+	
 	public void getMaxMinFechas(String ruta) {
 		String fechaInicio = null,fechaFin = null;
 		String query = "SELECT MIN(FechaInicio) as Min, MAX(FechaFin) as Max FROM UPM_UPM ";
@@ -288,13 +296,7 @@ public class FrmEstadisticas extends JInternalFrame {
 		txtTotalUpms.setText(Integer.toString(upmTotales));
 	}
 
-	public String getRuta() {
-		return ruta;
-	}
 
-	public void setRuta(String ruta) {
-		this.ruta = ruta;
-	}
 
 	public void getCalculoUpmsEstado(String ruta) {
 		String query = "SELECT Estado, Count(Estado) AS Conteo_UPMS FROM UPM_UPM upm LEFT JOIN UPM_MallaPuntos mallaPuntos ON mallaPuntos.UPMID=upm.UPMID GROUP BY Estado ";
@@ -303,6 +305,11 @@ public class FrmEstadisticas extends JInternalFrame {
 		try {
 			sqlExterno = baseDatosExterna.createStatement();
 			ResultSet rsExterno = sqlExterno.executeQuery(query);
+			if (UpmsPorEstadoModel.getRowCount() > 0) {
+			    for (int i = UpmsPorEstadoModel.getRowCount() - 1; i > -1; i--) {
+			        UpmsPorEstadoModel.removeRow(i);
+			    }
+			}
 			while (rsExterno.next()) {
 				UpmsPorEstadoModel.addRow(new Object[]{rsExterno.getString("Estado"),rsExterno.getInt("Conteo_UPMS")});
 			}
@@ -323,6 +330,11 @@ public class FrmEstadisticas extends JInternalFrame {
 		try {
 			sqlExterno = baseDatosExterna.createStatement();
 			ResultSet rsExterno = sqlExterno.executeQuery(query);
+			/**/if (TipoUpmModel.getRowCount() > 0) {
+			    for (int i = TipoUpmModel.getRowCount() - 1; i > -1; i--) {
+			        TipoUpmModel.removeRow(i);
+			    }
+			}
 			while (rsExterno.next()) {
 				TipoUpmModel.addRow(new Object[]{rsExterno.getString("TipoUPM"),rsExterno.getInt("Conteo_UPMS")});
 			}
@@ -341,6 +353,11 @@ public class FrmEstadisticas extends JInternalFrame {
 		try {
 			sqlExterno = baseDatosExterna.createStatement();
 			ResultSet rsExterno = sqlExterno.executeQuery(query);
+			/**/if (DiasMuestreoModel.getRowCount() > 0) {
+			    for (int i = DiasMuestreoModel.getRowCount() - 1; i > -1; i--) {
+			        DiasMuestreoModel.removeRow(i);
+			    }
+			}
 			while (rsExterno.next()) {
 				DiasMuestreoModel.addRow(new Object[]{rsExterno.getString("DIAS"),rsExterno.getInt("Conteo_UPMS")});
 				
@@ -360,6 +377,11 @@ public class FrmEstadisticas extends JInternalFrame {
 		try {
 			sqlExterno = baseDatosExterna.createStatement();
 			ResultSet rsExterno = sqlExterno.executeQuery(query);
+			/**/if (ColocacionTagModel.getRowCount() > 0) {
+			    for (int i = ColocacionTagModel.getRowCount() - 1; i > -1; i--) {
+			        ColocacionTagModel.removeRow(i);
+			    }
+			}
 			while (rsExterno.next()) {
 				ColocacionTagModel.addRow(new Object[]{rsExterno.getString("Colocacion"),rsExterno.getInt("Conteo_UPMS")});
 			}
@@ -372,6 +394,7 @@ public class FrmEstadisticas extends JInternalFrame {
 }
 	
 	public void clearTablas(){
+
 		tblUpmPorEstado.setModel(UpmsPorEstadoModelClear);
 		tblTipoUPM.setModel(TipoUpmModelClear);
 		tblDiasMuestreo.setModel(DiasMuestreoModelClear);
