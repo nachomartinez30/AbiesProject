@@ -62,6 +62,18 @@ public class FrmEstadisticas extends JInternalFrame {
 	public DefaultTableModel TipoUpmModel = new DefaultTableModel(null, columnNameTipoUpm);
 	public DefaultTableModel DiasMuestreoModel = new DefaultTableModel(null, columnNameDiasMuestreados);
 	public DefaultTableModel ColocacionTagModel = new DefaultTableModel(null, columnNameColocacionTag);
+	private JTextField txtSitioTotales;
+	private JTextField tztSitioAccesibles;
+	private JTextField txtSitiosInaccesibles;
+	private JTable tblSitiosAccesibles;
+	private JTable tblSitiosInaccesibles;
+	private JTextField txtClinometro;
+	private JTextField txtHipsometro;
+	private JTextField textField;
+	private JTextField textField_1;
+	private JTextField textField_3;
+	private JTable tblSitioPorCondicion;
+	private JTable tblCoberturaPorUpm;
 	
 	/*public Object[] UpmsPorEstadoVector =new Object[2];
 	public Object[] TipoUpmVector =new Object[2];
@@ -237,7 +249,235 @@ public class FrmEstadisticas extends JInternalFrame {
 						separator, lblDiasDeMuestro, tblDiasMuestreo, lblColocacinDelTag, tblColocacionTAG }));
 
 		JLayeredPane layPanSitio = new JLayeredPane();
-		tabbedPane.addTab("Sitio", null, layPanSitio, null);
+		tabbedPane.addTab("Sitios", null, layPanSitio, null);
+		
+		JLabel lblInformeGeneralBd = new JLabel("Informe General BD (Sitios)");
+		lblInformeGeneralBd.setHorizontalAlignment(SwingConstants.CENTER);
+		lblInformeGeneralBd.setFont(new Font("SansSerif", Font.BOLD, 25));
+		lblInformeGeneralBd.setAlignmentX(0.5f);
+		
+		JLabel lblSitiosTotales = new JLabel("Sitios totales:");
+		lblSitiosTotales.setFont(new Font("DialogInput", Font.BOLD, 14));
+		
+		txtSitioTotales = new JTextField();
+		txtSitioTotales.setEditable(false);
+		txtSitioTotales.setHorizontalAlignment(SwingConstants.CENTER);
+		txtSitioTotales.setColumns(10);
+		
+		JLabel lblSitioAccesibles = new JLabel("Sitios accesibles:");
+		lblSitioAccesibles.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblSitioAccesibles.setFont(new Font("Dialog", Font.ITALIC, 12));
+		
+		tztSitioAccesibles = new JTextField();
+		tztSitioAccesibles.setEditable(false);
+		tztSitioAccesibles.setColumns(10);
+		
+		JLabel lblSitioInaccesibles = new JLabel("Sitios inaccesibles:");
+		lblSitioInaccesibles.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblSitioInaccesibles.setFont(new Font("Dialog", Font.ITALIC, 12));
+		
+		txtSitiosInaccesibles = new JTextField();
+		txtSitiosInaccesibles.setEditable(false);
+		txtSitiosInaccesibles.setColumns(10);
+		
+		JScrollPane scrollPaneSitiosAccesibles = new JScrollPane();
+		
+		tblSitiosAccesibles = new JTable();
+		scrollPaneSitiosAccesibles.setViewportView(tblSitiosAccesibles);
+		
+		JScrollPane scrollPaneSitiosInaccesibles = new JScrollPane();
+		
+		tblSitiosInaccesibles = new JTable();
+		scrollPaneSitiosInaccesibles.setViewportView(tblSitiosInaccesibles);
+		
+		JLabel lblMedidosCon = new JLabel("Medidos con Clin\u00F3metro");
+		lblMedidosCon.setFont(new Font("Dialog", Font.PLAIN, 12));
+		
+		JLabel lblMedidosCon_1 = new JLabel("Medidos con Hips\u00F3metro");
+		lblMedidosCon_1.setFont(new Font("Dialog", Font.PLAIN, 12));
+		
+		txtClinometro = new JTextField();
+		txtClinometro.setEditable(false);
+		txtClinometro.setHorizontalAlignment(SwingConstants.CENTER);
+		txtClinometro.setColumns(10);
+		
+		txtHipsometro = new JTextField();
+		txtHipsometro.setEditable(false);
+		txtHipsometro.setHorizontalAlignment(SwingConstants.CENTER);
+		txtHipsometro.setColumns(10);
+		
+		JLabel lblForestal = new JLabel("Forestal");
+		lblForestal.setFont(new Font("Dialog", Font.PLAIN, 12));
+		
+		JLabel lblNoForestal = new JLabel("No Forestal");
+		lblNoForestal.setFont(new Font("Dialog", Font.PLAIN, 12));
+		
+		textField = new JTextField();
+		textField.setEditable(false);
+		textField.setHorizontalAlignment(SwingConstants.CENTER);
+		textField.setColumns(10);
+		
+		textField_1 = new JTextField();
+		textField_1.setEditable(false);
+		textField_1.setHorizontalAlignment(SwingConstants.CENTER);
+		textField_1.setColumns(10);
+		
+		JSeparator separator_2 = new JSeparator();
+		
+		textField_3 = new JTextField();
+		textField_3.setEditable(false);
+		textField_3.setHorizontalAlignment(SwingConstants.CENTER);
+		textField_3.setColumns(10);
+		
+		JLabel lblArbolFueraDe = new JLabel("Arbol Fuera de Bosque");
+		lblArbolFueraDe.setFont(new Font("Dialog", Font.PLAIN, 12));
+		
+		JLabel lblCondicin = new JLabel("Sitios por Condici\u00F3n");
+		
+		JScrollPane scrollPane = new JScrollPane();
+		
+		tblSitioPorCondicion = new JTable();
+		scrollPane.setViewportView(tblSitioPorCondicion);
+		
+		JLabel lblCoberturaPorUpm = new JLabel("Cobertura por UPM");
+		
+		JScrollPane scrollPane_2 = new JScrollPane();
+		
+		tblCoberturaPorUpm = new JTable();
+		scrollPane_2.setViewportView(tblCoberturaPorUpm);
+		
+		JSeparator separator_1 = new JSeparator();
+		GroupLayout gl_layPanSitio = new GroupLayout(layPanSitio);
+		gl_layPanSitio.setHorizontalGroup(
+			gl_layPanSitio.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_layPanSitio.createSequentialGroup()
+					.addGap(12)
+					.addComponent(lblInformeGeneralBd, GroupLayout.DEFAULT_SIZE, 739, Short.MAX_VALUE)
+					.addGap(12))
+				.addGroup(gl_layPanSitio.createSequentialGroup()
+					.addGap(12)
+					.addComponent(lblSitiosTotales, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
+					.addGap(18)
+					.addComponent(txtSitioTotales, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE)
+					.addGap(55)
+					.addComponent(lblSitioAccesibles, GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
+					.addGap(18)
+					.addComponent(tztSitioAccesibles, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE)
+					.addGap(42)
+					.addComponent(lblSitioInaccesibles, GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
+					.addGap(18)
+					.addComponent(txtSitiosInaccesibles, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE)
+					.addGap(38))
+				.addGroup(gl_layPanSitio.createSequentialGroup()
+					.addGap(12)
+					.addGroup(gl_layPanSitio.createParallelGroup(Alignment.LEADING)
+						.addComponent(separator_2, GroupLayout.PREFERRED_SIZE, 206, GroupLayout.PREFERRED_SIZE)
+						.addGroup(gl_layPanSitio.createSequentialGroup()
+							.addComponent(lblMedidosCon, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
+							.addGap(18)
+							.addComponent(txtClinometro, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_layPanSitio.createSequentialGroup()
+							.addComponent(lblMedidosCon_1, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
+							.addGap(18)
+							.addComponent(txtHipsometro, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE))
+						.addComponent(separator_1, GroupLayout.PREFERRED_SIZE, 206, GroupLayout.PREFERRED_SIZE)
+						.addGroup(gl_layPanSitio.createSequentialGroup()
+							.addComponent(lblForestal, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
+							.addGap(18)
+							.addComponent(textField_1, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_layPanSitio.createSequentialGroup()
+							.addComponent(lblNoForestal, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
+							.addGap(18)
+							.addComponent(textField, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_layPanSitio.createSequentialGroup()
+							.addComponent(lblArbolFueraDe, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
+							.addGap(18)
+							.addComponent(textField_3, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE)))
+					.addGap(53)
+					.addComponent(scrollPaneSitiosAccesibles, GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)
+					.addGap(42)
+					.addComponent(scrollPaneSitiosInaccesibles, GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)
+					.addGap(38))
+				.addGroup(gl_layPanSitio.createSequentialGroup()
+					.addGap(42)
+					.addComponent(lblCondicin, GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
+					.addGap(23)
+					.addComponent(lblCoberturaPorUpm, GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
+					.addGap(38))
+				.addGroup(gl_layPanSitio.createSequentialGroup()
+					.addGap(42)
+					.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
+					.addGap(23)
+					.addComponent(scrollPane_2, GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
+					.addGap(38))
+		);
+		gl_layPanSitio.setVerticalGroup(
+			gl_layPanSitio.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_layPanSitio.createSequentialGroup()
+					.addComponent(lblInformeGeneralBd, GroupLayout.PREFERRED_SIZE, 57, GroupLayout.PREFERRED_SIZE)
+					.addGap(12)
+					.addGroup(gl_layPanSitio.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblSitiosTotales, GroupLayout.PREFERRED_SIZE, 16, GroupLayout.PREFERRED_SIZE)
+						.addComponent(txtSitioTotales, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblSitioAccesibles)
+						.addComponent(tztSitioAccesibles, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addGroup(gl_layPanSitio.createSequentialGroup()
+							.addGap(2)
+							.addComponent(lblSitioInaccesibles))
+						.addComponent(txtSitiosInaccesibles, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addGap(8)
+					.addGroup(gl_layPanSitio.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_layPanSitio.createSequentialGroup()
+							.addComponent(separator_2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addGap(21)
+							.addGroup(gl_layPanSitio.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_layPanSitio.createSequentialGroup()
+									.addGap(2)
+									.addComponent(lblMedidosCon))
+								.addComponent(txtClinometro, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+							.addGap(11)
+							.addGroup(gl_layPanSitio.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_layPanSitio.createSequentialGroup()
+									.addGap(2)
+									.addComponent(lblMedidosCon_1))
+								.addComponent(txtHipsometro, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+							.addGap(10)
+							.addComponent(separator_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addGap(12)
+							.addGroup(gl_layPanSitio.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_layPanSitio.createSequentialGroup()
+									.addGap(2)
+									.addComponent(lblForestal))
+								.addComponent(textField_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+							.addGap(11)
+							.addGroup(gl_layPanSitio.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_layPanSitio.createSequentialGroup()
+									.addGap(2)
+									.addComponent(lblNoForestal))
+								.addComponent(textField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+							.addGap(10)
+							.addGroup(gl_layPanSitio.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_layPanSitio.createSequentialGroup()
+									.addGap(2)
+									.addComponent(lblArbolFueraDe))
+								.addComponent(textField_3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+						.addGroup(gl_layPanSitio.createSequentialGroup()
+							.addComponent(scrollPaneSitiosAccesibles, GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE)
+							.addGap(15))
+						.addGroup(gl_layPanSitio.createSequentialGroup()
+							.addComponent(scrollPaneSitiosInaccesibles, GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE)
+							.addGap(15)))
+					.addGap(48)
+					.addGroup(gl_layPanSitio.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblCondicin)
+						.addComponent(lblCoberturaPorUpm))
+					.addGap(9)
+					.addGroup(gl_layPanSitio.createParallelGroup(Alignment.LEADING)
+						.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
+						.addComponent(scrollPane_2, GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE))
+					.addGap(12))
+		);
+		layPanSitio.setLayout(gl_layPanSitio);
 		getContentPane().setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[] { tabbedPane, layPanUpm,
 				lblUpmsPorEstado, scrollPanePorEstado, tblUpmPorEstado, lblRelacionPorTipo, scrollPaneTipoUPM,
 				tblTipoUPM, lblEstadisticasDeUpm, lblFechaInicial, label, ftxtfechaInicial, ftxtfechafinal,
