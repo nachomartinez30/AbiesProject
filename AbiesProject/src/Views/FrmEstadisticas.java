@@ -63,10 +63,10 @@ public class FrmEstadisticas extends JInternalFrame {
 	public DefaultTableModel DiasMuestreoModel = new DefaultTableModel(null, columnNameDiasMuestreados);
 	public DefaultTableModel ColocacionTagModel = new DefaultTableModel(null, columnNameColocacionTag);
 	
-	public Object[] UpmsPorEstadoVector =new Object[2];
+	/*public Object[] UpmsPorEstadoVector =new Object[2];
 	public Object[] TipoUpmVector =new Object[2];
 	public Object[] DiasMuestreoVector =new Object[2];
-	public Object[] ColocacionTagVector =new Object[2];
+	public Object[] ColocacionTagVector =new Object[2];*/
 
 
 	public FrmEstadisticas() {
@@ -304,11 +304,7 @@ public class FrmEstadisticas extends JInternalFrame {
 			sqlExterno = baseDatosExterna.createStatement();
 			ResultSet rsExterno = sqlExterno.executeQuery(query);
 			while (rsExterno.next()) {
-
-				UpmsPorEstadoVector[0] = rsExterno.getString("Estado");
-				UpmsPorEstadoVector[1] = rsExterno.getInt("Conteo_UPMS");
-				UpmsPorEstadoModel.addRow(UpmsPorEstadoVector);
-
+				UpmsPorEstadoModel.addRow(new Object[]{rsExterno.getString("Estado"),rsExterno.getInt("Conteo_UPMS")});
 			}
 			baseDatosExterna.close();
 		} catch (Exception e) {
@@ -316,7 +312,7 @@ public class FrmEstadisticas extends JInternalFrame {
 		}
 		
 		tblUpmPorEstado.setModel(UpmsPorEstadoModel);
-		System.out.println(UpmsPorEstadoVector.length);
+
 		
 	}
 
@@ -328,11 +324,7 @@ public class FrmEstadisticas extends JInternalFrame {
 			sqlExterno = baseDatosExterna.createStatement();
 			ResultSet rsExterno = sqlExterno.executeQuery(query);
 			while (rsExterno.next()) {
-
-				TipoUpmVector[0] = rsExterno.getString("TipoUPM");
-				TipoUpmVector[1] = rsExterno.getInt("Conteo_UPMS");
-				TipoUpmModel.addRow(TipoUpmVector);
-				
+				TipoUpmModel.addRow(new Object[]{rsExterno.getString("TipoUPM"),rsExterno.getInt("Conteo_UPMS")});
 			}
 			baseDatosExterna.close();
 		} catch (Exception e) {
@@ -343,17 +335,14 @@ public class FrmEstadisticas extends JInternalFrame {
 	}
 
 	public void getCalculoUpmsDiasMuestreados(String ruta) {
-		String query = "SELECT DISTINCT julianday(upm.FechaFin)-julianday(upm.FechaInicio)+1 as DIAS, COUNT(upm.UPMID) AS CUENTA_UPMS FROM UPM_UPM upm LEFT JOIN UPM_MallaPuntos mallaPuntos ON mallaPuntos.UPMID=upm.UPMID GROUP BY DIAS ";
+		String query = "SELECT DISTINCT julianday(upm.FechaFin)-julianday(upm.FechaInicio)+1 as DIAS, COUNT(upm.UPMID) AS Conteo_UPMS FROM UPM_UPM upm LEFT JOIN UPM_MallaPuntos mallaPuntos ON mallaPuntos.UPMID=upm.UPMID GROUP BY DIAS ";
 
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
 		try {
 			sqlExterno = baseDatosExterna.createStatement();
 			ResultSet rsExterno = sqlExterno.executeQuery(query);
 			while (rsExterno.next()) {
-
-				DiasMuestreoVector[0] = rsExterno.getInt("DIAS");
-				DiasMuestreoVector[1] = rsExterno.getInt("CUENTA_UPMS");
-				DiasMuestreoModel.addRow(DiasMuestreoVector);
+				DiasMuestreoModel.addRow(new Object[]{rsExterno.getString("DIAS"),rsExterno.getInt("Conteo_UPMS")});
 				
 			}
 			baseDatosExterna.close();
@@ -372,11 +361,7 @@ public class FrmEstadisticas extends JInternalFrame {
 			sqlExterno = baseDatosExterna.createStatement();
 			ResultSet rsExterno = sqlExterno.executeQuery(query);
 			while (rsExterno.next()) {
-
-				ColocacionTagVector[0] = rsExterno.getString("Colocacion");
-				ColocacionTagVector[1] = rsExterno.getInt("Conteo_UPMS");
-				ColocacionTagModel.addRow(ColocacionTagVector);
-				
+				ColocacionTagModel.addRow(new Object[]{rsExterno.getString("Colocacion"),rsExterno.getInt("Conteo_UPMS")});
 			}
 			baseDatosExterna.close();
 		} catch (Exception e) {
