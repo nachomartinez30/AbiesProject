@@ -259,7 +259,7 @@ public class FrmEstadisticas extends JInternalFrame {
 	public void getMaxMinFechas(String ruta) {
 		String fechaInicio = null,fechaFin = null;
 		String query = "SELECT MIN(FechaInicio) as Min, MAX(FechaFin) as Max FROM UPM_UPM ";
-
+ 
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
 		try {
 			sqlExterno = baseDatosExterna.createStatement();
