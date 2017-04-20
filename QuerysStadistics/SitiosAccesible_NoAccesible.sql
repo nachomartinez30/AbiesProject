@@ -1,6 +1,1 @@
-Select
-SitioAccesible,
-count(SitioAccesible)
-FROM
-SITIOS_Sitio
-GROUP BY SitioAccesible
+Select SitioAccesible, count(SitioAccesible) as Conteo_SitiosAccesibles FROM SITIOS_Sitio WHERE SitioAccesible=1 GROUP BY SitioAccesible ORDER BY SitioAccesible DESC

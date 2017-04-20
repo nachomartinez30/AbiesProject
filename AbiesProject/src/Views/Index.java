@@ -21,8 +21,8 @@ import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
-import Controllers.UPM;
 import Database.ExternalConnection;
+//import concentrarbdinfys.Concentrar;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JTabbedPane;
@@ -51,18 +51,24 @@ import java.awt.Rectangle;
 import java.awt.Color;
 import java.awt.SystemColor;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.JTextField;
+import java.awt.Font;
+import javax.swing.SwingConstants;
 
 public class Index extends JFrame {
 	private boolean temaClaro = false;
 	private JPanel contentPane;
 	private JTable table;
 	public String ruta = "";
+	
 	FrmEstadisticas estadistica = new FrmEstadisticas();
+	//Concentrar concentrador=new Concentrar();
+	
 	static String oscuro = "com.jtattoo.plaf.hifi.HiFiLookAndFeel";
 	private ExternalConnection externalConnection = new ExternalConnection();
 
-	public UPM upms;
 	private JButton btnEstadisticas;
+	private JTextField textField;
 
 	/**
 	 * Launch the application.
@@ -119,20 +125,43 @@ public class Index extends JFrame {
 				estadistica.getCalculoUpmsTipo(ruta);
 				estadistica.getCalculoUpmsDiasMuestreados(ruta);
 				estadistica.getCalculoUpmsColocacionTag(ruta);
+				
+				estadistica.getSitiosAccesibles(ruta);
+				estadistica.getSitiosInaccesibles(ruta);
+				estadistica.getSitiosTotales(ruta);
+				estadistica.getSitiosPorHipsometro(ruta);
+				estadistica.getSitiosPorClinometro(ruta);
+				estadistica.getSitiosForestal(ruta);
+				estadistica.getSitiosNoForestal(ruta);
+				estadistica.getSitiosArbolFuera(ruta);
+				estadistica.getSitiosInaccesiblesCausas(ruta);
+				estadistica.getSitiosConteoAccesiblesPorUPM(ruta);
+				estadistica.getSitioPorCondicionVegetacion(ruta);
 				estadistica.setVisible(true);
 			}
 		});
+		
+		JButton btnArbolado = new JButton("Arbolado");
+		btnArbolado.setEnabled(false);
 		GroupLayout gl_panelIzquierdo = new GroupLayout(panelIzquierdo);
 		gl_panelIzquierdo.setHorizontalGroup(
 			gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
-				.addComponent(btnEstadisticas, GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE)
+				.addGroup(gl_panelIzquierdo.createSequentialGroup()
+					.addGroup(gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
+						.addComponent(btnEstadisticas, GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
+						.addGroup(Alignment.TRAILING, gl_panelIzquierdo.createSequentialGroup()
+							.addGap(1)
+							.addComponent(btnArbolado, GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)))
+					.addContainerGap())
 		);
 		gl_panelIzquierdo.setVerticalGroup(
 			gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panelIzquierdo.createSequentialGroup()
 					.addGap(30)
 					.addComponent(btnEstadisticas)
-					.addContainerGap(707, Short.MAX_VALUE))
+					.addGap(65)
+					.addComponent(btnArbolado)
+					.addContainerGap(618, Short.MAX_VALUE))
 		);
 		panelIzquierdo.setLayout(gl_panelIzquierdo);
 
@@ -158,6 +187,9 @@ public class Index extends JFrame {
 			}
 		});
 		mnBaseDeDatos.add(mntmCargar);
+		
+		Component horizontalStrut = Box.createHorizontalStrut(20);
+		menuBar.add(horizontalStrut);
 
 		JMenu mnVentana = new JMenu("Ventana");
 		menuBar.add(mnVentana);
@@ -177,6 +209,18 @@ public class Index extends JFrame {
 			}
 		});
 		mnVentana.add(chckboxOcultarPanelIzquierdo);
+		
+		Component horizontalStrut_1 = Box.createHorizontalStrut(20);
+		menuBar.add(horizontalStrut_1);
+		
+		JLabel lblBdActual = new JLabel("BD actual:");
+		lblBdActual.setEnabled(false);
+		menuBar.add(lblBdActual);
+		
+		textField = new JTextField();
+		textField.setFont(new Font("Dialog", Font.BOLD | Font.ITALIC, 12));
+		menuBar.add(textField);
+		textField.setColumns(10);
 	}
 
 	public void cargarBaseDatos() {
@@ -203,6 +247,7 @@ public class Index extends JFrame {
 				externalConnection.getConnection(ruta);
 				btnEstadisticas.setEnabled(true);
 				JOptionPane.showMessageDialog(null, "Se conectó satisfactoriamente");
+				textField.setText(ruta);
 				// System.out.println(ruta);
 			}
 		} catch (Exception e) {

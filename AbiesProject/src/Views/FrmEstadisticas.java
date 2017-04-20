@@ -19,7 +19,6 @@ import java.sql.ResultSet;
 import javax.swing.SwingConstants;
 import com.toedter.components.JSpinField;
 
-import Controllers.UPM;
 import Database.ExternalConnection;
 
 import com.toedter.calendar.JDateChooser;
@@ -33,56 +32,55 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
 public class FrmEstadisticas extends JInternalFrame {
-	public UPM upm = new UPM();
 	private JTextField txtTotalUpms;
-	
+
 	private JTable tblUpmPorEstado;
 	private JTable tblTipoUPM;
 	private JTable tblDiasMuestreo;
 	private JTable tblColocacionTAG;
-	
+
 	public String ruta;
 	private Connection baseDatosExterna;
 	private java.sql.Statement sqlExterno;
-	
+
 	private JFormattedTextField ftxtfechaInicial;
 	private JFormattedTextField ftxtfechafinal;
-	
-	public String[] columnNameEstados={"Estado","Conteo UPMs"};
+
+	public String[] columnNameEstados = { "Estado", "Conteo UPMs" };
 	public String[] columnNameDiasMuestreados = { "Dias", "Conteo UPMs" };
 	public String[] columnNameColocacionTag = { "Colocacion TAG", "Conteo UPMs" };
 	public String[] columnNameTipoUpm = { "Tipo UPM", "Conteo UPMs" };
-	
-	public DefaultTableModel UpmsPorEstadoModelClear = new DefaultTableModel(columnNameEstados, 0);
-	public DefaultTableModel TipoUpmModelClear = new DefaultTableModel(columnNameTipoUpm, 0);
-	public DefaultTableModel DiasMuestreoModelClear = new DefaultTableModel(columnNameDiasMuestreados, 0);
-	public DefaultTableModel ColocacionTagModelClear = new DefaultTableModel(columnNameColocacionTag, 0);
-	
+	/************************************************** Sitios *****************************************************************************************/
+	public String[] columnNameSitiosAccesiblesPorConglomerados = { "Conteo UPMs", "Sitios accesibles" };
+	public String[] columnNameSitiosInaccesibles = { "Conteo sitios", "Inaccesibilidad" };
+	public String[] columnNameSitioPorCondicion = { "Conteo sitios", "Condición de vegetación" };
+	public String[] columnNameCoberturaPorUpm = { "Conteo UPMs", "Condición" };
+
 	public DefaultTableModel UpmsPorEstadoModel = new DefaultTableModel(null, columnNameEstados);
 	public DefaultTableModel TipoUpmModel = new DefaultTableModel(null, columnNameTipoUpm);
 	public DefaultTableModel DiasMuestreoModel = new DefaultTableModel(null, columnNameDiasMuestreados);
 	public DefaultTableModel ColocacionTagModel = new DefaultTableModel(null, columnNameColocacionTag);
+	/************************************************** Sitios *****************************************************************************************/
+	public DefaultTableModel sitiosAccesiblesPorConglomeradosModel = new DefaultTableModel(null,columnNameSitiosAccesiblesPorConglomerados);
+	public DefaultTableModel sitiosInaccesiblesModel = new DefaultTableModel(null, columnNameSitiosInaccesibles);
+	public DefaultTableModel sitioPorCondicionModel = new DefaultTableModel(null, columnNameSitioPorCondicion);
+	public DefaultTableModel CoberturaPorUpmModel = new DefaultTableModel(null, columnNameCoberturaPorUpm);
+
 	private JTextField txtSitioTotales;
-	private JTextField tztSitioAccesibles;
+	private JTextField txtSitioAccesibles;
 	private JTextField txtSitiosInaccesibles;
-	private JTable tblSitiosAccesibles;
+	private JTable tblSitiosAccesiblesPorConglomerados;
 	private JTable tblSitiosInaccesibles;
 	private JTextField txtClinometro;
 	private JTextField txtHipsometro;
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_3;
+	private JTextField txtNoForestal;
+	private JTextField txtForestal;
+	private JTextField txtArbolFuera;
 	private JTable tblSitioPorCondicion;
 	private JTable tblCoberturaPorUpm;
-	
-	/*public Object[] UpmsPorEstadoVector =new Object[2];
-	public Object[] TipoUpmVector =new Object[2];
-	public Object[] DiasMuestreoVector =new Object[2];
-	public Object[] ColocacionTagVector =new Object[2];*/
-
 
 	public FrmEstadisticas() {
-		
+
 		setClosable(true);
 		setTitle("Estadistica");
 		setFrameIcon(null);
@@ -110,7 +108,7 @@ public class FrmEstadisticas extends JInternalFrame {
 		JScrollPane scrollPaneTipoUPM = new JScrollPane();
 
 		tblTipoUPM = new JTable();
-		
+
 		scrollPaneTipoUPM.setViewportView(tblTipoUPM);
 
 		JLabel lblEstadisticasDeUpm = new JLabel("Informe General BD (UPM)");
@@ -250,241 +248,233 @@ public class FrmEstadisticas extends JInternalFrame {
 
 		JLayeredPane layPanSitio = new JLayeredPane();
 		tabbedPane.addTab("Sitios", null, layPanSitio, null);
-		
+
 		JLabel lblInformeGeneralBd = new JLabel("Informe General BD (Sitios)");
 		lblInformeGeneralBd.setHorizontalAlignment(SwingConstants.CENTER);
 		lblInformeGeneralBd.setFont(new Font("SansSerif", Font.BOLD, 25));
 		lblInformeGeneralBd.setAlignmentX(0.5f);
-		
+
 		JLabel lblSitiosTotales = new JLabel("Sitios totales:");
 		lblSitiosTotales.setFont(new Font("DialogInput", Font.BOLD, 14));
-		
+
 		txtSitioTotales = new JTextField();
 		txtSitioTotales.setEditable(false);
 		txtSitioTotales.setHorizontalAlignment(SwingConstants.CENTER);
 		txtSitioTotales.setColumns(10);
-		
+
 		JLabel lblSitioAccesibles = new JLabel("Sitios accesibles:");
 		lblSitioAccesibles.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblSitioAccesibles.setFont(new Font("Dialog", Font.ITALIC, 12));
-		
-		tztSitioAccesibles = new JTextField();
-		tztSitioAccesibles.setEditable(false);
-		tztSitioAccesibles.setColumns(10);
-		
+
+		txtSitioAccesibles = new JTextField();
+		txtSitioAccesibles.setHorizontalAlignment(SwingConstants.CENTER);
+		txtSitioAccesibles.setEditable(false);
+		txtSitioAccesibles.setColumns(10);
+
 		JLabel lblSitioInaccesibles = new JLabel("Sitios inaccesibles:");
 		lblSitioInaccesibles.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblSitioInaccesibles.setFont(new Font("Dialog", Font.ITALIC, 12));
-		
+
 		txtSitiosInaccesibles = new JTextField();
+		txtSitiosInaccesibles.setHorizontalAlignment(SwingConstants.CENTER);
 		txtSitiosInaccesibles.setEditable(false);
 		txtSitiosInaccesibles.setColumns(10);
-		
-		JScrollPane scrollPaneSitiosAccesibles = new JScrollPane();
-		
-		tblSitiosAccesibles = new JTable();
-		scrollPaneSitiosAccesibles.setViewportView(tblSitiosAccesibles);
-		
+
+		JScrollPane scrollPaneSitiosAccesiblesPorConglomerados = new JScrollPane();
+
+		tblSitiosAccesiblesPorConglomerados = new JTable();
+		scrollPaneSitiosAccesiblesPorConglomerados.setViewportView(tblSitiosAccesiblesPorConglomerados);
+
 		JScrollPane scrollPaneSitiosInaccesibles = new JScrollPane();
-		
+
 		tblSitiosInaccesibles = new JTable();
 		scrollPaneSitiosInaccesibles.setViewportView(tblSitiosInaccesibles);
-		
+
 		JLabel lblMedidosCon = new JLabel("Medidos con Clin\u00F3metro");
 		lblMedidosCon.setFont(new Font("Dialog", Font.PLAIN, 12));
-		
+
 		JLabel lblMedidosCon_1 = new JLabel("Medidos con Hips\u00F3metro");
 		lblMedidosCon_1.setFont(new Font("Dialog", Font.PLAIN, 12));
-		
+
 		txtClinometro = new JTextField();
 		txtClinometro.setEditable(false);
 		txtClinometro.setHorizontalAlignment(SwingConstants.CENTER);
 		txtClinometro.setColumns(10);
-		
+
 		txtHipsometro = new JTextField();
 		txtHipsometro.setEditable(false);
 		txtHipsometro.setHorizontalAlignment(SwingConstants.CENTER);
 		txtHipsometro.setColumns(10);
-		
+
 		JLabel lblForestal = new JLabel("Forestal");
 		lblForestal.setFont(new Font("Dialog", Font.PLAIN, 12));
-		
+
 		JLabel lblNoForestal = new JLabel("No Forestal");
 		lblNoForestal.setFont(new Font("Dialog", Font.PLAIN, 12));
-		
-		textField = new JTextField();
-		textField.setEditable(false);
-		textField.setHorizontalAlignment(SwingConstants.CENTER);
-		textField.setColumns(10);
-		
-		textField_1 = new JTextField();
-		textField_1.setEditable(false);
-		textField_1.setHorizontalAlignment(SwingConstants.CENTER);
-		textField_1.setColumns(10);
-		
+
+		txtNoForestal = new JTextField();
+		txtNoForestal.setEditable(false);
+		txtNoForestal.setHorizontalAlignment(SwingConstants.CENTER);
+		txtNoForestal.setColumns(10);
+
+		txtForestal = new JTextField();
+		txtForestal.setEditable(false);
+		txtForestal.setHorizontalAlignment(SwingConstants.CENTER);
+		txtForestal.setColumns(10);
+
 		JSeparator separator_2 = new JSeparator();
-		
-		textField_3 = new JTextField();
-		textField_3.setEditable(false);
-		textField_3.setHorizontalAlignment(SwingConstants.CENTER);
-		textField_3.setColumns(10);
-		
+
+		txtArbolFuera = new JTextField();
+		txtArbolFuera.setEditable(false);
+		txtArbolFuera.setHorizontalAlignment(SwingConstants.CENTER);
+		txtArbolFuera.setColumns(10);
+
 		JLabel lblArbolFueraDe = new JLabel("Arbol Fuera de Bosque");
 		lblArbolFueraDe.setFont(new Font("Dialog", Font.PLAIN, 12));
-		
-		JLabel lblCondicin = new JLabel("Sitios por Condici\u00F3n");
-		
+
+		JLabel lblCondicion = new JLabel("Sitios por condici\u00F3n de la vetaci\u00F3n");
+
 		JScrollPane scrollPane = new JScrollPane();
-		
+
 		tblSitioPorCondicion = new JTable();
 		scrollPane.setViewportView(tblSitioPorCondicion);
-		
+
 		JLabel lblCoberturaPorUpm = new JLabel("Cobertura por UPM");
-		
+
 		JScrollPane scrollPane_2 = new JScrollPane();
-		
+
 		tblCoberturaPorUpm = new JTable();
 		scrollPane_2.setViewportView(tblCoberturaPorUpm);
-		
+
 		JSeparator separator_1 = new JSeparator();
 		GroupLayout gl_layPanSitio = new GroupLayout(layPanSitio);
-		gl_layPanSitio.setHorizontalGroup(
-			gl_layPanSitio.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_layPanSitio.createSequentialGroup()
-					.addGap(12)
-					.addComponent(lblInformeGeneralBd, GroupLayout.DEFAULT_SIZE, 739, Short.MAX_VALUE)
-					.addGap(12))
-				.addGroup(gl_layPanSitio.createSequentialGroup()
-					.addGap(12)
-					.addComponent(lblSitiosTotales, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
-					.addGap(18)
-					.addComponent(txtSitioTotales, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE)
-					.addGap(55)
-					.addComponent(lblSitioAccesibles, GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
-					.addGap(18)
-					.addComponent(tztSitioAccesibles, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE)
-					.addGap(42)
-					.addComponent(lblSitioInaccesibles, GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
-					.addGap(18)
-					.addComponent(txtSitiosInaccesibles, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE)
-					.addGap(38))
-				.addGroup(gl_layPanSitio.createSequentialGroup()
-					.addGap(12)
-					.addGroup(gl_layPanSitio.createParallelGroup(Alignment.LEADING)
-						.addComponent(separator_2, GroupLayout.PREFERRED_SIZE, 206, GroupLayout.PREFERRED_SIZE)
-						.addGroup(gl_layPanSitio.createSequentialGroup()
-							.addComponent(lblMedidosCon, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
-							.addGap(18)
-							.addComponent(txtClinometro, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_layPanSitio.createSequentialGroup()
-							.addComponent(lblMedidosCon_1, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
-							.addGap(18)
-							.addComponent(txtHipsometro, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE))
-						.addComponent(separator_1, GroupLayout.PREFERRED_SIZE, 206, GroupLayout.PREFERRED_SIZE)
-						.addGroup(gl_layPanSitio.createSequentialGroup()
-							.addComponent(lblForestal, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
-							.addGap(18)
-							.addComponent(textField_1, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_layPanSitio.createSequentialGroup()
-							.addComponent(lblNoForestal, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
-							.addGap(18)
-							.addComponent(textField, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_layPanSitio.createSequentialGroup()
-							.addComponent(lblArbolFueraDe, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
-							.addGap(18)
-							.addComponent(textField_3, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE)))
-					.addGap(53)
-					.addComponent(scrollPaneSitiosAccesibles, GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)
-					.addGap(42)
-					.addComponent(scrollPaneSitiosInaccesibles, GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)
-					.addGap(38))
-				.addGroup(gl_layPanSitio.createSequentialGroup()
-					.addGap(42)
-					.addComponent(lblCondicin, GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
-					.addGap(23)
-					.addComponent(lblCoberturaPorUpm, GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
-					.addGap(38))
-				.addGroup(gl_layPanSitio.createSequentialGroup()
-					.addGap(42)
-					.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
-					.addGap(23)
-					.addComponent(scrollPane_2, GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
-					.addGap(38))
-		);
-		gl_layPanSitio.setVerticalGroup(
-			gl_layPanSitio.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_layPanSitio.createSequentialGroup()
-					.addComponent(lblInformeGeneralBd, GroupLayout.PREFERRED_SIZE, 57, GroupLayout.PREFERRED_SIZE)
-					.addGap(12)
-					.addGroup(gl_layPanSitio.createParallelGroup(Alignment.LEADING)
+		gl_layPanSitio.setHorizontalGroup(gl_layPanSitio.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_layPanSitio.createSequentialGroup().addGap(12)
+						.addComponent(lblInformeGeneralBd, GroupLayout.DEFAULT_SIZE, 739, Short.MAX_VALUE).addGap(12))
+				.addGroup(gl_layPanSitio.createSequentialGroup().addGap(12)
+						.addComponent(lblSitiosTotales, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
+						.addGap(18)
+						.addComponent(txtSitioTotales, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE)
+						.addGap(55).addComponent(lblSitioAccesibles, GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
+						.addGap(18)
+						.addComponent(txtSitioAccesibles, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE)
+						.addGap(42).addComponent(lblSitioInaccesibles, GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
+						.addGap(18)
+						.addComponent(txtSitiosInaccesibles, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE)
+						.addGap(38))
+				.addGroup(gl_layPanSitio.createSequentialGroup().addGap(12)
+						.addGroup(gl_layPanSitio
+								.createParallelGroup(Alignment.LEADING).addComponent(separator_2,
+										GroupLayout.PREFERRED_SIZE, 206, GroupLayout.PREFERRED_SIZE)
+								.addGroup(gl_layPanSitio.createSequentialGroup()
+										.addComponent(lblMedidosCon, GroupLayout.PREFERRED_SIZE, 145,
+												GroupLayout.PREFERRED_SIZE)
+										.addGap(18).addComponent(txtClinometro, GroupLayout.PREFERRED_SIZE, 41,
+												GroupLayout.PREFERRED_SIZE))
+								.addGroup(gl_layPanSitio.createSequentialGroup()
+										.addComponent(lblMedidosCon_1, GroupLayout.PREFERRED_SIZE, 145,
+												GroupLayout.PREFERRED_SIZE)
+										.addGap(18).addComponent(txtHipsometro, GroupLayout.PREFERRED_SIZE, 41,
+												GroupLayout.PREFERRED_SIZE))
+								.addComponent(separator_1, GroupLayout.PREFERRED_SIZE, 206, GroupLayout.PREFERRED_SIZE)
+								.addGroup(gl_layPanSitio.createSequentialGroup()
+										.addComponent(lblForestal, GroupLayout.PREFERRED_SIZE, 145,
+												GroupLayout.PREFERRED_SIZE)
+										.addGap(18).addComponent(txtForestal, GroupLayout.PREFERRED_SIZE, 41,
+												GroupLayout.PREFERRED_SIZE))
+								.addGroup(gl_layPanSitio.createSequentialGroup()
+										.addComponent(lblNoForestal, GroupLayout.PREFERRED_SIZE, 145,
+												GroupLayout.PREFERRED_SIZE)
+										.addGap(18).addComponent(txtNoForestal, GroupLayout.PREFERRED_SIZE, 41,
+												GroupLayout.PREFERRED_SIZE))
+								.addGroup(gl_layPanSitio.createSequentialGroup()
+										.addComponent(lblArbolFueraDe, GroupLayout.PREFERRED_SIZE, 145,
+												GroupLayout.PREFERRED_SIZE)
+										.addGap(18).addComponent(txtArbolFuera, GroupLayout.PREFERRED_SIZE, 41,
+												GroupLayout.PREFERRED_SIZE)))
+						.addGap(53)
+						.addComponent(scrollPaneSitiosAccesiblesPorConglomerados, GroupLayout.DEFAULT_SIZE, 206,
+								Short.MAX_VALUE)
+						.addGap(42)
+						.addComponent(scrollPaneSitiosInaccesibles, GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)
+						.addGap(38))
+				.addGroup(gl_layPanSitio.createSequentialGroup().addGap(42)
+						.addComponent(lblCondicion, GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE).addGap(23)
+						.addComponent(lblCoberturaPorUpm, GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE).addGap(38))
+				.addGroup(gl_layPanSitio.createSequentialGroup().addGap(42)
+						.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE).addGap(23)
+						.addComponent(scrollPane_2, GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE).addGap(38)));
+		gl_layPanSitio.setVerticalGroup(gl_layPanSitio.createParallelGroup(Alignment.LEADING).addGroup(gl_layPanSitio
+				.createSequentialGroup()
+				.addComponent(lblInformeGeneralBd, GroupLayout.PREFERRED_SIZE, 57, GroupLayout.PREFERRED_SIZE)
+				.addGap(12)
+				.addGroup(gl_layPanSitio.createParallelGroup(Alignment.LEADING)
 						.addComponent(lblSitiosTotales, GroupLayout.PREFERRED_SIZE, 16, GroupLayout.PREFERRED_SIZE)
-						.addComponent(txtSitioTotales, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(txtSitioTotales, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE)
 						.addComponent(lblSitioAccesibles)
-						.addComponent(tztSitioAccesibles, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(txtSitioAccesibles, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE)
+						.addGroup(gl_layPanSitio.createSequentialGroup().addGap(2).addComponent(lblSitioInaccesibles))
+						.addComponent(txtSitiosInaccesibles, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE))
+				.addGap(8)
+				.addGroup(gl_layPanSitio.createParallelGroup(Alignment.LEADING).addGroup(gl_layPanSitio
+						.createSequentialGroup()
+						.addComponent(separator_2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE)
+						.addGap(21)
+						.addGroup(gl_layPanSitio.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_layPanSitio.createSequentialGroup().addGap(2).addComponent(lblMedidosCon))
+								.addComponent(txtClinometro, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE))
+						.addGap(11)
+						.addGroup(gl_layPanSitio.createParallelGroup(Alignment.LEADING)
+								.addGroup(
+										gl_layPanSitio.createSequentialGroup().addGap(2).addComponent(lblMedidosCon_1))
+								.addComponent(txtHipsometro, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE))
+						.addGap(10)
+						.addComponent(separator_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE)
+						.addGap(12)
+						.addGroup(gl_layPanSitio.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_layPanSitio.createSequentialGroup().addGap(2).addComponent(lblForestal))
+								.addComponent(txtForestal, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE))
+						.addGap(11)
+						.addGroup(gl_layPanSitio.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_layPanSitio.createSequentialGroup().addGap(2).addComponent(lblNoForestal))
+								.addComponent(txtNoForestal, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE))
+						.addGap(10)
+						.addGroup(gl_layPanSitio.createParallelGroup(Alignment.LEADING)
+								.addGroup(
+										gl_layPanSitio.createSequentialGroup().addGap(2).addComponent(lblArbolFueraDe))
+								.addComponent(txtArbolFuera, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE)))
 						.addGroup(gl_layPanSitio.createSequentialGroup()
-							.addGap(2)
-							.addComponent(lblSitioInaccesibles))
-						.addComponent(txtSitiosInaccesibles, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(8)
-					.addGroup(gl_layPanSitio.createParallelGroup(Alignment.LEADING)
+								.addComponent(scrollPaneSitiosAccesiblesPorConglomerados, GroupLayout.DEFAULT_SIZE, 166,
+										Short.MAX_VALUE)
+								.addGap(15))
 						.addGroup(gl_layPanSitio.createSequentialGroup()
-							.addComponent(separator_2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addGap(21)
-							.addGroup(gl_layPanSitio.createParallelGroup(Alignment.LEADING)
-								.addGroup(gl_layPanSitio.createSequentialGroup()
-									.addGap(2)
-									.addComponent(lblMedidosCon))
-								.addComponent(txtClinometro, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-							.addGap(11)
-							.addGroup(gl_layPanSitio.createParallelGroup(Alignment.LEADING)
-								.addGroup(gl_layPanSitio.createSequentialGroup()
-									.addGap(2)
-									.addComponent(lblMedidosCon_1))
-								.addComponent(txtHipsometro, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-							.addGap(10)
-							.addComponent(separator_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addGap(12)
-							.addGroup(gl_layPanSitio.createParallelGroup(Alignment.LEADING)
-								.addGroup(gl_layPanSitio.createSequentialGroup()
-									.addGap(2)
-									.addComponent(lblForestal))
-								.addComponent(textField_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-							.addGap(11)
-							.addGroup(gl_layPanSitio.createParallelGroup(Alignment.LEADING)
-								.addGroup(gl_layPanSitio.createSequentialGroup()
-									.addGap(2)
-									.addComponent(lblNoForestal))
-								.addComponent(textField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-							.addGap(10)
-							.addGroup(gl_layPanSitio.createParallelGroup(Alignment.LEADING)
-								.addGroup(gl_layPanSitio.createSequentialGroup()
-									.addGap(2)
-									.addComponent(lblArbolFueraDe))
-								.addComponent(textField_3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
-						.addGroup(gl_layPanSitio.createSequentialGroup()
-							.addComponent(scrollPaneSitiosAccesibles, GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE)
-							.addGap(15))
-						.addGroup(gl_layPanSitio.createSequentialGroup()
-							.addComponent(scrollPaneSitiosInaccesibles, GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE)
-							.addGap(15)))
-					.addGap(48)
-					.addGroup(gl_layPanSitio.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblCondicin)
+								.addComponent(scrollPaneSitiosInaccesibles, GroupLayout.DEFAULT_SIZE, 166,
+										Short.MAX_VALUE)
+								.addGap(15)))
+				.addGap(48)
+				.addGroup(gl_layPanSitio.createParallelGroup(Alignment.LEADING).addComponent(lblCondicion)
 						.addComponent(lblCoberturaPorUpm))
-					.addGap(9)
-					.addGroup(gl_layPanSitio.createParallelGroup(Alignment.LEADING)
+				.addGap(9)
+				.addGroup(gl_layPanSitio.createParallelGroup(Alignment.LEADING)
 						.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
 						.addComponent(scrollPane_2, GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE))
-					.addGap(12))
-		);
+				.addGap(12)));
 		layPanSitio.setLayout(gl_layPanSitio);
 		getContentPane().setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[] { tabbedPane, layPanUpm,
 				lblUpmsPorEstado, scrollPanePorEstado, tblUpmPorEstado, lblRelacionPorTipo, scrollPaneTipoUPM,
 				tblTipoUPM, lblEstadisticasDeUpm, lblFechaInicial, label, ftxtfechaInicial, ftxtfechafinal,
 				lblUpmTotales, txtTotalUpms, separator, lblDiasDeMuestro, scrollPaneDiasDeMuestreo, tblDiasMuestreo,
 				lblColocacinDelTag, scrollPane_1, tblColocacionTAG, layPanSitio }));
-		
-		clearTablas();
 
 	}
 
@@ -495,11 +485,11 @@ public class FrmEstadisticas extends JInternalFrame {
 	public void setRuta(String ruta) {
 		this.ruta = ruta;
 	}
-	
+
 	public void getMaxMinFechas(String ruta) {
-		String fechaInicio = null,fechaFin = null;
+		String fechaInicio = null, fechaFin = null;
 		String query = "SELECT MIN(FechaInicio) as Min, MAX(FechaFin) as Max FROM UPM_UPM ";
- 
+
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
 		try {
 			sqlExterno = baseDatosExterna.createStatement();
@@ -507,7 +497,7 @@ public class FrmEstadisticas extends JInternalFrame {
 			while (rsExterno.next()) {
 
 				fechaInicio = rsExterno.getString("Min");
-				fechaFin= rsExterno.getString("Max");
+				fechaFin = rsExterno.getString("Max");
 			}
 			baseDatosExterna.close();
 		} catch (Exception e) {
@@ -516,7 +506,7 @@ public class FrmEstadisticas extends JInternalFrame {
 		ftxtfechafinal.setText(fechaFin);
 		ftxtfechaInicial.setText(fechaInicio);
 	}
-	
+
 	public void getCalculoUpmsTotales(String ruta) {
 		int upmTotales = 0;
 		String query = "SELECT DISTINCT COUNT(UPMID) as TOTALES FROM UPM_UPM upm ";
@@ -536,8 +526,6 @@ public class FrmEstadisticas extends JInternalFrame {
 		txtTotalUpms.setText(Integer.toString(upmTotales));
 	}
 
-
-
 	public void getCalculoUpmsEstado(String ruta) {
 		String query = "SELECT Estado, Count(Estado) AS Conteo_UPMS FROM UPM_UPM upm LEFT JOIN UPM_MallaPuntos mallaPuntos ON mallaPuntos.UPMID=upm.UPMID GROUP BY Estado ";
 
@@ -546,21 +534,21 @@ public class FrmEstadisticas extends JInternalFrame {
 			sqlExterno = baseDatosExterna.createStatement();
 			ResultSet rsExterno = sqlExterno.executeQuery(query);
 			if (UpmsPorEstadoModel.getRowCount() > 0) {
-			    for (int i = UpmsPorEstadoModel.getRowCount() - 1; i > -1; i--) {
-			        UpmsPorEstadoModel.removeRow(i);
-			    }
+				for (int i = UpmsPorEstadoModel.getRowCount() - 1; i > -1; i--) {
+					UpmsPorEstadoModel.removeRow(i);
+				}
 			}
 			while (rsExterno.next()) {
-				UpmsPorEstadoModel.addRow(new Object[]{rsExterno.getString("Estado"),rsExterno.getInt("Conteo_UPMS")});
+				UpmsPorEstadoModel
+						.addRow(new Object[] { rsExterno.getString("Estado"), rsExterno.getInt("Conteo_UPMS") });
 			}
 			baseDatosExterna.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		tblUpmPorEstado.setModel(UpmsPorEstadoModel);
 
-		
 	}
 
 	public void getCalculoUpmsTipo(String ruta) {
@@ -571,18 +559,18 @@ public class FrmEstadisticas extends JInternalFrame {
 			sqlExterno = baseDatosExterna.createStatement();
 			ResultSet rsExterno = sqlExterno.executeQuery(query);
 			/**/if (TipoUpmModel.getRowCount() > 0) {
-			    for (int i = TipoUpmModel.getRowCount() - 1; i > -1; i--) {
-			        TipoUpmModel.removeRow(i);
-			    }
+				for (int i = TipoUpmModel.getRowCount() - 1; i > -1; i--) {
+					TipoUpmModel.removeRow(i);
+				}
 			}
 			while (rsExterno.next()) {
-				TipoUpmModel.addRow(new Object[]{rsExterno.getString("TipoUPM"),rsExterno.getInt("Conteo_UPMS")});
+				TipoUpmModel.addRow(new Object[] { rsExterno.getString("TipoUPM"), rsExterno.getInt("Conteo_UPMS") });
 			}
 			baseDatosExterna.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		tblTipoUPM.setModel(TipoUpmModel);
 	}
 
@@ -594,21 +582,21 @@ public class FrmEstadisticas extends JInternalFrame {
 			sqlExterno = baseDatosExterna.createStatement();
 			ResultSet rsExterno = sqlExterno.executeQuery(query);
 			/**/if (DiasMuestreoModel.getRowCount() > 0) {
-			    for (int i = DiasMuestreoModel.getRowCount() - 1; i > -1; i--) {
-			        DiasMuestreoModel.removeRow(i);
-			    }
+				for (int i = DiasMuestreoModel.getRowCount() - 1; i > -1; i--) {
+					DiasMuestreoModel.removeRow(i);
+				}
 			}
 			while (rsExterno.next()) {
-				DiasMuestreoModel.addRow(new Object[]{rsExterno.getString("DIAS"),rsExterno.getInt("Conteo_UPMS")});
-				
+				DiasMuestreoModel.addRow(new Object[] { rsExterno.getString("DIAS"), rsExterno.getInt("Conteo_UPMS") });
+
 			}
 			baseDatosExterna.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		tblDiasMuestreo.setModel(DiasMuestreoModel);
-}
+	}
 
 	public void getCalculoUpmsColocacionTag(String ruta) {
 		String query = "SELECT tipoColocacion.Descripcion as Colocacion, Count(transponder.UPMID) as Conteo_UPMS FROM SITIOS_Transponder transponder LEFT JOIN CAT_TipoColocacion tipoColocacion ON tipoColocacion.TipoColocacionID=transponder.TipoColocacionID GROUP BY tipoColocacion.Descripcion ";
@@ -618,26 +606,259 @@ public class FrmEstadisticas extends JInternalFrame {
 			sqlExterno = baseDatosExterna.createStatement();
 			ResultSet rsExterno = sqlExterno.executeQuery(query);
 			/**/if (ColocacionTagModel.getRowCount() > 0) {
-			    for (int i = ColocacionTagModel.getRowCount() - 1; i > -1; i--) {
-			        ColocacionTagModel.removeRow(i);
-			    }
+				for (int i = ColocacionTagModel.getRowCount() - 1; i > -1; i--) {
+					ColocacionTagModel.removeRow(i);
+				}
 			}
 			while (rsExterno.next()) {
-				ColocacionTagModel.addRow(new Object[]{rsExterno.getString("Colocacion"),rsExterno.getInt("Conteo_UPMS")});
+				ColocacionTagModel
+						.addRow(new Object[] { rsExterno.getString("Colocacion"), rsExterno.getInt("Conteo_UPMS") });
 			}
 			baseDatosExterna.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		tblColocacionTAG.setModel(ColocacionTagModel);
-}
-	
-	public void clearTablas(){
 
-		tblUpmPorEstado.setModel(UpmsPorEstadoModelClear);
-		tblTipoUPM.setModel(TipoUpmModelClear);
-		tblDiasMuestreo.setModel(DiasMuestreoModelClear);
-		tblColocacionTAG.setModel(ColocacionTagModelClear);	
+		tblColocacionTAG.setModel(ColocacionTagModel);
+	}
+
+	public void getSitiosAccesibles(String ruta) {
+		String query = "Select SitioAccesible, count(SitioAccesible) as Conteo_SitiosAccesibles FROM SITIOS_Sitio WHERE SitioAccesible=1 GROUP BY SitioAccesible ORDER BY SitioAccesible DESC";
+
+		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
+		try {
+			sqlExterno = baseDatosExterna.createStatement();
+			ResultSet rsExterno = sqlExterno.executeQuery(query);
+
+			while (rsExterno.next()) {
+				txtSitioAccesibles.setText(Integer.toString(rsExterno.getInt("Conteo_SitiosAccesibles")));
+			}
+			baseDatosExterna.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public void getSitiosInaccesibles(String ruta) {
+		String query = "Select SitioAccesible, count(SitioAccesible) as Conteo_SitiosAccesibles FROM SITIOS_Sitio WHERE SitioAccesible=0 GROUP BY SitioAccesible ORDER BY SitioAccesible DESC";
+
+		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
+		try {
+			sqlExterno = baseDatosExterna.createStatement();
+			ResultSet rsExterno = sqlExterno.executeQuery(query);
+
+			while (rsExterno.next()) {
+				txtSitiosInaccesibles.setText(Integer.toString(rsExterno.getInt("Conteo_SitiosAccesibles")));
+			}
+			baseDatosExterna.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void getSitiosTotales(String ruta) {
+		String query = "SELECT COUNT(SitioID) as Sitios_totales FROM SITIOS_Sitio";
+
+		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
+		try {
+			sqlExterno = baseDatosExterna.createStatement();
+			ResultSet rsExterno = sqlExterno.executeQuery(query);
+
+			while (rsExterno.next()) {
+				txtSitioTotales.setText(Integer.toString(rsExterno.getInt("Sitios_totales")));
+			}
+			baseDatosExterna.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void getSitiosPorClinometro(String ruta) {
+		String query = "Select  Count(sitio.CintaClinometroBrujula) as Cuenta_CintaClinometro FROM SITIOS_Sitio sitio where sitio.CintaClinometroBrujula=1";
+
+		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
+		try {
+			sqlExterno = baseDatosExterna.createStatement();
+			ResultSet rsExterno = sqlExterno.executeQuery(query);
+
+			while (rsExterno.next()) {
+				txtClinometro.setText(Integer.toString(rsExterno.getInt("Cuenta_CintaClinometro")));
+			}
+			baseDatosExterna.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void getSitiosPorHipsometro(String ruta) {
+		String query = "Select Count(HipsometroBrujula) as Cuenta_Hipsometro FROM SITIOS_Sitio sitio where HipsometroBrujula=1 ";
+
+		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
+		try {
+			sqlExterno = baseDatosExterna.createStatement();
+			ResultSet rsExterno = sqlExterno.executeQuery(query);
+
+			while (rsExterno.next()) {
+				txtHipsometro.setText(Integer.toString(rsExterno.getInt("Cuenta_Hipsometro")));
+			}
+			baseDatosExterna.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void getSitiosForestal(String ruta) {
+		String query = "Select  Count(sitio.SitioID) as Conteo_Sitios FROM SITIOS_Sitio sitio Left JOIN CAT_ClaveSerieV claveSerieV ON  claveSerieV.ClaveSerieVID=sitio.ClaveSerieV WHERE claveSerieV.EsForestal=1";
+
+		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
+		try {
+			sqlExterno = baseDatosExterna.createStatement();
+			ResultSet rsExterno = sqlExterno.executeQuery(query);
+
+			while (rsExterno.next()) {
+				txtForestal.setText(Integer.toString(rsExterno.getInt("Conteo_Sitios")));
+			}
+			baseDatosExterna.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void getSitiosNoForestal(String ruta) {
+		String query = "Select  Count(sitio.SitioID) as Conteo_Sitios FROM SITIOS_Sitio sitio Left JOIN CAT_ClaveSerieV claveSerieV ON  claveSerieV.ClaveSerieVID=sitio.ClaveSerieV WHERE claveSerieV.EsForestal=0";
+
+		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
+		try {
+			sqlExterno = baseDatosExterna.createStatement();
+			ResultSet rsExterno = sqlExterno.executeQuery(query);
+
+			while (rsExterno.next()) {
+				txtNoForestal.setText(Integer.toString(rsExterno.getInt("Conteo_Sitios")));
+			}
+			baseDatosExterna.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void getSitiosArbolFuera(String ruta) {
+		String query = "Select  Count(sitio.SitioID) as Conteo_Sitios FROM SITIOS_Sitio sitio where  sitio.ArbolFuera=1 ";
+
+		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
+		try {
+			sqlExterno = baseDatosExterna.createStatement();
+			ResultSet rsExterno = sqlExterno.executeQuery(query);
+
+			while (rsExterno.next()) {
+				txtArbolFuera.setText(Integer.toString(rsExterno.getInt("Conteo_Sitios")));
+			}
+			baseDatosExterna.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void getSitiosConteoAccesiblesPorUPM(String ruta) {
+		String query = "SELECT DISTINCT UPMID, COUNT(Sitio) as Conteo_sitios FROM SITIOS_Sitio WHERE  SitioAccesible=1 Group by UPMID";
+		int uno = 0, dos = 0, tres = 0, cuatro = 0, numero = 0;
+		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
+		try {
+			sqlExterno = baseDatosExterna.createStatement();
+			ResultSet rsExterno = sqlExterno.executeQuery(query);
+
+			if (sitiosAccesiblesPorConglomeradosModel.getRowCount() > 0) {
+				for (int i = sitiosAccesiblesPorConglomeradosModel.getRowCount() - 1; i > -1; i--) {
+					sitiosAccesiblesPorConglomeradosModel.removeRow(i);
+				}
+
+			}
+
+			while (rsExterno.next()) {
+				numero = rsExterno.getInt("Conteo_sitios");
+
+				switch (numero) {
+				case 1:
+					uno++;
+					break;
+				case 2:
+					dos++;
+					break;
+				case 3:
+					tres++;
+					break;
+				case 4:
+					cuatro++;
+					break;
+				}
+
+				/*
+				 * Model.addRow(new Object[] {
+				 * rsExterno.getString(""),rsExterno.getInt("") });
+				 */
+
+			}
+			sitiosAccesiblesPorConglomeradosModel.addRow(new Object[] { cuatro, "4" });
+			sitiosAccesiblesPorConglomeradosModel.addRow(new Object[] { tres, "3" });
+			sitiosAccesiblesPorConglomeradosModel.addRow(new Object[] { dos, "2" });
+			sitiosAccesiblesPorConglomeradosModel.addRow(new Object[] { uno, "1" });
+
+			baseDatosExterna.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		tblSitiosAccesiblesPorConglomerados.setModel(sitiosAccesiblesPorConglomeradosModel);
+	}
+
+	public void getSitiosInaccesiblesCausas(String ruta) {
+		String query = "Select Distinct tipoInaccesibilidad.Tipo as Tipo_inaccesibilidad, Count(sitio.SitioID) as Conteo FROM SITIOS_Sitio sitio left Join CAT_TipoInaccesibilidad tipoInaccesibilidad ON tipoInaccesibilidad.TipoInaccesibilidadID=sitio.TipoInaccesibilidad where SitioAccesible=0 GROUP BY tipoInaccesibilidad.Tipo ";
+
+		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
+		try {
+			sqlExterno = baseDatosExterna.createStatement();
+			ResultSet rsExterno = sqlExterno.executeQuery(query);
+			if (sitiosInaccesiblesModel.getRowCount() > 0) {
+				for (int i = sitiosInaccesiblesModel.getRowCount() - 1; i > -1; i--) {
+					sitiosInaccesiblesModel.removeRow(i);
+				}
+			}
+			while (rsExterno.next()) {
+				sitiosInaccesiblesModel.addRow(new Object[] { rsExterno.getString("Tipo_inaccesibilidad"), rsExterno.getInt("Conteo") });
+			}
+			baseDatosExterna.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		tblSitiosInaccesibles.setModel(sitiosInaccesiblesModel);
+	}
+
+	public void getSitioPorCondicionVegetacion(String ruta) {
+		String query = "Select  faseSucecional.Clave as Condicion_Fase, Count(sitio.SitioID) as Conteo_Sitios FROM SITIOS_Sitio sitio Left JOIN CAT_FaseSucecional faseSucecional ON  faseSucecional.FaseSucecionalID=sitio.FaseSucecional Left JOIN CAT_ClaveSerieV claveSerieV ON  claveSerieV.ClaveSerieVID=sitio.ClaveSerieV where  claveSerieV.EsForestal=1 Group by faseSucecional.Clave Order by faseSucecional.Clave ASC";
+		String fase=null;
+		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
+		try {
+			sqlExterno = baseDatosExterna.createStatement();
+			ResultSet rsExterno = sqlExterno.executeQuery(query);
+			if (sitioPorCondicionModel.getRowCount() > 0) {
+				for (int i = sitioPorCondicionModel.getRowCount() - 1; i > -1; i--) {
+					sitioPorCondicionModel.removeRow(i);
+				}
+			}
+			while (rsExterno.next()) {
+				if(rsExterno.getString("Condicion_Fase")==null){
+					fase="Primario";
+				}else{
+					fase=rsExterno.getString("Condicion_Fase");
+				}
+				sitioPorCondicionModel.addRow(new Object[] { fase, rsExterno.getInt("Conteo_Sitios") });
+			}
+			baseDatosExterna.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		tblSitioPorCondicion.setModel(sitioPorCondicionModel);
 	}
 }
