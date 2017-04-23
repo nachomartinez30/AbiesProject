@@ -22,7 +22,7 @@ import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
 import Database.ExternalConnection;
-//import concentrarbdinfys.Concentrar;
+import concentrarbdinfys.Concentrar;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JTabbedPane;
@@ -54,28 +54,36 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JTextField;
 import java.awt.Font;
 import javax.swing.SwingConstants;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import javax.swing.ImageIcon;
+import java.awt.Toolkit;
 
 public class Index extends JFrame {
+	FrmEstadisticas estadistica;
 	private boolean temaClaro = false;
 	private JPanel contentPane;
 	private JTable table;
 	public String ruta = "";
-	
-	FrmEstadisticas estadistica = new FrmEstadisticas();
-	//Concentrar concentrador=new Concentrar();
-	
-	static String oscuro = "com.jtattoo.plaf.hifi.HiFiLookAndFeel";
+
+	FrmArbolado arbolado;
+	Concentrar concentrador = new Concentrar();
+
+	// static String oscuro = "com.jtattoo.plaf.hifi.HiFiLookAndFeel";
 	private ExternalConnection externalConnection = new ExternalConnection();
 
-	private JButton btnEstadisticas;
+	public JButton btnEstadisticas;
 	private JTextField textField;
+	public JButton btnArbolado;
+	private JDesktopPane desktopPanelCentral;
+	private JLabel lblNewLabel;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
 		try {
-			UIManager.setLookAndFeel("com.jtattoo.plaf.hifi.HiFiLookAndFeel");
+			UIManager.setLookAndFeel("com.jtattoo.plaf.noire.NoireLookAndFeel");
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
@@ -96,6 +104,8 @@ public class Index extends JFrame {
 	 * Create the frame.
 	 */
 	public Index() {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(Index.class.getResource("/Icons/g5296.png")));
+		setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
 		setTitle("Estadisticas UPM");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1023, 824);
@@ -104,65 +114,66 @@ public class Index extends JFrame {
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
 
-		JPanel panelCentral = new JPanel();
-		contentPane.add(panelCentral, BorderLayout.CENTER);
-		panelCentral.setLayout(new GridLayout(0, 1, 0, 0));
-
 		JPanel panelIzquierdo = new JPanel();
 		panelIzquierdo.setBackground(new Color(0, 0, 0));
-		panelIzquierdo.setBounds(new Rectangle(0, 0, 2, 0));
 		contentPane.add(panelIzquierdo, BorderLayout.WEST);
 
 		btnEstadisticas = new JButton("Estadisticas");
 		btnEstadisticas.setEnabled(false);
 		btnEstadisticas.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				panelCentral.add(estadistica);
-				
-				estadistica.getCalculoUpmsTotales(ruta);
-				estadistica.getMaxMinFechas(ruta);
-				estadistica.getCalculoUpmsEstado(ruta);
-				estadistica.getCalculoUpmsTipo(ruta);
-				estadistica.getCalculoUpmsDiasMuestreados(ruta);
-				estadistica.getCalculoUpmsColocacionTag(ruta);
-				
-				estadistica.getSitiosAccesibles(ruta);
-				estadistica.getSitiosInaccesibles(ruta);
-				estadistica.getSitiosTotales(ruta);
-				estadistica.getSitiosPorHipsometro(ruta);
-				estadistica.getSitiosPorClinometro(ruta);
-				estadistica.getSitiosForestal(ruta);
-				estadistica.getSitiosNoForestal(ruta);
-				estadistica.getSitiosArbolFuera(ruta);
-				estadistica.getSitiosInaccesiblesCausas(ruta);
-				estadistica.getSitiosConteoAccesiblesPorUPM(ruta);
-				estadistica.getSitioPorCondicionVegetacion(ruta);
-				estadistica.setVisible(true);
+				// System.out.println(ruta);
+
+				if (estadistica.isVisible() == false) {
+
+					desktopPanelCentral.add(estadistica);
+					estadistica.setVisible(true);
+				}
+
+				if (estadistica.isBackgroundSet()) {
+					estadistica.moveToFront();
+				}
+
+				try {
+					estadistica.setMaximum(true);
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+
 			}
 		});
-		
-		JButton btnArbolado = new JButton("Arbolado");
+
+		btnArbolado = new JButton("Arbolado");
+		btnArbolado.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+
+				if (arbolado.isVisible() == false) {
+					desktopPanelCentral.add(arbolado);
+					arbolado.setVisible(true);
+				}
+				if (arbolado.isBackgroundSet()) {
+					arbolado.moveToFront();
+				}
+				try {
+					arbolado.setMaximum(true);
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+
+			}
+		});
 		btnArbolado.setEnabled(false);
 		GroupLayout gl_panelIzquierdo = new GroupLayout(panelIzquierdo);
-		gl_panelIzquierdo.setHorizontalGroup(
-			gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
+		gl_panelIzquierdo.setHorizontalGroup(gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panelIzquierdo.createSequentialGroup()
-					.addGroup(gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
-						.addComponent(btnEstadisticas, GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
-						.addGroup(Alignment.TRAILING, gl_panelIzquierdo.createSequentialGroup()
-							.addGap(1)
-							.addComponent(btnArbolado, GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)))
-					.addContainerGap())
-		);
-		gl_panelIzquierdo.setVerticalGroup(
-			gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panelIzquierdo.createSequentialGroup()
-					.addGap(30)
-					.addComponent(btnEstadisticas)
-					.addGap(65)
-					.addComponent(btnArbolado)
-					.addContainerGap(618, Short.MAX_VALUE))
-		);
+						.addGroup(gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
+								.addComponent(btnEstadisticas, GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
+								.addGroup(Alignment.TRAILING, gl_panelIzquierdo.createSequentialGroup().addGap(1)
+										.addComponent(btnArbolado, GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)))
+						.addContainerGap()));
+		gl_panelIzquierdo.setVerticalGroup(gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panelIzquierdo.createSequentialGroup().addGap(30).addComponent(btnEstadisticas).addGap(18)
+						.addComponent(btnArbolado).addContainerGap(665, Short.MAX_VALUE)));
 		panelIzquierdo.setLayout(gl_panelIzquierdo);
 
 		JPanel panelSuperior = new JPanel();
@@ -187,7 +198,7 @@ public class Index extends JFrame {
 			}
 		});
 		mnBaseDeDatos.add(mntmCargar);
-		
+
 		Component horizontalStrut = Box.createHorizontalStrut(20);
 		menuBar.add(horizontalStrut);
 
@@ -209,18 +220,55 @@ public class Index extends JFrame {
 			}
 		});
 		mnVentana.add(chckboxOcultarPanelIzquierdo);
-		
+
+		JMenuItem mntmCambiarFondo = new JMenuItem("Fondo conifera");
+		mntmCambiarFondo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				lblNewLabel.setIcon(new ImageIcon(Index.class.getResource("/Icons/AbiesProject_background2.png")));
+			}
+		});
+		mnVentana.add(mntmCambiarFondo);
+
+		JMenuItem mntmFondoHoja = new JMenuItem("Fondo hoja");
+		mntmFondoHoja.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				lblNewLabel.setIcon(new ImageIcon(Index.class.getResource("/Icons/Abies_background.png")));
+			}
+		});
+		mnVentana.add(mntmFondoHoja);
+
 		Component horizontalStrut_1 = Box.createHorizontalStrut(20);
 		menuBar.add(horizontalStrut_1);
-		
+
 		JLabel lblBdActual = new JLabel("BD actual:");
 		lblBdActual.setEnabled(false);
 		menuBar.add(lblBdActual);
-		
+
 		textField = new JTextField();
+		textField.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent arg0) {
+				textField.selectAll();
+			}
+		});
 		textField.setFont(new Font("Dialog", Font.BOLD | Font.ITALIC, 12));
 		menuBar.add(textField);
 		textField.setColumns(10);
+
+		desktopPanelCentral = new JDesktopPane();
+		contentPane.add(desktopPanelCentral, BorderLayout.CENTER);
+
+		lblNewLabel = new JLabel("");
+		lblNewLabel.setIcon(new ImageIcon(Index.class.getResource("/Icons/AbiesProject_background2.png")));
+		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		GroupLayout gl_desktopPanelCentral = new GroupLayout(desktopPanelCentral);
+		gl_desktopPanelCentral.setHorizontalGroup(gl_desktopPanelCentral.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_desktopPanelCentral.createSequentialGroup().addGap(61)
+						.addComponent(lblNewLabel, GroupLayout.DEFAULT_SIZE, 742, Short.MAX_VALUE).addGap(79)));
+		gl_desktopPanelCentral.setVerticalGroup(gl_desktopPanelCentral.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_desktopPanelCentral.createSequentialGroup().addGap(29)
+						.addComponent(lblNewLabel, GroupLayout.DEFAULT_SIZE, 697, Short.MAX_VALUE).addGap(35)));
+		desktopPanelCentral.setLayout(gl_desktopPanelCentral);
 	}
 
 	public void cargarBaseDatos() {
@@ -245,14 +293,22 @@ public class Index extends JFrame {
 
 			} else {
 				externalConnection.getConnection(ruta);
-				btnEstadisticas.setEnabled(true);
-				JOptionPane.showMessageDialog(null, "Se conectó satisfactoriamente");
+				enabledLeftPanelButtons();
+				estadistica = new FrmEstadisticas(ruta);
+				arbolado = new FrmArbolado(ruta);
 				textField.setText(ruta);
+				JOptionPane.showMessageDialog(null, "Se conectó satisfactoriamente");
+
 				// System.out.println(ruta);
 			}
 		} catch (Exception e) {
 			// JOptionPane.showMessageDialog(null, "El archivo que intenta
 			// importar no es una base de datos balida" + e);
 		}
+	}
+
+	public void enabledLeftPanelButtons() {
+		btnEstadisticas.setEnabled(true);
+		btnArbolado.setEnabled(true);
 	}
 }

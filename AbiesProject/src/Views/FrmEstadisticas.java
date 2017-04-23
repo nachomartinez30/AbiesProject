@@ -30,8 +30,13 @@ import org.eclipse.wb.swing.FocusTraversalOnArray;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class FrmEstadisticas extends JInternalFrame {
+	
+	
 	private JTextField txtTotalUpms;
 
 	private JTable tblUpmPorEstado;
@@ -79,12 +84,13 @@ public class FrmEstadisticas extends JInternalFrame {
 	private JTable tblSitioPorCondicion;
 	private JTable tblCoberturaPorUpm;
 
-	public FrmEstadisticas() {
-
+	public FrmEstadisticas(String ruta) {
 		setClosable(true);
+		setMaximizable(true);
+		setResizable(true);
 		setTitle("Estadistica");
 		setFrameIcon(null);
-		setBounds(100, 100, 771, 702);
+		setBounds(100, 100, 764, 698);		
 
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		getContentPane().add(tabbedPane, BorderLayout.CENTER);
@@ -158,87 +164,96 @@ public class FrmEstadisticas extends JInternalFrame {
 		tblColocacionTAG = new JTable();
 		scrollPane_1.setViewportView(tblColocacionTAG);
 		GroupLayout gl_layPanUpm = new GroupLayout(layPanUpm);
-		gl_layPanUpm.setHorizontalGroup(gl_layPanUpm.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_layPanUpm.createSequentialGroup().addGap(16)
-						.addComponent(lblEstadisticasDeUpm, GroupLayout.DEFAULT_SIZE, 722, Short.MAX_VALUE).addGap(21))
-				.addGroup(gl_layPanUpm.createSequentialGroup().addGap(154).addGroup(gl_layPanUpm
-						.createParallelGroup(Alignment.TRAILING)
+		gl_layPanUpm.setHorizontalGroup(
+			gl_layPanUpm.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_layPanUpm.createSequentialGroup()
+					.addGap(16)
+					.addComponent(lblEstadisticasDeUpm, GroupLayout.DEFAULT_SIZE, 722, Short.MAX_VALUE)
+					.addGap(21))
+				.addGroup(gl_layPanUpm.createSequentialGroup()
+					.addGap(154)
+					.addGroup(gl_layPanUpm.createParallelGroup(Alignment.TRAILING)
 						.addGroup(gl_layPanUpm.createSequentialGroup()
-								.addComponent(lblUpmTotales, GroupLayout.PREFERRED_SIZE, 92, GroupLayout.PREFERRED_SIZE)
-								.addGap(12)
-								.addComponent(txtTotalUpms, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
-								.addGap(146)
-								.addComponent(lblFechaInicial, GroupLayout.PREFERRED_SIZE, 74,
-										GroupLayout.PREFERRED_SIZE)
-								.addGap(12))
+							.addComponent(lblUpmTotales, GroupLayout.PREFERRED_SIZE, 92, GroupLayout.PREFERRED_SIZE)
+							.addGap(12)
+							.addComponent(txtTotalUpms, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
+							.addGap(146)
+							.addComponent(lblFechaInicial, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE)
+							.addGap(12))
 						.addGroup(gl_layPanUpm.createSequentialGroup()
-								.addComponent(label, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(ComponentPlacement.RELATED)))
-						.addGroup(gl_layPanUpm.createParallelGroup(Alignment.LEADING)
-								.addComponent(ftxtfechaInicial, GroupLayout.PREFERRED_SIZE, 112,
-										GroupLayout.PREFERRED_SIZE)
-								.addComponent(ftxtfechafinal, GroupLayout.PREFERRED_SIZE, 112,
-										GroupLayout.PREFERRED_SIZE))
-						.addGap(121))
-				.addGroup(gl_layPanUpm.createSequentialGroup().addGap(10)
-						.addComponent(separator, GroupLayout.DEFAULT_SIZE, 743, Short.MAX_VALUE).addGap(6))
-				.addGroup(Alignment.TRAILING, gl_layPanUpm.createSequentialGroup().addGap(41)
-						.addGroup(gl_layPanUpm.createParallelGroup(Alignment.TRAILING)
-								.addComponent(lblDiasDeMuestro, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 319,
-										Short.MAX_VALUE)
-								.addComponent(scrollPaneDiasDeMuestreo, Alignment.LEADING, GroupLayout.DEFAULT_SIZE,
-										319, Short.MAX_VALUE))
-						.addGap(66)
-						.addGroup(gl_layPanUpm.createParallelGroup(Alignment.LEADING)
-								.addComponent(scrollPane_1, GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
-								.addComponent(lblColocacinDelTag, GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE))
-						.addGap(40))
-				.addGroup(Alignment.TRAILING, gl_layPanUpm.createSequentialGroup().addGap(26)
-						.addGroup(gl_layPanUpm.createParallelGroup(Alignment.LEADING)
-								.addComponent(scrollPanePorEstado, GroupLayout.DEFAULT_SIZE, 319, Short.MAX_VALUE)
-								.addComponent(lblUpmsPorEstado, GroupLayout.DEFAULT_SIZE, 319, Short.MAX_VALUE))
-						.addGap(81)
-						.addGroup(gl_layPanUpm.createParallelGroup(Alignment.LEADING)
-								.addComponent(lblRelacionPorTipo, GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
-								.addComponent(scrollPaneTipoUPM, GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE))
-						.addGap(40)));
-		gl_layPanUpm.setVerticalGroup(gl_layPanUpm.createParallelGroup(Alignment.LEADING).addGroup(gl_layPanUpm
-				.createSequentialGroup().addGap(6)
-				.addComponent(lblEstadisticasDeUpm, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
-				.addGap(25)
-				.addGroup(gl_layPanUpm.createParallelGroup(Alignment.LEADING).addGroup(gl_layPanUpm
-						.createSequentialGroup()
-						.addGroup(gl_layPanUpm.createParallelGroup(Alignment.BASELINE)
-								.addComponent(ftxtfechaInicial, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
+							.addComponent(label, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)))
+					.addGroup(gl_layPanUpm.createParallelGroup(Alignment.LEADING)
+						.addComponent(ftxtfechaInicial, GroupLayout.PREFERRED_SIZE, 112, GroupLayout.PREFERRED_SIZE)
+						.addComponent(ftxtfechafinal, GroupLayout.PREFERRED_SIZE, 112, GroupLayout.PREFERRED_SIZE))
+					.addGap(121))
+				.addGroup(gl_layPanUpm.createSequentialGroup()
+					.addGap(10)
+					.addComponent(separator, GroupLayout.DEFAULT_SIZE, 743, Short.MAX_VALUE)
+					.addGap(6))
+				.addGroup(gl_layPanUpm.createSequentialGroup()
+					.addGap(26)
+					.addGroup(gl_layPanUpm.createParallelGroup(Alignment.LEADING)
+						.addComponent(scrollPanePorEstado, GroupLayout.DEFAULT_SIZE, 319, Short.MAX_VALUE)
+						.addComponent(lblUpmsPorEstado, GroupLayout.DEFAULT_SIZE, 319, Short.MAX_VALUE))
+					.addGap(81)
+					.addGroup(gl_layPanUpm.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblRelacionPorTipo, GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
+						.addComponent(scrollPaneTipoUPM, GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE))
+					.addGap(40))
+				.addGroup(gl_layPanUpm.createSequentialGroup()
+					.addGap(41)
+					.addGroup(gl_layPanUpm.createParallelGroup(Alignment.TRAILING)
+						.addComponent(lblDiasDeMuestro, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 319, Short.MAX_VALUE)
+						.addComponent(scrollPaneDiasDeMuestreo, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 319, Short.MAX_VALUE))
+					.addGap(66)
+					.addGroup(gl_layPanUpm.createParallelGroup(Alignment.LEADING)
+						.addComponent(scrollPane_1, GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
+						.addComponent(lblColocacinDelTag, GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE))
+					.addGap(40))
+		);
+		gl_layPanUpm.setVerticalGroup(
+			gl_layPanUpm.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_layPanUpm.createSequentialGroup()
+					.addGap(6)
+					.addComponent(lblEstadisticasDeUpm, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
+					.addGap(25)
+					.addGroup(gl_layPanUpm.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_layPanUpm.createSequentialGroup()
+							.addGroup(gl_layPanUpm.createParallelGroup(Alignment.BASELINE)
+								.addComponent(ftxtfechaInicial, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 								.addComponent(lblFechaInicial))
-						.addGap(6)
-						.addGroup(gl_layPanUpm.createParallelGroup(Alignment.BASELINE)
-								.addComponent(ftxtfechafinal, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
+							.addGap(6)
+							.addGroup(gl_layPanUpm.createParallelGroup(Alignment.BASELINE)
+								.addComponent(ftxtfechafinal, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 								.addComponent(label)))
-						.addGroup(gl_layPanUpm.createSequentialGroup().addGap(6)
-								.addGroup(gl_layPanUpm.createParallelGroup(Alignment.LEADING)
-										.addGroup(gl_layPanUpm.createSequentialGroup().addGap(6)
-												.addComponent(lblUpmTotales))
-										.addComponent(txtTotalUpms, GroupLayout.PREFERRED_SIZE,
-												GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))))
-				.addPreferredGap(ComponentPlacement.RELATED)
-				.addComponent(separator, GroupLayout.PREFERRED_SIZE, 16, GroupLayout.PREFERRED_SIZE).addGap(18)
-				.addGroup(gl_layPanUpm.createParallelGroup(Alignment.LEADING).addComponent(lblUpmsPorEstado)
+						.addGroup(gl_layPanUpm.createSequentialGroup()
+							.addGap(6)
+							.addGroup(gl_layPanUpm.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_layPanUpm.createSequentialGroup()
+									.addGap(6)
+									.addComponent(lblUpmTotales))
+								.addComponent(txtTotalUpms, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(separator, GroupLayout.PREFERRED_SIZE, 16, GroupLayout.PREFERRED_SIZE)
+					.addGap(18)
+					.addGroup(gl_layPanUpm.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblUpmsPorEstado)
 						.addComponent(lblRelacionPorTipo))
-				.addPreferredGap(ComponentPlacement.RELATED)
-				.addGroup(gl_layPanUpm.createParallelGroup(Alignment.LEADING)
-						.addComponent(scrollPanePorEstado, GroupLayout.DEFAULT_SIZE, 104, Short.MAX_VALUE)
-						.addComponent(scrollPaneTipoUPM, GroupLayout.DEFAULT_SIZE, 104, Short.MAX_VALUE))
-				.addGap(116)
-				.addGroup(gl_layPanUpm.createParallelGroup(Alignment.LEADING).addComponent(lblColocacinDelTag)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(gl_layPanUpm.createParallelGroup(Alignment.LEADING)
+						.addComponent(scrollPanePorEstado, GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
+						.addComponent(scrollPaneTipoUPM, GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE))
+					.addGap(116)
+					.addGroup(gl_layPanUpm.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblColocacinDelTag)
 						.addComponent(lblDiasDeMuestro))
-				.addPreferredGap(ComponentPlacement.RELATED)
-				.addGroup(gl_layPanUpm.createParallelGroup(Alignment.LEADING)
-						.addComponent(scrollPaneDiasDeMuestreo, GroupLayout.DEFAULT_SIZE, 104, Short.MAX_VALUE)
-						.addComponent(scrollPane_1, GroupLayout.DEFAULT_SIZE, 104, Short.MAX_VALUE))
-				.addGap(101)));
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(gl_layPanUpm.createParallelGroup(Alignment.LEADING)
+						.addComponent(scrollPaneDiasDeMuestreo, GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE)
+						.addComponent(scrollPane_1, GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE))
+					.addGap(101))
+		);
 		layPanUpm.setLayout(gl_layPanUpm);
 		layPanUpm.setFocusTraversalPolicy(new FocusTraversalOnArray(
 				new Component[] { txtTotalUpms, ftxtfechaInicial, ftxtfechafinal, scrollPanePorEstado,
@@ -475,7 +490,24 @@ public class FrmEstadisticas extends JInternalFrame {
 				tblTipoUPM, lblEstadisticasDeUpm, lblFechaInicial, label, ftxtfechaInicial, ftxtfechafinal,
 				lblUpmTotales, txtTotalUpms, separator, lblDiasDeMuestro, scrollPaneDiasDeMuestreo, tblDiasMuestreo,
 				lblColocacinDelTag, scrollPane_1, tblColocacionTAG, layPanSitio }));
-
+		
+		getCalculoUpmsTotales(ruta);
+		getMaxMinFechas(ruta);
+		getCalculoUpmsEstado(ruta);
+		getCalculoUpmsTipo(ruta);
+		getCalculoUpmsDiasMuestreados(ruta);
+		getCalculoUpmsColocacionTag(ruta);
+		getSitiosAccesibles(ruta);
+		getSitiosInaccesibles(ruta);
+		getSitiosTotales(ruta);
+		getSitiosPorHipsometro(ruta);
+		getSitiosPorClinometro(ruta);
+		getSitiosForestal(ruta);
+		getSitiosNoForestal(ruta);
+		getSitiosArbolFuera(ruta);
+		getSitiosInaccesiblesCausas(ruta);
+		getSitiosConteoAccesiblesPorUPM(ruta);
+		getSitioPorCondicionVegetacion(ruta);
 	}
 
 	public String getRuta() {
@@ -516,13 +548,14 @@ public class FrmEstadisticas extends JInternalFrame {
 			sqlExterno = baseDatosExterna.createStatement();
 			ResultSet rsExterno = sqlExterno.executeQuery(query);
 			while (rsExterno.next()) {
-
+				//System.out.println("RUTA UPMS_Totaes " +ruta);
 				upmTotales = rsExterno.getInt("TOTALES");
 			}
 			baseDatosExterna.close();
 		} catch (Exception e) {
-			// TODO: handle exception
+				e.printStackTrace();
 		}
+		//System.out.println("UPMS Totales"+upmTotales);
 		txtTotalUpms.setText(Integer.toString(upmTotales));
 	}
 
