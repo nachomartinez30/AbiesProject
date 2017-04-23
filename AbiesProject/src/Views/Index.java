@@ -22,7 +22,6 @@ import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
 import Database.ExternalConnection;
-import concentrarbdinfys.Concentrar;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JTabbedPane;
@@ -67,7 +66,7 @@ public class Index extends JFrame {
 	public String ruta = "";
 
 	FrmArbolado arbolado;
-	Concentrar concentrador = new Concentrar();
+	
 
 	// static String oscuro = "com.jtattoo.plaf.hifi.HiFiLookAndFeel";
 	private ExternalConnection externalConnection = new ExternalConnection();
@@ -76,7 +75,7 @@ public class Index extends JFrame {
 	private JTextField textField;
 	public JButton btnArbolado;
 	private JDesktopPane desktopPanelCentral;
-	private JLabel lblNewLabel;
+	private JLabel lblBackground;
 
 	/**
 	 * Launch the application.
@@ -143,23 +142,11 @@ public class Index extends JFrame {
 			}
 		});
 
-		btnArbolado = new JButton("Arbolado");
+		btnArbolado = new JButton("Arbolado.csv");
 		btnArbolado.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
-				if (arbolado.isVisible() == false) {
-					desktopPanelCentral.add(arbolado);
-					arbolado.setVisible(true);
-				}
-				if (arbolado.isBackgroundSet()) {
-					arbolado.moveToFront();
-				}
-				try {
-					arbolado.setMaximum(true);
-				} catch (Exception e) {
-					// TODO: handle exception
-				}
-
+				arbolado.exportarArbolado(ruta);
 			}
 		});
 		btnArbolado.setEnabled(false);
@@ -224,7 +211,7 @@ public class Index extends JFrame {
 		JMenuItem mntmCambiarFondo = new JMenuItem("Fondo conifera");
 		mntmCambiarFondo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				lblNewLabel.setIcon(new ImageIcon(Index.class.getResource("/Icons/AbiesProject_background2.png")));
+				lblBackground.setIcon(new ImageIcon(Index.class.getResource("/Icons/AbiesProject_background2.png")));
 			}
 		});
 		mnVentana.add(mntmCambiarFondo);
@@ -232,7 +219,7 @@ public class Index extends JFrame {
 		JMenuItem mntmFondoHoja = new JMenuItem("Fondo hoja");
 		mntmFondoHoja.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				lblNewLabel.setIcon(new ImageIcon(Index.class.getResource("/Icons/Abies_background.png")));
+				lblBackground.setIcon(new ImageIcon(Index.class.getResource("/Icons/Abies_background.png")));
 			}
 		});
 		mnVentana.add(mntmFondoHoja);
@@ -258,16 +245,16 @@ public class Index extends JFrame {
 		desktopPanelCentral = new JDesktopPane();
 		contentPane.add(desktopPanelCentral, BorderLayout.CENTER);
 
-		lblNewLabel = new JLabel("");
-		lblNewLabel.setIcon(new ImageIcon(Index.class.getResource("/Icons/AbiesProject_background2.png")));
-		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		lblBackground = new JLabel("");
+		lblBackground.setIcon(new ImageIcon(Index.class.getResource("/Icons/AbiesProject_background2.png")));
+		lblBackground.setHorizontalAlignment(SwingConstants.CENTER);
 		GroupLayout gl_desktopPanelCentral = new GroupLayout(desktopPanelCentral);
 		gl_desktopPanelCentral.setHorizontalGroup(gl_desktopPanelCentral.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_desktopPanelCentral.createSequentialGroup().addGap(61)
-						.addComponent(lblNewLabel, GroupLayout.DEFAULT_SIZE, 742, Short.MAX_VALUE).addGap(79)));
+						.addComponent(lblBackground, GroupLayout.DEFAULT_SIZE, 742, Short.MAX_VALUE).addGap(79)));
 		gl_desktopPanelCentral.setVerticalGroup(gl_desktopPanelCentral.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_desktopPanelCentral.createSequentialGroup().addGap(29)
-						.addComponent(lblNewLabel, GroupLayout.DEFAULT_SIZE, 697, Short.MAX_VALUE).addGap(35)));
+						.addComponent(lblBackground, GroupLayout.DEFAULT_SIZE, 697, Short.MAX_VALUE).addGap(35)));
 		desktopPanelCentral.setLayout(gl_desktopPanelCentral);
 	}
 
@@ -295,7 +282,7 @@ public class Index extends JFrame {
 				externalConnection.getConnection(ruta);
 				enabledLeftPanelButtons();
 				estadistica = new FrmEstadisticas(ruta);
-				arbolado = new FrmArbolado(ruta);
+				arbolado = new FrmArbolado();
 				textField.setText(ruta);
 				JOptionPane.showMessageDialog(null, "Se conectó satisfactoriamente");
 
