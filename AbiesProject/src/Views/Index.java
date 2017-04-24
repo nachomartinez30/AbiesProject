@@ -21,6 +21,7 @@ import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
+import Database.ConfigUserConnection;
 import Database.ExternalConnection;
 
 import javax.swing.JInternalFrame;
@@ -64,18 +65,25 @@ public class Index extends JFrame {
 	private JPanel contentPane;
 	private JTable table;
 	public String ruta = "";
+	private String configUser = "/AbiesProject/src/Database/ConfigUser.db";
+	private String background = "/Icons/";
+	private boolean leftPanel = true;
+
+	private Connection baseDatosConfig;
+	private java.sql.Statement sqlConfig;
 
 	FrmArbolado arbolado;
-	
 
-	// static String oscuro = "com.jtattoo.plaf.hifi.HiFiLookAndFeel";
 	private ExternalConnection externalConnection = new ExternalConnection();
+	private ConfigUserConnection configUserConnection = new ConfigUserConnection();
 
 	public JButton btnEstadisticas;
 	private JTextField textField;
 	public JButton btnArbolado;
 	private JDesktopPane desktopPanelCentral;
 	private JLabel lblBackground;
+	private JPanel panelIzquierdo;
+	private JCheckBoxMenuItem chckboxOcultarPanelIzquierdo;
 
 	/**
 	 * Launch the application.
@@ -103,6 +111,7 @@ public class Index extends JFrame {
 	 * Create the frame.
 	 */
 	public Index() {
+		configUserConnection.getConnection(configUser);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Index.class.getResource("/Icons/g5296.png")));
 		setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
 		setTitle("Estadisticas UPM");
@@ -113,7 +122,7 @@ public class Index extends JFrame {
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
 
-		JPanel panelIzquierdo = new JPanel();
+		panelIzquierdo = new JPanel();
 		panelIzquierdo.setBackground(new Color(0, 0, 0));
 		contentPane.add(panelIzquierdo, BorderLayout.WEST);
 
@@ -192,17 +201,18 @@ public class Index extends JFrame {
 		JMenu mnVentana = new JMenu("Ventana");
 		menuBar.add(mnVentana);
 
-		JCheckBoxMenuItem chckboxOcultarPanelIzquierdo = new JCheckBoxMenuItem("Ocultar panel izquierdo");
+		chckboxOcultarPanelIzquierdo = new JCheckBoxMenuItem("Ocultar panel izquierdo");
 		chckboxOcultarPanelIzquierdo.setState(true);
 		chckboxOcultarPanelIzquierdo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (chckboxOcultarPanelIzquierdo.getState() == true) {
 					panelIzquierdo.setVisible(true);
-
+					setConfigLeftPanel(configUser, 1);
 				}
 				if (chckboxOcultarPanelIzquierdo.getState() == false) {
 					chckboxOcultarPanelIzquierdo.setText("Mostrar panel izquierdo");
 					panelIzquierdo.setVisible(false);
+					setConfigLeftPanel(configUser, 0);
 				}
 			}
 		});
@@ -211,6 +221,7 @@ public class Index extends JFrame {
 		JMenuItem mntmCambiarFondo = new JMenuItem("Fondo conifera");
 		mntmCambiarFondo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				setBackground(configUser, "AbiesProject_background2.png");
 				lblBackground.setIcon(new ImageIcon(Index.class.getResource("/Icons/AbiesProject_background2.png")));
 			}
 		});
@@ -219,6 +230,7 @@ public class Index extends JFrame {
 		JMenuItem mntmFondoHoja = new JMenuItem("Fondo hoja");
 		mntmFondoHoja.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				setBackground(configUser, "Abies_background.png");
 				lblBackground.setIcon(new ImageIcon(Index.class.getResource("/Icons/Abies_background.png")));
 			}
 		});
@@ -246,7 +258,6 @@ public class Index extends JFrame {
 		contentPane.add(desktopPanelCentral, BorderLayout.CENTER);
 
 		lblBackground = new JLabel("");
-		lblBackground.setIcon(new ImageIcon(Index.class.getResource("/Icons/AbiesProject_background2.png")));
 		lblBackground.setHorizontalAlignment(SwingConstants.CENTER);
 		GroupLayout gl_desktopPanelCentral = new GroupLayout(desktopPanelCentral);
 		gl_desktopPanelCentral.setHorizontalGroup(gl_desktopPanelCentral.createParallelGroup(Alignment.LEADING)
@@ -256,6 +267,8 @@ public class Index extends JFrame {
 				.addGroup(gl_desktopPanelCentral.createSequentialGroup().addGap(29)
 						.addComponent(lblBackground, GroupLayout.DEFAULT_SIZE, 697, Short.MAX_VALUE).addGap(35)));
 		desktopPanelCentral.setLayout(gl_desktopPanelCentral);
+
+		getUserConfigs(configUser);
 	}
 
 	public void cargarBaseDatos() {
@@ -297,5 +310,65 @@ public class Index extends JFrame {
 	public void enabledLeftPanelButtons() {
 		btnEstadisticas.setEnabled(true);
 		btnArbolado.setEnabled(true);
+	}
+
+	public void getUserConfigs(String ruta) {
+		String query = "SELECT idConfig, showLeftPanel, background FROM configUserAbies";
+
+		this.baseDatosConfig = ConfigUserConnection.getConnection(ruta);
+		try {
+			sqlConfig = baseDatosConfig.createStatement();
+			ResultSet rsConfig = sqlConfig.executeQuery(query);
+
+			while (rsConfig.next()) {
+
+				lblBackground
+						.setIcon(new ImageIcon(Index.class.getResource("/Icons/" + rsConfig.getString("background"))));
+				panelIzquierdo.setVisible(rsConfig.getBoolean("showLeftPanel"));
+				chckboxOcultarPanelIzquierdo.setSelected(rsConfig.getBoolean("showLeftPanel"));
+				if (chckboxOcultarPanelIzquierdo.getState() == true) {
+					panelIzquierdo.setVisible(true);
+
+				}
+				if (chckboxOcultarPanelIzquierdo.getState() == false) {
+					chckboxOcultarPanelIzquierdo.setText("Mostrar panel izquierdo");
+					panelIzquierdo.setVisible(false);
+				}
+			}
+			baseDatosConfig.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void setBackground(String ruta, String background) {
+		String query = "UPDATE configUserAbies SET background='" + background + "'";
+		Connection configConnection = ConfigUserConnection.getConnection(ruta);
+		try {
+			java.sql.Statement st = configConnection.createStatement();
+			st.executeUpdate(query);
+			configConnection.commit();
+			//System.out.println("Actualizado background");
+			st.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public void setConfigLeftPanel(String ruta, int visible) {
+		String query = "UPDATE configUserAbies SET showLeftPanel=" + visible;
+		//System.out.println(query);
+		Connection configConnection = ConfigUserConnection.getConnection(ruta);
+		try {
+			java.sql.Statement st = configConnection.createStatement();
+			st.executeUpdate(query);
+			configConnection.commit();
+			//System.out.println("Actualizado panel");
+			st.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 	}
 }
