@@ -72,7 +72,7 @@ public class Index extends JFrame {
 	private Connection baseDatosConfig;
 	private java.sql.Statement sqlConfig;
 
-	FrmArbolado arbolado;
+	FrmExportar arbolado;
 
 	private ExternalConnection externalConnection = new ExternalConnection();
 	private ConfigUserConnection configUserConnection = new ConfigUserConnection();
@@ -295,7 +295,7 @@ public class Index extends JFrame {
 				externalConnection.getConnection(ruta);
 				enabledLeftPanelButtons();
 				estadistica = new FrmEstadisticas(ruta);
-				arbolado = new FrmArbolado();
+				arbolado = new FrmExportar();
 				textField.setText(ruta);
 				JOptionPane.showMessageDialog(null, "Se conectó satisfactoriamente");
 

@@ -22,13 +22,13 @@ import javax.swing.table.DefaultTableModel;
 import org.jfree.data.io.CSV;
 
 
-public class FrmArbolado extends JFrame{
+public class FrmExportar extends JFrame{
 	private JTable tblArbolado;
 	public String ruta;
 	private Connection baseDatosExterna;
 	private java.sql.Statement sqlExterno;
 
-	public FrmArbolado() {
+	public FrmExportar() {
 		
 	}
 	
