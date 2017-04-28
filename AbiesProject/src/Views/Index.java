@@ -72,14 +72,14 @@ public class Index extends JFrame {
 	private Connection baseDatosConfig;
 	private java.sql.Statement sqlConfig;
 
-	FrmExportar arbolado;
+	FrmExportar exportar;
 
 	private ExternalConnection externalConnection = new ExternalConnection();
 	private ConfigUserConnection configUserConnection = new ConfigUserConnection();
 
 	public JButton btnEstadisticas;
 	private JTextField textField;
-	public JButton btnArbolado;
+	public JButton btnExportar;
 	private JDesktopPane desktopPanelCentral;
 	private JLabel lblBackground;
 	private JPanel panelIzquierdo;
@@ -151,25 +151,25 @@ public class Index extends JFrame {
 			}
 		});
 
-		btnArbolado = new JButton("Arbolado.csv");
-		btnArbolado.addActionListener(new ActionListener() {
+		btnExportar = new JButton("CSV");
+		btnExportar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
-				arbolado.exportarArbolado(ruta);
+				exportar.exportarArbolado(ruta);
 			}
 		});
-		btnArbolado.setEnabled(false);
+		btnExportar.setEnabled(false);
 		GroupLayout gl_panelIzquierdo = new GroupLayout(panelIzquierdo);
 		gl_panelIzquierdo.setHorizontalGroup(gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panelIzquierdo.createSequentialGroup()
 						.addGroup(gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
 								.addComponent(btnEstadisticas, GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
 								.addGroup(Alignment.TRAILING, gl_panelIzquierdo.createSequentialGroup().addGap(1)
-										.addComponent(btnArbolado, GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)))
+										.addComponent(btnExportar, GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)))
 						.addContainerGap()));
 		gl_panelIzquierdo.setVerticalGroup(gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panelIzquierdo.createSequentialGroup().addGap(30).addComponent(btnEstadisticas).addGap(18)
-						.addComponent(btnArbolado).addContainerGap(665, Short.MAX_VALUE)));
+						.addComponent(btnExportar).addContainerGap(665, Short.MAX_VALUE)));
 		panelIzquierdo.setLayout(gl_panelIzquierdo);
 
 		JPanel panelSuperior = new JPanel();
@@ -295,7 +295,7 @@ public class Index extends JFrame {
 				externalConnection.getConnection(ruta);
 				enabledLeftPanelButtons();
 				estadistica = new FrmEstadisticas(ruta);
-				arbolado = new FrmExportar();
+				exportar = new FrmExportar();
 				textField.setText(ruta);
 				JOptionPane.showMessageDialog(null, "Se conectó satisfactoriamente");
 
@@ -309,7 +309,7 @@ public class Index extends JFrame {
 
 	public void enabledLeftPanelButtons() {
 		btnEstadisticas.setEnabled(true);
-		btnArbolado.setEnabled(true);
+		btnExportar.setEnabled(true);
 	}
 
 	public void getUserConfigs(String ruta) {
