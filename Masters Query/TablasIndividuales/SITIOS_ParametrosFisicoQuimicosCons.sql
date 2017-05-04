@@ -1,0 +1,31 @@
+SELECT
+parametrosFisicoQuimicos.UPMID,
+parametrosFisicoQuimicos.SitioID,
+parametrosFisicoQuimicos.ParametrosFQID,
+-- _____________________________________________________________________________________________________________________________________________________________________________________________
+sitio.Sitio,
+upmMala.Estado,
+upmMala.Municipio,
+-- _____________________________________________________________________________________________________________________________________________________________________________________________
+CASE parametrosFisicoQuimicos.TipoAgua WHEN 1 THEN 'Intersticial' WHEN 0 THEN ' Superficial' END TipoAgua,
+parametrosFisicoQuimicos.Salinidad,
+parametrosFisicoQuimicos.Temperatura,
+parametrosFisicoQuimicos.ConductividadElectrica,
+parametrosFisicoQuimicos.Ph,
+parametrosFisicoQuimicos.PotencialRedox,
+parametrosFisicoQuimicos.Profundidad,
+parametrosFisicoQuimicos.Observaciones
+
+
+from
+SITIOS_ParametrosFisicoQuimicos parametrosFisicoQuimicos
+
+JOIN SITIOS_Sitio sitio ON sitio.SitioID=parametrosFisicoQuimicos.SitioID
+JOIN UPM_MallaPuntos upmMala ON upmMala.UPMID=parametrosFisicoQuimicos.UPMID
+
+GROUP BY
+parametrosFisicoQuimicos.UPMID,
+parametrosFisicoQuimicos.SitioID,
+parametrosFisicoQuimicos.ParametrosFQID
+ORDER BY
+parametrosFisicoQuimicos.UPMID

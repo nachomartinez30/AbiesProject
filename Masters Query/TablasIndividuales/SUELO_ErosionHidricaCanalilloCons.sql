@@ -1,0 +1,28 @@
+SELECT
+erosionHidricaCanalillo.UPMID,
+erosionHidricaCanalillo.SitioID,
+erosionHidricaCanalillo.ErosionCanalilloID,
+-- _____________________________________________________________________________________________________________________________________________________________________________________________
+sitio.Sitio,
+upmMala.Estado,
+upmMala.Municipio,
+-- _____________________________________________________________________________________________________________________________________________________________________________________________
+erosionHidricaCanalillo.Medicion,
+erosionHidricaCanalillo.Profundidad,
+erosionHidricaCanalillo.Ancho,
+erosionHidricaCanalillo.Distancia,
+erosionHidricaCanalillo.Azimut
+
+
+FROM
+SUELO_ErosionHidricaCanalillo erosionHidricaCanalillo
+
+JOIN SITIOS_Sitio sitio ON sitio.SitioID=erosionHidricaCanalillo.SitioID
+JOIN UPM_MallaPuntos upmMala ON upmMala.UPMID=erosionHidricaCanalillo.UPMID
+
+GROUP BY
+erosionHidricaCanalillo.UPMID,
+erosionHidricaCanalillo.SitioID,
+erosionHidricaCanalillo.ErosionCanalilloID
+ORDER BY
+erosionHidricaCanalillo.UPMID

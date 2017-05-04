@@ -1,0 +1,25 @@
+SELECT
+longitudCanalillo.UPMID,
+longitudCanalillo.SitioID,
+longitudCanalillo.LongitudCanalilloID,
+-- _____________________________________________________________________________________________________________________________________________________________________________________________
+sitio.Sitio,
+upmMala.Estado,
+upmMala.Municipio,
+-- _____________________________________________________________________________________________________________________________________________________________________________________________
+longitudCanalillo.CampoLongitud,
+longitudCanalillo.Longitud
+
+
+FROM
+SUELO_LongitudCanalillo longitudCanalillo
+
+JOIN SITIOS_Sitio sitio ON sitio.SitioID=longitudCanalillo.SitioID
+JOIN UPM_MallaPuntos upmMala ON upmMala.UPMID=longitudCanalillo.UPMID
+
+GROUP BY
+longitudCanalillo.UPMID,
+longitudCanalillo.SitioID,
+longitudCanalillo.LongitudCanalilloID
+ORDER BY
+longitudCanalillo.UPMID

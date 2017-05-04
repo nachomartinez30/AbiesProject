@@ -1,0 +1,24 @@
+SELECT
+longitudMonticulo.UPMID,
+longitudMonticulo.SitioID,
+longitudMonticulo.LongitudMonticuloID,
+-- _____________________________________________________________________________________________________________________________________________________________________________________________
+sitio.Sitio,
+upmMala.Estado,
+upmMala.Municipio,
+-- _____________________________________________________________________________________________________________________________________________________________________________________________
+longitudMonticulo.CampoLongitud,
+longitudMonticulo.Longitud
+
+FROM
+SUELO_LongitudMonticulo longitudMonticulo
+
+JOIN SITIOS_Sitio sitio ON sitio.SitioID=longitudMonticulo.SitioID
+JOIN UPM_MallaPuntos upmMala ON upmMala.UPMID=longitudMonticulo.UPMID
+
+GROUP BY
+longitudMonticulo.UPMID,
+longitudMonticulo.SitioID,
+longitudMonticulo.LongitudMonticuloID
+ORDER BY
+longitudMonticulo.UPMID

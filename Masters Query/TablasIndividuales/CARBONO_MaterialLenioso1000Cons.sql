@@ -1,0 +1,25 @@
+SELECT
+materialLenioso1000.UPMID,
+materialLenioso1000.SitioID,
+materialLenioso1000.MaterialLenioso1000ID,
+-- _____________________________________________________________________________________________________________________________________________________________________________________________
+sitio.Sitio,
+upmMala.Estado,
+upmMala.Municipio,
+-- _____________________________________________________________________________________________________________________________________________________________________________________________
+materialLenioso1000.Transecto,
+materialLenioso1000.Diametro,
+materialLenioso1000.Grado
+
+FROM
+CARBONO_MaterialLenioso1000 materialLenioso1000
+
+JOIN SITIOS_Sitio sitio ON sitio.SitioID=materialLenioso1000.SitioID
+JOIN UPM_MallaPuntos upmMala ON upmMala.UPMID=materialLenioso1000.UPMID
+
+GROUP BY
+materialLenioso1000.UPMID,
+materialLenioso1000.SitioID,
+materialLenioso1000.MaterialLenioso1000ID
+ORDER BY
+materialLenioso1000.UPMID

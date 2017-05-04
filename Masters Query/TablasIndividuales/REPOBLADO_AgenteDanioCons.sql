@@ -1,0 +1,29 @@
+SELECT
+agenteDanioRepoblado.UPMID,
+agenteDanioRepoblado.SitioID,
+agenteDanioRepoblado.RepobladoDanioID,
+-- _____________________________________________________________________________________________________________________________________________________________________________________________
+sitio.Sitio,
+upmMala.Estado,
+upmMala.Municipio,
+-- _____________________________________________________________________________________________________________________________________________________________________________________________
+agenteDanioRepoblado.RepobladoVMID,
+agenteDanioRepoblado.NumeroDanio,
+agenteDanio.Descripcion AS AgenteDanio,
+porcentajeArbolado.Descripcion AS Severidad
+
+FROM
+REPOBLADO_AgenteDanio	agenteDanioRepoblado
+
+JOIN SITIOS_Sitio sitio ON sitio.SitioID=agenteDanioRepoblado.SitioID
+JOIN UPM_MallaPuntos upmMala ON upmMala.UPMID=agenteDanioRepoblado.UPMID
+
+LEFT JOIN CAT_AgenteDanio	agenteDanio ON agenteDanio.AgenteDanioID= agenteDanioRepoblado.AgenteDanioID
+LEFT JOIN CAT_PorcentajeArbolado	porcentajeArbolado ON porcentajeArbolado.PorcentajeArboladoID= agenteDanioRepoblado.SeveridadID
+
+GROUP BY
+agenteDanioRepoblado.UPMID,
+agenteDanioRepoblado.SitioID,
+agenteDanioRepoblado.RepobladoDanioID
+ORDER BY
+agenteDanioRepoblado.UPMID

@@ -1,0 +1,28 @@
+SELECT
+erosionHidricaCarcava.UPMID,
+erosionHidricaCarcava.SitioID,
+erosionHidricaCarcava.ErosionCarcavaID,
+-- _____________________________________________________________________________________________________________________________________________________________________________________________
+sitio.Sitio,
+upmMala.Estado,
+upmMala.Municipio,
+-- _____________________________________________________________________________________________________________________________________________________________________________________________
+erosionHidricaCarcava.Medicion,
+erosionHidricaCarcava.Profundidad,
+erosionHidricaCarcava.Ancho,
+erosionHidricaCarcava.Distancia,
+erosionHidricaCarcava.Azimut
+
+
+FROM
+SUELO_ErosionHidricaCarcava erosionHidricaCarcava
+
+JOIN SITIOS_Sitio sitio ON sitio.SitioID=erosionHidricaCarcava.SitioID
+JOIN UPM_MallaPuntos upmMala ON upmMala.UPMID=erosionHidricaCarcava.UPMID
+
+GROUP BY
+erosionHidricaCarcava.UPMID,
+erosionHidricaCarcava.SitioID,
+erosionHidricaCarcava.ErosionCarcavaID
+ORDER BY
+erosionHidricaCarcava.UPMID
