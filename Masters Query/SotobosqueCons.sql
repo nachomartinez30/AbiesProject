@@ -66,7 +66,7 @@ LEFT JOIN CAT_AgenteDanio danioSotobosque ON danioSotobosque.AgenteDanioID=sotob
 GROUP BY
 sotobosque.UPMID,
 sotobosque.SitioID,
-sotobosque.Soto
+sotobosque.SotoBosqueID
 
 ORDER BY
 sotobosque.UPMID
