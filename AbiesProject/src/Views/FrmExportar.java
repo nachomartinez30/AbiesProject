@@ -62,45 +62,92 @@ public class FrmExportar extends JInternalFrame {
 	public String exportPath;
 
 	private JLabel lblExportando;
+	private JCheckBox chckbxRepoblado;
+	private JCheckBox chckbxSotobosque;
+	private JCheckBox chckbxTodo;
 
 	public FrmExportar(String ruta) {
 		setClosable(true);
 		this.ruta = ruta;
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 450, 336);
 
 		JPanel panel = new JPanel();
 		getContentPane().add(panel, BorderLayout.CENTER);
-		panel.setLayout(null);
 
 		btnExportar = new JButton("Exportar");
+		btnExportar.setBounds(353, 261, 80, 24);
 		btnExportar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				openSaverDialog();
-
+				
 			}
 		});
-		btnExportar.setBounds(353, 237, 80, 24);
-		panel.add(btnExportar);
 
 		pbProgresoExportacion = new JProgressBar();
-		pbProgresoExportacion.setBounds(12, 237, 330, 24);
-		panel.add(pbProgresoExportacion);
+		pbProgresoExportacion.setBounds(12, 261, 330, 24);
 
 		chckbxUpms = new JCheckBox("UPMs");
-		chckbxUpms.setBounds(66, 28, 116, 24);
-		panel.add(chckbxUpms);
+		chckbxUpms.setBounds(91, 113, 116, 24);
 
 		chckbxSitios = new JCheckBox("Sitios");
-		chckbxSitios.setBounds(66, 55, 116, 24);
-		panel.add(chckbxSitios);
+		chckbxSitios.setBounds(91, 140, 116, 24);
 
 		chckbxArbolado = new JCheckBox("Arbolado");
-		chckbxArbolado.setBounds(66, 82, 116, 24);
-		panel.add(chckbxArbolado);
+		chckbxArbolado.setBounds(226, 103, 97, 24);
 
 		lblExportando = new JLabel("Exportando:");
-		lblExportando.setBounds(12, 209, 330, 16);
+		lblExportando.setBounds(12, 233, 330, 16);
+
+		chckbxRepoblado = new JCheckBox("Repoblado");
+		chckbxRepoblado.setBounds(226, 127, 97, 24);
+
+		chckbxSotobosque = new JCheckBox("Sotobosque");
+		chckbxSotobosque.setBounds(226, 151, 97, 24);
+		panel.setLayout(null);
+		panel.add(chckbxRepoblado);
+		panel.add(chckbxSotobosque);
+		panel.add(chckbxUpms);
+		panel.add(chckbxSitios);
+		panel.add(chckbxArbolado);
 		panel.add(lblExportando);
+		panel.add(pbProgresoExportacion);
+		panel.add(btnExportar);
+
+		chckbxTodo = new JCheckBox("Todo");
+		chckbxTodo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (chckbxTodo.isSelected() == true) {
+					chckbxRepoblado.setSelected(true);
+					chckbxSotobosque.setSelected(true);
+					chckbxArbolado.setSelected(true);
+					chckbxSitios.setSelected(true);
+					chckbxUpms.setSelected(true);
+				}
+				if (chckbxTodo.isSelected() == false) {
+					chckbxRepoblado.setSelected(false);
+					chckbxSotobosque.setSelected(false);
+					chckbxArbolado.setSelected(false);
+					chckbxSitios.setSelected(false);
+					chckbxUpms.setSelected(false);
+				}
+			}
+		});
+		chckbxTodo.setBounds(353, 209, 80, 24);
+		panel.add(chckbxTodo);
+
+		JLabel lblTaxonomia = new JLabel("Taxonomia");
+		lblTaxonomia.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTaxonomia.setHorizontalTextPosition(SwingConstants.CENTER);
+		lblTaxonomia.setFont(new Font("Dialog", Font.BOLD | Font.ITALIC, 11));
+		lblTaxonomia.setBounds(226, 78, 97, 16);
+		panel.add(lblTaxonomia);
+		
+		JLabel lblExportacin = new JLabel("Exportaci\u00F3n");
+		lblExportacin.setFont(new Font("Dialog", Font.BOLD, 19));
+		lblExportacin.setHorizontalAlignment(SwingConstants.CENTER);
+		lblExportacin.setHorizontalTextPosition(SwingConstants.CENTER);
+		lblExportacin.setBounds(12, 12, 421, 31);
+		panel.add(lblExportacin);
 
 	}
 
@@ -109,23 +156,24 @@ public class FrmExportar extends JInternalFrame {
 		fcBaseDatos.setDialogTitle("Exportar arbolado");
 		fcBaseDatos.setApproveButtonText("Exportar");
 		FileNameExtensionFilter filtro = new FileNameExtensionFilter("*.csv", "csv");
-		
+
 		fcBaseDatos.setAcceptAllFileFilterUsed(false);
 		fcBaseDatos.setFileFilter(filtro);
 		fcBaseDatos.showOpenDialog(this);
 		try {
 			File f = fcBaseDatos.getSelectedFile();
 			exportPath = f.getAbsolutePath();
-			ProgressExport progresoExportado = new ProgressExport(pbProgresoExportacion, lblExportando, ruta, exportPath,chckbxUpms,chckbxSitios,chckbxArbolado);
-			
+			ProgressExport progresoExportado = new ProgressExport(pbProgresoExportacion, lblExportando, ruta,
+					exportPath, chckbxUpms, chckbxSitios, chckbxArbolado,chckbxSotobosque,chckbxRepoblado,chckbxTodo, btnExportar);
+
 			progresoExportado.addPropertyChangeListener(new PropertyChangeListener() {
-				
+
 				@Override
 				public void propertyChange(PropertyChangeEvent arg0) {
-					if(arg0.getPropertyName().equalsIgnoreCase("progress")){
+					if (arg0.getPropertyName().equalsIgnoreCase("progress")) {
 						setCursor(new Cursor(Cursor.WAIT_CURSOR));
-					}else{
-						if(arg0.getPropertyName().equalsIgnoreCase("state")){
+					} else {
+						if (arg0.getPropertyName().equalsIgnoreCase("state")) {
 							switch ((SwingWorker.StateValue) arg0.getNewValue()) {
 							case DONE:
 								setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -133,20 +181,20 @@ public class FrmExportar extends JInternalFrame {
 							case STARTED:
 								setCursor(new Cursor(Cursor.WAIT_CURSOR));
 								break;
-								case PENDING:
-									break;
+							case PENDING:
+								break;
 							default:
 								break;
 							}
 						}
 					}
-					
+
 				}
 			});
-			
+
 			if (chckbxArbolado.isSelected() == true) {
 				progresoExportado.setArbolado(true);
-				
+
 			}
 			if (chckbxUpms.isSelected() == true) {
 				progresoExportado.setUpms(true);
@@ -154,11 +202,17 @@ public class FrmExportar extends JInternalFrame {
 			if (chckbxSitios.isSelected() == true) {
 				progresoExportado.setSitios(true);
 			}
+			if (chckbxRepoblado.isSelected() == true) {
+				progresoExportado.setRepoblado(true);
+			}
+			if (chckbxSotobosque.isSelected() == true) {
+				progresoExportado.setSotobosque(true);
+			}
+			
 			progresoExportado.execute();
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-
 }

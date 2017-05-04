@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -18,16 +19,18 @@ import Database.ExternalConnection;
 
 public class ProgressExport extends SwingWorker<Integer, String> {
 	JProgressBar barraProgreso;
-	JCheckBox chkupms, chksitios, chkarbolado;
+	JButton btnExportar;
+	JCheckBox chkupms, chksitios, chkarbolado, chksotobosque, chkrepoblado, chktodo;
 	JLabel etiquetaExportacion;
 	String ruta;
 	private Connection baseDatosExterna;
 	private java.sql.Statement sqlExterno;
 	public String exportPath;
-	boolean arbolado = false, upms = false, sitios = false;
+	boolean arbolado = false, upms = false, sitios = false, repoblado = false, sotobosque = false;
 
 	public ProgressExport(JProgressBar barraProgreso, JLabel etiquetaExportacion, String ruta, String exportPath,
-			JCheckBox chkupms, JCheckBox chksitios, JCheckBox chkarbolado) {
+			JCheckBox chkupms, JCheckBox chksitios, JCheckBox chkarbolado, JCheckBox chksotobosque,
+			JCheckBox chkrepoblado, JCheckBox chkTodo, JButton btnExportar) {
 		super();
 		this.barraProgreso = barraProgreso;
 		this.etiquetaExportacion = etiquetaExportacion;
@@ -36,17 +39,19 @@ public class ProgressExport extends SwingWorker<Integer, String> {
 		this.chkupms = chkupms;
 		this.chksitios = chksitios;
 		this.chkarbolado = chkarbolado;
+		this.btnExportar = btnExportar;
+		this.chksotobosque = chksotobosque;
+		this.chkrepoblado = chkrepoblado;
+		this.chktodo = chkTodo;
 	}
 
 	@Override
 	protected Integer doInBackground() throws Exception {
-		getEtiquetaExportacion().setVisible(true);
-		getBarraProgreso().setIndeterminate(true);
-
+		setCargandoComponentesGraficos();
 		if (upms == true) {
 			etiquetaExportacion.setText("Exportando: UPM's...");
 			exportarUPMs(ruta);
-			Thread.sleep(1000);
+			Thread.sleep(800);
 			upms = false;
 		}
 		if (sitios == true) {
@@ -60,14 +65,24 @@ public class ProgressExport extends SwingWorker<Integer, String> {
 			exportarArbolado(ruta);
 			arbolado = false;
 		}
+		if (repoblado == true) {
+			etiquetaExportacion.setText("Exportando: Repoblado...");
+			exportarRepoblado(ruta);
+			repoblado = false;
+		}
+
+		if (sotobosque == true) {
+			etiquetaExportacion.setText("Exportando: Sotobosque...");
+			exportarSotobosque(ruta);
+			sotobosque = false;
+		}
 
 		getBarraProgreso().setIndeterminate(false);
-		chkarbolado.setSelected(false);
-		chksitios.setSelected(false);
-		chkupms.setSelected(false);
+
 		Thread.sleep(500);
 		etiquetaExportacion.setText("Exportando:");
 		JOptionPane.showMessageDialog(null, "Terminó exportacion con exito");
+		btnExportar.setEnabled(true);
 		return 0;
 
 	}
@@ -134,6 +149,22 @@ public class ProgressExport extends SwingWorker<Integer, String> {
 
 	public void setChkarbolado(JCheckBox chkarbolado) {
 		this.chkarbolado = chkarbolado;
+	}
+
+	public boolean isRepoblado() {
+		return repoblado;
+	}
+
+	public void setRepoblado(boolean repoblado) {
+		this.repoblado = repoblado;
+	}
+
+	public boolean isSotobosque() {
+		return sotobosque;
+	}
+
+	public void setSotobosque(boolean sotobosque) {
+		this.sotobosque = sotobosque;
 	}
 
 	public void exportarUPMs(String ruta) {
@@ -427,8 +458,8 @@ public class ProgressExport extends SwingWorker<Integer, String> {
 
 	public void exportarSitios(String ruta) {
 		try {
-			String exportPathUPM = exportPath + "_Sitios" + ".csv";
-			CsvWriter writer = new CsvWriter(new FileWriter(exportPath), ',');
+			String exportPathSitios = exportPath + "_Sitios" + ".csv";
+			CsvWriter writer = new CsvWriter(new FileWriter(exportPathSitios), ',');
 			String query = "SELECT upm.UPMID, upmMalla.Estado, upmMalla.Municipio, CASE upmMalla.ProveedorID WHEN 1 THEN 'DIAAPROY' WHEN 2 THEN 'INYDES' WHEN 3 THEN 'AMAREF' END Proveedor, upm.FechaInicio, upm.FechaFin, upm.Altitud, upm.PendienteRepresentativa, exposicionUPM.Descripcion AS Exposicion, fisiografia.TipoFisiografia AS Fisiografia, upmMalla.Region, sitio.Sitio, sitio.SenialGPS, sitio.GradosLatitud, sitio.MinutosLatitud, sitio.SegundosLatitud, sitio.GradosLongitud, sitio.MinutosLongitud, sitio.SegundosLongitud, sitio.ErrorPresicion, sitio.EvidenciaMuestreo, sitio.Datum, sitio.Azimut, sitio.Distancia, CASE sitio.SitioAccesible WHEN 1 THEN 'SI' WHEN 0 THEN 'NO' END SitioAccesible, tipoInaccesibilidad.Tipo AS TipoInaccesibilidad, tipoInaccesibilidad.Descripcion AS DescripcionInaccesibilidad, sitio.ExplicacionInaccesibilidad, CASE claveSerieV.EsForestal WHEN 1 THEN 'FORESTAL' WHEN 0 THEN 'NO FORESTAL' END CoberturaForestal, CASE sitio.Condicion WHEN 1 THEN 'Primario' WHEN 0 THEN 'Secundario' END Condicion, claveSerieV.TipoVegetacion , faseSucecional.Clave  AS FaseSucecional, CASE sitio.ArbolFuera WHEN 1 THEN 'SI' WHEN 0 THEN 'NO' END ArbolFuera, sitio.CondicionEcotono, sitio.Ecotono, sitio.CondicionPresenteCampo, sitio.Observaciones, sitio.HipsometroBrujula, sitio.CintaClinometroBrujula, sitio.Cuadrante1, sitio.Cuadrante2, sitio.Cuadrante3, sitio.Cuadrante4, sitio.Distancia1, sitio.Distancia2, sitio.Distancia3, sitio.Distancia4 from SITIOS_Sitio sitio LEFT JOIN UPM_UPM upm ON upm.UPMID=sitio.UPMID LEFT JOIN UPM_MallaPuntos upmMalla ON upmMalla.UPMID=upm.UPMID LEFT JOIN CAT_ClaveSerieV claveSerieV ON claveSerieV.ClaveSerieVID = sitio.ClaveSerieV LEFT JOIN CAT_FaseSucecional faseSucecional on faseSucecional.FaseSucecionalID =sitio.FaseSucecional LEFT JOIN CAT_TipoExposicion exposicionUPM ON exposicionUPM.ExposicionID =upm.ExposicionID LEFT JOIN CAT_TipoFisiografia fisiografia ON fisiografia.FisiografiaID=upm.FisiografiaID LEFT JOIN CAT_TipoInaccesibilidad tipoInaccesibilidad ON tipoInaccesibilidad.TipoInaccesibilidadID=sitio.TipoInaccesibilidad GROUP BY sitio.UPMID, sitio.SitioID ORDER BY sitio.UPMID";
 			this.baseDatosExterna = ExternalConnection.getConnection(ruta);
 
@@ -522,7 +553,7 @@ public class ProgressExport extends SwingWorker<Integer, String> {
 					writer.write(rsExterno.getString("ExplicacionInaccesibilidad"));
 					writer.write(rsExterno.getString("CoberturaForestal"));
 					writer.write(rsExterno.getString("Condicion"));
-					writer.write(rsExterno.getString("TipoVegetacion "));
+					writer.write(rsExterno.getString("TipoVegetacion"));
 					writer.write(rsExterno.getString("FaseSucecional"));
 					writer.write(rsExterno.getString("ArbolFuera"));
 					writer.write(rsExterno.getString("CondicionEcotono"));
@@ -542,11 +573,10 @@ public class ProgressExport extends SwingWorker<Integer, String> {
 
 					writer.endRecord();
 				}
-				JOptionPane.showMessageDialog(null, "Se exportó correctamente");
 				writer.close();
 
 			} catch (IOException e) {
-				e.printStackTrace();
+				JOptionPane.showMessageDialog(null, "Error al exportar Sitios\n" + e);
 			}
 
 		} catch (Exception e) {
@@ -556,4 +586,227 @@ public class ProgressExport extends SwingWorker<Integer, String> {
 		}
 	}
 
+	public void exportarRepoblado(String ruta) {
+		try {
+			String exportPathRepoblado = exportPath + "_Repoblado" + ".csv";
+			CsvWriter writer = new CsvWriter(new FileWriter(exportPathRepoblado), ',');
+			String query = "Select upmRepoblado.UPMID, upmMallaRepoblado.Estado, upmMallaRepoblado.Municipio, CASE upmMallaRepoblado.ProveedorID WHEN 1 THEN 'DIAAPROY' WHEN 2 THEN 'INYDES' WHEN 3 THEN 'AMAREF' END Proveedor, upmRepoblado.FechaInicio, upmRepoblado.FechaFin, upmRepoblado.Altitud, upmRepoblado.PendienteRepresentativa, exposicionUPM.Descripcion AS Exposicion, fisiografia.TipoFisiografia AS Fisiografia, sitioRepoblado.Sitio, claveSerieV.TipoVegetacion , faseSucecional.Clave  AS FaseSucecional, CASE sitioRepoblado.ArbolFuera WHEN 1 THEN 'SI' WHEN 0 THEN 'NO' END ArbolFuera, sitioRepoblado.CondicionEcotono, CASE sitioRepoblado.RepobladoFuera WHEN 1 THEN 'SI' WHEN 0 THEN 'NO' END RepobladoFuera, sitioRepoblado.PorcentajeRepoblado, CASE sitioRepoblado.SotobosqueFuera WHEN 1 THEN 'SI' WHEN 0 THEN 'NO' END SotobosqueFuera, sitioRepoblado.PorcentajeSotobosqueFuera, repoblado.Consecutivo, familiaRepoblado.Nombre AS Familia, generoRepoblado.Nombre AS Genero, especieRepoblado.Nombre AS Especie, infraespecieRepoblado.Nombre AS Infraespecie, repoblado.EsColecta, repoblado.NombreComun, repoblado.Frecuencia025150, repoblado.Edad025150, repoblado.Frecuencia151275, repoblado.Edad151275, repoblado.Frecuencia275, repoblado.Edad275, vigorRepoblado.Descripcion AS Vigor, danioRepoblado.Agente AS Danio, repoblado.PorcentajeDanio, repoblado.ClaveColecta FROM  TAXONOMIA_Repoblado repoblado LEFT JOIN SITIOS_Sitio sitioRepoblado ON sitioRepoblado.SitioID=repoblado.SitioID LEFT JOIN UPM_UPM upmRepoblado ON upmRepoblado.UPMID=sitioRepoblado.UPMID LEFT JOIN UPM_MallaPuntos upmMallaRepoblado ON upmMallaRepoblado.UPMID=upmRepoblado.UPMID LEFT JOIN CAT_ClaveSerieV claveSerieV ON claveSerieV.ClaveSerieVID = sitioRepoblado.ClaveSerieV LEFT JOIN CAT_FaseSucecional faseSucecional ON faseSucecional.FaseSucecionalID =sitioRepoblado.FaseSucecional LEFT JOIN CAT_TipoExposicion exposicionUPM ON exposicionUPM.ExposicionID =upmRepoblado.ExposicionID LEFT JOIN CAT_TipoFisiografia fisiografia ON fisiografia.FisiografiaID=upmRepoblado.FisiografiaID LEFT JOIN CAT_FamiliaEspecie familiaRepoblado ON repoblado.FamiliaID = familiaRepoblado.FamiliaID  LEFT JOIN CAT_Genero generoRepoblado ON repoblado.GeneroID = generoRepoblado.GeneroID  LEFT JOIN CAT_Especie especieRepoblado ON repoblado.EspecieID = especieRepoblado.EspecieID  LEFT JOIN CAT_Infraespecie infraespecieRepoblado ON repoblado.InfraespecieID = infraespecieRepoblado.InfraespecieID  LEFT JOIN CAT_TipoVigorSotobosqueRepoblado vigorRepoblado ON vigorRepoblado.VigorID=repoblado.VigorID LEFT JOIN CAT_AgenteDanio danioRepoblado ON danioRepoblado.AgenteDanioID=repoblado.DanioID GROUP BY repoblado.UPMID, repoblado.SitioID, repoblado.RepobladoID ORDER BY repoblado.UPMID";
+			this.baseDatosExterna = ExternalConnection.getConnection(ruta);
+
+			// before we open the file check to see if it already exists
+
+			try {
+				// use FileWriter constructor that specifies open for appending
+
+				writer.write("UPMID");
+				writer.write("Estado");
+				writer.write("Municipio");
+				writer.write("Proveedor");
+				writer.write("FechaInicio");
+				writer.write("FechaFin");
+				writer.write("Altitud");
+				writer.write("PendienteRepresentativa");
+				writer.write("Exposicion");
+				writer.write("Fisiografia");
+				writer.write("Sitio");
+				writer.write("TipoVegetacion ");
+				writer.write("FaseSucecional");
+				writer.write("ArbolFuera");
+				writer.write("CondicionEcotono");
+				writer.write("RepobladoFuera");
+				writer.write("PorcentajeRepoblado");
+				writer.write("SotobosqueFuera");
+				writer.write("PorcentajeSotobosqueFuera");
+				writer.write("Consecutivo");
+				writer.write("Familia");
+				writer.write("Genero");
+				writer.write("Especie");
+				writer.write("Infraespecie");
+				writer.write("EsColecta");
+				writer.write("NombreComun");
+				writer.write("Frecuencia025150");
+				writer.write("Edad025150");
+				writer.write("Frecuencia151275");
+				writer.write("Edad151275");
+				writer.write("Frecuencia275");
+				writer.write("Edad275");
+				writer.write("Vigor");
+				writer.write("Danio");
+				writer.write("PorcentajeDanio");
+				writer.write("ClaveColecta");
+
+				writer.endRecord();
+
+				sqlExterno = baseDatosExterna.createStatement();
+				ResultSet rsExterno = sqlExterno.executeQuery(query);
+
+				while (rsExterno.next()) {
+
+					writer.write(rsExterno.getString("UPMID"));
+					writer.write(rsExterno.getString("Estado"));
+					writer.write(rsExterno.getString("Municipio"));
+					writer.write(rsExterno.getString("Proveedor"));
+					writer.write(rsExterno.getString("FechaInicio"));
+					writer.write(rsExterno.getString("FechaFin"));
+					writer.write(rsExterno.getString("Altitud"));
+					writer.write(rsExterno.getString("PendienteRepresentativa"));
+					writer.write(rsExterno.getString("Exposicion"));
+					writer.write(rsExterno.getString("Fisiografia"));
+					writer.write(rsExterno.getString("Sitio"));
+					writer.write(rsExterno.getString("TipoVegetacion"));
+					writer.write(rsExterno.getString("FaseSucecional"));
+					writer.write(rsExterno.getString("ArbolFuera"));
+					writer.write(rsExterno.getString("CondicionEcotono"));
+					writer.write(rsExterno.getString("RepobladoFuera"));
+					writer.write(rsExterno.getString("PorcentajeRepoblado"));
+					writer.write(rsExterno.getString("SotobosqueFuera"));
+					writer.write(rsExterno.getString("PorcentajeSotobosqueFuera"));
+					writer.write(rsExterno.getString("Consecutivo"));
+					writer.write(rsExterno.getString("Familia"));
+					writer.write(rsExterno.getString("Genero"));
+					writer.write(rsExterno.getString("Especie"));
+					writer.write(rsExterno.getString("Infraespecie"));
+					writer.write(rsExterno.getString("EsColecta"));
+					writer.write(rsExterno.getString("NombreComun"));
+					writer.write(rsExterno.getString("Frecuencia025150"));
+					writer.write(rsExterno.getString("Edad025150"));
+					writer.write(rsExterno.getString("Frecuencia151275"));
+					writer.write(rsExterno.getString("Edad151275"));
+					writer.write(rsExterno.getString("Frecuencia275"));
+					writer.write(rsExterno.getString("Edad275"));
+					writer.write(rsExterno.getString("Vigor"));
+					writer.write(rsExterno.getString("Danio"));
+					writer.write(rsExterno.getString("PorcentajeDanio"));
+					writer.write(rsExterno.getString("ClaveColecta"));
+
+					writer.endRecord();
+				}
+
+				writer.close();
+
+			} catch (IOException e) {
+				JOptionPane.showMessageDialog(null, "Error al exportar Repoblado\n" + e);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			// JOptionPane.showMessageDialog(null, "El archivo que intenta
+			// importar no es una base de datos balida" + e);
+		}
+	}
+
+	public void exportarSotobosque(String ruta) {
+		try {
+			String exportPathSotobosque = exportPath + "_Sotobosque" + ".csv";
+			CsvWriter writer = new CsvWriter(new FileWriter(exportPathSotobosque), ',');
+			String query = "Select upmSotobosque.UPMID, upmMallaSotobosque.Estado, upmMallaSotobosque.Municipio, CASE upmMallaSotobosque.ProveedorID WHEN 1 THEN 'DIAAPROY' WHEN 2 THEN 'INYDES' WHEN 3 THEN 'AMAREF' END Proveedor, upmSotobosque.FechaInicio, upmSotobosque.FechaFin, upmSotobosque.Altitud, upmSotobosque.PendienteRepresentativa, exposicionUPMSotobosque.Descripcion AS Exposicion, fisiografiaSotobosque.TipoFisiografia AS Fisiografia, sitioSotobosque.Sitio, claveSerieVSotobosque.TipoVegetacion , faseSucecionalSotobosque.Clave  AS FaseSucecional, CASE sitioSotobosque.ArbolFuera WHEN 1 THEN 'SI' WHEN 0 THEN 'NO' END ArbolFuera, sitioSotobosque.CondicionEcotono, CASE sitioSotobosque.SotobosqueFuera WHEN 1 THEN 'SI' WHEN 0 THEN 'NO' END SotobosqueFuera, sitioSotobosque.PorcentajeSotobosqueFuera, sotobosque.Consecutivo, familiaSotobosque.Nombre AS Familia, generoSotobosque.Nombre AS Genero, especieSotobosque.Nombre AS Especie, infraespecieSotobosque.Nombre AS Infraespecie, sotobosque.EsColecta, sotobosque.NombreComun, sotobosque.Frecuencia025150, sotobosque.Cobertura025150, sotobosque.Frecuencia151275, sotobosque.Cobertura151275, sotobosque.Frecuencia275, sotobosque.Cobertura275, vigorSotobosque.Descripcion AS Vigor, danioSotobosque.Agente AS Danio, sotobosque.PorcentajeDanio, sotobosque.ClaveColecta FROM  TAXONOMIA_Sotobosque sotobosque LEFT JOIN SITIOS_Sitio sitioSotobosque ON sitioSotobosque.SitioID=sotobosque.SitioID LEFT JOIN UPM_UPM upmSotobosque ON upmSotobosque.UPMID=sitioSotobosque.UPMID LEFT JOIN UPM_MallaPuntos upmMallaSotobosque ON upmMallaSotobosque.UPMID=upmSotobosque.UPMID LEFT JOIN CAT_ClaveSerieV claveSerieVSotobosque ON claveSerieVSotobosque.ClaveSerieVID = sitioSotobosque.ClaveSerieV LEFT JOIN CAT_FaseSucecional faseSucecionalSotobosque ON faseSucecionalSotobosque.FaseSucecionalID =sitioSotobosque.FaseSucecional LEFT JOIN CAT_TipoExposicion exposicionUPMSotobosque ON exposicionUPMSotobosque.ExposicionID =upmSotobosque.ExposicionID LEFT JOIN CAT_TipoFisiografia fisiografiaSotobosque ON fisiografiaSotobosque.FisiografiaID=upmSotobosque.FisiografiaID LEFT JOIN CAT_FamiliaEspecie familiaSotobosque ON sotobosque.FamiliaID = familiaSotobosque.FamiliaID  LEFT JOIN CAT_Genero generoSotobosque ON sotobosque.GeneroID = generoSotobosque.GeneroID  LEFT JOIN CAT_Especie especieSotobosque ON sotobosque.EspecieID = especieSotobosque.EspecieID  LEFT JOIN CAT_Infraespecie infraespecieSotobosque ON sotobosque.InfraespecieID = infraespecieSotobosque.InfraespecieID  LEFT JOIN CAT_TipoVigorSotobosqueRepoblado vigorSotobosque ON vigorSotobosque.VigorID=sotobosque.VigorID LEFT JOIN CAT_AgenteDanio danioSotobosque ON danioSotobosque.AgenteDanioID=sotobosque.DanioID GROUP BY sotobosque.UPMID, sotobosque.SitioID, sotobosque.SotoBosqueID ORDER BY sotobosque.UPMID ";
+			this.baseDatosExterna = ExternalConnection.getConnection(ruta);
+
+			// before we open the file check to see if it already exists
+
+			try {
+				// use FileWriter constructor that specifies open for appending
+
+				writer.write("UPMID");
+				writer.write("Estado");
+				writer.write("Municipio");
+				writer.write("Proveedor");
+				writer.write("FechaInicio");
+				writer.write("FechaFin");
+				writer.write("Altitud");
+				writer.write("PendienteRepresentativa");
+				writer.write("Exposicion");
+				writer.write("Fisiografia");
+				writer.write("Sitio");
+				writer.write("TipoVegetacion ");
+				writer.write("FaseSucecional");
+				writer.write("ArbolFuera");
+				writer.write("CondicionEcotono");
+				writer.write("SotobosqueFuera");
+				writer.write("PorcentajeSotobosqueFuera");
+				writer.write("Consecutivo");
+				writer.write("Familia");
+				writer.write("Genero");
+				writer.write("Especie");
+				writer.write("Infraespecie");
+				writer.write("EsColecta");
+				writer.write("NombreComun");
+				writer.write("Frecuencia025150");
+				writer.write("Cobertura025150");
+				writer.write("Frecuencia151275");
+				writer.write("Cobertura151275");
+				writer.write("Frecuencia275");
+				writer.write("Cobertura275");
+				writer.write("Vigor");
+				writer.write("Danio");
+				writer.write("PorcentajeDanio");
+				writer.write("ClaveColecta");
+
+				writer.endRecord();
+
+				sqlExterno = baseDatosExterna.createStatement();
+				ResultSet rsExterno = sqlExterno.executeQuery(query);
+
+				while (rsExterno.next()) {
+					writer.write(rsExterno.getString("UPMID"));
+					writer.write(rsExterno.getString("Estado"));
+					writer.write(rsExterno.getString("Municipio"));
+					writer.write(rsExterno.getString("Proveedor"));
+					writer.write(rsExterno.getString("FechaInicio"));
+					writer.write(rsExterno.getString("FechaFin"));
+					writer.write(rsExterno.getString("Altitud"));
+					writer.write(rsExterno.getString("PendienteRepresentativa"));
+					writer.write(rsExterno.getString("Exposicion"));
+					writer.write(rsExterno.getString("Fisiografia"));
+					writer.write(rsExterno.getString("Sitio"));
+					writer.write(rsExterno.getString("TipoVegetacion"));
+					writer.write(rsExterno.getString("FaseSucecional"));
+					writer.write(rsExterno.getString("ArbolFuera"));
+					writer.write(rsExterno.getString("CondicionEcotono"));
+					writer.write(rsExterno.getString("SotobosqueFuera"));
+					writer.write(rsExterno.getString("PorcentajeSotobosqueFuera"));
+					writer.write(rsExterno.getString("Consecutivo"));
+					writer.write(rsExterno.getString("Familia"));
+					writer.write(rsExterno.getString("Genero"));
+					writer.write(rsExterno.getString("Especie"));
+					writer.write(rsExterno.getString("Infraespecie"));
+					writer.write(rsExterno.getString("EsColecta"));
+					writer.write(rsExterno.getString("NombreComun"));
+					writer.write(rsExterno.getString("Frecuencia025150"));
+					writer.write(rsExterno.getString("Cobertura025150"));
+					writer.write(rsExterno.getString("Frecuencia151275"));
+					writer.write(rsExterno.getString("Cobertura151275"));
+					writer.write(rsExterno.getString("Frecuencia275"));
+					writer.write(rsExterno.getString("Cobertura275"));
+					writer.write(rsExterno.getString("Vigor"));
+					writer.write(rsExterno.getString("Danio"));
+					writer.write(rsExterno.getString("PorcentajeDanio"));
+					writer.write(rsExterno.getString("ClaveColecta"));
+					writer.endRecord();
+				}
+
+				writer.close();
+
+			} catch (IOException e) {
+				JOptionPane.showMessageDialog(null, "Error al exportar Sotobosque\n" + e);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			// JOptionPane.showMessageDialog(null, "El archivo que intenta
+			// importar no es una base de datos balida" + e);
+		}
+	}
+
+	public void setCargandoComponentesGraficos() {
+		getEtiquetaExportacion().setVisible(true);
+		getBarraProgreso().setIndeterminate(true);
+		btnExportar.setEnabled(false);
+		chktodo.setSelected(false);
+		chkrepoblado.setSelected(false);
+		chksotobosque.setSelected(false);
+		chkarbolado.setSelected(false);
+		chksitios.setSelected(false);
+		chkupms.setSelected(false);
+	}
 }
