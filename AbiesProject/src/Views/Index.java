@@ -61,6 +61,7 @@ import java.awt.Toolkit;
 
 public class Index extends JFrame {
 	FrmEstadisticas estadistica;
+	FrmExportar exportar;
 	private boolean temaClaro = false;
 	private JPanel contentPane;
 	private JTable table;
@@ -71,8 +72,6 @@ public class Index extends JFrame {
 
 	private Connection baseDatosConfig;
 	private java.sql.Statement sqlConfig;
-
-	FrmExportar exportar;
 
 	private ExternalConnection externalConnection = new ExternalConnection();
 	private ConfigUserConnection configUserConnection = new ConfigUserConnection();
@@ -130,8 +129,6 @@ public class Index extends JFrame {
 		btnEstadisticas.setEnabled(false);
 		btnEstadisticas.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				// System.out.println(ruta);
-
 				if (estadistica.isVisible() == false) {
 
 					desktopPanelCentral.add(estadistica);
@@ -155,7 +152,24 @@ public class Index extends JFrame {
 		btnExportar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
-				exportar.exportarArbolado(ruta);
+				if (exportar.isVisible() == false) {
+					exportar.setVisible(true);
+					desktopPanelCentral.add(exportar);
+
+					// System.out.println("Arbir exportar");
+				}
+
+				if (exportar.isBackgroundSet()) {
+					exportar.moveToFront();
+				}
+
+				try {
+					exportar.setMaximum(false);
+				} catch (Exception e) {
+					e.printStackTrace();
+					// TODO: handle exception
+				}
+
 			}
 		});
 		btnExportar.setEnabled(false);
@@ -295,7 +309,7 @@ public class Index extends JFrame {
 				externalConnection.getConnection(ruta);
 				enabledLeftPanelButtons();
 				estadistica = new FrmEstadisticas(ruta);
-				exportar = new FrmExportar();
+				exportar = new FrmExportar(ruta);
 				textField.setText(ruta);
 				JOptionPane.showMessageDialog(null, "Se conectó satisfactoriamente");
 
@@ -348,7 +362,7 @@ public class Index extends JFrame {
 			java.sql.Statement st = configConnection.createStatement();
 			st.executeUpdate(query);
 			configConnection.commit();
-			//System.out.println("Actualizado background");
+			// System.out.println("Actualizado background");
 			st.close();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -358,13 +372,13 @@ public class Index extends JFrame {
 
 	public void setConfigLeftPanel(String ruta, int visible) {
 		String query = "UPDATE configUserAbies SET showLeftPanel=" + visible;
-		//System.out.println(query);
+		// System.out.println(query);
 		Connection configConnection = ConfigUserConnection.getConnection(ruta);
 		try {
 			java.sql.Statement st = configConnection.createStatement();
 			st.executeUpdate(query);
 			configConnection.commit();
-			//System.out.println("Actualizado panel");
+			// System.out.println("Actualizado panel");
 			st.close();
 		} catch (Exception e) {
 			e.printStackTrace();

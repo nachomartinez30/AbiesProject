@@ -1,271 +1,98 @@
 package Views;
 
-import java.awt.EventQueue;
 
-import java.awt.EventQueue;
-
-import javax.swing.JInternalFrame;
-import javax.swing.JTabbedPane;
-import java.awt.BorderLayout;
-import javax.swing.JLayeredPane;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.JLabel;
-import javax.swing.JTable;
-import javax.swing.JScrollPane;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.SpringLayout;
-import java.awt.Component;
-import java.awt.Font;
-import java.sql.Connection;
-import java.sql.ResultSet;
-
-import javax.swing.SwingConstants;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
-import com.toedter.components.JSpinField;
-
-import Database.ExternalConnection;
-
-import com.csvreader.CsvWriter;
-import com.toedter.calendar.JDateChooser;
-import javax.swing.JFormattedTextField;
-import javax.swing.JFrame;
-import javax.swing.JTextField;
-import javax.swing.JSeparator;
-import org.eclipse.wb.swing.FocusTraversalOnArray;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFileChooser;
-
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+
+import com.csvreader.CsvWriter;
+
+import Database.ExternalConnection;
+
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableModel;
+
+import org.jfree.data.io.CSV;
+import javax.swing.JPanel;
+import java.awt.BorderLayout;
+import javax.swing.JProgressBar;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class FrmExportar extends JInternalFrame {
-	private JCheckBox chckbxArbolado;
-	private JCheckBox chckbxSitios;
-	private JCheckBox chckbxUpms;
-	private JButton btnExportar;
-	private JProgressBar progressBar;
+
+public class FrmExportarPrueba extends JInternalFrame{
+	private JTable tblArbolado;
 	public String ruta;
+
 	private Connection baseDatosExterna;
 	private java.sql.Statement sqlExterno;
-	public String exportPath;
+	private JCheckBox chckbxUpms;
+	private JCheckBox chckbxSitios;
+	private JCheckBox chckbxArbolado;
 
-	public FrmExportar(String ruta) {
-		setClosable(true);
-		this.ruta = ruta;
-		setBounds(100, 100, 450, 300);
-
+	public FrmExportarPrueba(String ruta) {
+		this.ruta=ruta;
 		JPanel panel = new JPanel();
 		getContentPane().add(panel, BorderLayout.CENTER);
 		panel.setLayout(null);
-
-		btnExportar = new JButton("Exportar");
+		
+		JProgressBar progressBar = new JProgressBar();
+		progressBar.setBounds(12, 234, 283, 24);
+		panel.add(progressBar);
+		
+		JButton btnExportar = new JButton("Exportar");
 		btnExportar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				openSaverDialog();
-				if (chckbxArbolado.isSelected() == true) {
+				if(chckbxArbolado.isSelected()==true){
 					exportarArbolado(ruta);
 				}
-				if (chckbxUpms.isSelected() == true) {
-					exportarUPMs(ruta);
-				}
-
+				
+				
 			}
 		});
-		btnExportar.setBounds(353, 237, 80, 24);
+		btnExportar.setBounds(349, 234, 80, 24);
 		panel.add(btnExportar);
-
-		progressBar = new JProgressBar();
-		progressBar.setBounds(12, 237, 330, 24);
-		panel.add(progressBar);
-
+		
 		chckbxUpms = new JCheckBox("UPMs");
-		chckbxUpms.setBounds(66, 28, 116, 24);
+		chckbxUpms.setBounds(77, 54, 116, 24);
 		panel.add(chckbxUpms);
-
+		
 		chckbxSitios = new JCheckBox("Sitios");
-		chckbxSitios.setBounds(66, 55, 116, 24);
+		chckbxSitios.setBounds(77, 81, 116, 24);
 		panel.add(chckbxSitios);
-
+		
 		chckbxArbolado = new JCheckBox("Arbolado");
-		chckbxArbolado.setBounds(66, 82, 116, 24);
+		chckbxArbolado.setBounds(77, 108, 116, 24);
 		panel.add(chckbxArbolado);
-
+		
 	}
+	
+	public void exportarArbolado(String ruta) {
 
-	public void openSaverDialog() {
 		JFileChooser fcBaseDatos = new JFileChooser();
 		fcBaseDatos.setDialogTitle("Exportar arbolado");
 		fcBaseDatos.setApproveButtonText("Exportar");
 		FileNameExtensionFilter filtro = new FileNameExtensionFilter("*.csv", "csv");
-
+		
 		fcBaseDatos.setAcceptAllFileFilterUsed(false);
 		fcBaseDatos.setFileFilter(filtro);
 		fcBaseDatos.showOpenDialog(this);
+		// fcBaseDatos.showOpenDialog(Main.main);
 		try {
+			
 			File f = fcBaseDatos.getSelectedFile();
-			exportPath = f.getAbsolutePath();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void exportarUPMs(String ruta) {
-
-		try {
-			String exportPathUPM = exportPath + "_UPMs" + ".csv";
-			CsvWriter writer = new CsvWriter(new FileWriter(exportPathUPM), ',');
-			String query = "SELECT  upm.UPMID, CASE upmMalla.A WHEN 1 THEN 'SI' WHEN 2 THEN 'NO' END A, CASE upmMalla.B WHEN 1 THEN 'SI' WHEN 2 THEN 'NO' END B, CASE upmMalla.C WHEN 1 THEN 'SI' WHEN 2 THEN 'NO' END C, CASE upmMalla.D WHEN 1 THEN 'SI' WHEN 2 THEN 'NO' END D, CASE upmMalla.E WHEN 1 THEN 'SI' WHEN 2 THEN 'NO' END E, CASE upmMalla.F WHEN 1 THEN 'SI' WHEN 2 THEN 'NO' END F, CASE upmMalla.G WHEN 1 THEN 'SI' WHEN 2 THEN 'NO' END G, CASE upmMalla.H WHEN 1 THEN 'SI' WHEN 2 THEN 'NO' END H, upmMalla.Estado, upmMalla.Municipio, upmMalla.Region, CASE upmMalla.ProveedorID WHEN 1 THEN 'DIAAPROY' WHEN 2 THEN 'INYDES' WHEN 3 THEN 'AMAREF' END Proveedor, upm.FechaInicio, upm.FechaFin, upm.Altitud, upm.PendienteRepresentativa, tipoExposicion.Descripcion AS Exposicion, tipoFisiografia.TipoFisiografia AS Fisiografia, upm.Predio, upm.Paraje, tipoTenencia.Descripcion AS TipoTenencia, CASE upm.Accesible WHEN 1 THEN 'SI' WHEN 2 THEN 'NO' END Accesible, upm.GradosLatitud, upm.MinutosLatitud, upm.SegundosLatitud, upm.GradosLongitud, upm.MinutosLongitud, upm.SegundosLongitud, upm.Datum, upm.ErrorPresicion, upm.Azimut, upm.Distancia, upm.TipoInaccesibilidadID, upm.OtroTipoInaccesibilidad, upm.ExplicacionInaccesibilidad, CASE upm.InformacionContacto WHEN 1 THEN 'SI' WHEN 2 THEN 'NO' END HuboContacto, tipoColocacion.Descripcion AS TipoColocacion, sitioTransponder.Especifique, sitioTransponder.Observaciones as Observaciones_Transponder, sitioObservaciones.Observaciones as Observaciones_Sitio, CASE upmContacto.TipoContacto WHEN 1 THEN 'Precencial' WHEN 2 THEN 'Remoto' END TipoContacto, upmContacto.Nombre, upmContacto.Direccion, CASE upmContacto.TipoTelefono WHEN 0 THEN 'N/A' WHEN 1 THEN 'Fijo' WHEN 2 THEN 'Movil' END TipoTelefono, upmContacto.NumeroTelefono, CASE upmContacto.TieneCorreo WHEN 0 THEN 'NO' WHEN 1 THEN 'SI' END TieneCorreo, upmContacto.DireccionCorreo, CASE upmContacto.TieneRadio WHEN 0 THEN 'NO' WHEN 1 THEN 'SI' END TieneRadio, upmContacto.Canal, upmContacto.Frecuencia, upmContacto.Observaciones as Observaciones_contacto  FROM UPM_UPM upm  LEFT JOIN UPM_Contacto upmContacto ON upmContacto.UPMID=upm.UPMID LEFT JOIN SITIOS_Sitio sitio ON sitio.UPMID=upm.UPMID LEFT JOIN SITIOS_Transponder sitioTransponder ON sitioTransponder.SitioID=sitio.SitioID LEFT JOIN SITIOS_Observaciones sitioObservaciones ON sitioObservaciones.SitioID=sitio.SitioID INNER JOIN UPM_MallaPuntos upmMalla ON upmMalla.UPMID=upm.UPMID INNER JOIN UPM_Brigada upmBrigada ON upmBrigada.UPMID=upm.UPMID LEFT JOIN CAT_TipoUPM tipoUPM ON tipoUPM.TipoUPMID=upm.TipoUPMID LEFT JOIN CAT_TipoFisiografia tipoFisiografia ON tipoFisiografia.FisiografiaID=upm.FisiografiaID LEFT JOIN CAT_TipoExposicion tipoExposicion ON tipoExposicion.ExposicionID=upm.ExposicionID LEFT JOIN CAT_TipoTenencia tipoTenencia ON tipoTenencia. TipoTenenciaID=upm.TipoTenenciaID LEFT JOIN CAT_TipoInaccesibilidad tipoInaccesibilidad ON tipoInaccesibilidad.TipoInaccesibilidadID=upm.TipoInaccesibilidadID  JOIN CAT_TipoColocacion tipoColocacion ON tipoColocacion.TipoColocacionID=sitioTransponder.TipoColocacionID GROUP BY upm.UPMID ORDER BY upm.UPMID ";
-			this.baseDatosExterna = ExternalConnection.getConnection(ruta);
-
-			// before we open the file check to see if it already exists
-
-			try {
-				// use FileWriter constructor that specifies open for appending
-				writer.write("UPMID");
-				writer.write("A");
-				writer.write("B");
-				writer.write("C");
-				writer.write("D");
-				writer.write("E");
-				writer.write("F");
-				writer.write("G");
-				writer.write("H");
-				writer.write("Estado");
-				writer.write("Municipio");
-				writer.write("Region");
-				writer.write("Proveedor");
-				writer.write("FechaInicio");
-				writer.write("FechaFin");
-				writer.write("Altitud");
-				writer.write("PendienteRepresentativa");
-				writer.write("Exposicion");
-				writer.write("Fisiografia");
-				writer.write("Predio");
-				writer.write("Paraje");
-				writer.write("TipoTenencia");
-				writer.write("Accesible");
-				writer.write("GradosLatitud");
-				writer.write("MinutosLatitud");
-				writer.write("SegundosLatitud");
-				writer.write("GradosLongitud");
-				writer.write("MinutosLongitud");
-				writer.write("SegundosLongitud");
-				writer.write("Datum");
-				writer.write("ErrorPresicion");
-				writer.write("Azimut");
-				writer.write("Distancia");
-				writer.write("TipoInaccesibilidadID");
-				writer.write("OtroTipoInaccesibilidad");
-				writer.write("ExplicacionInaccesibilidad");
-				writer.write("HuboContacto");
-				writer.write("TipoColocacion");
-				writer.write("Especifique");
-				writer.write("Observaciones_Transponder");
-				writer.write("Observaciones_Sitio");
-				writer.write("TipoContacto");
-				writer.write("Nombre");
-				writer.write("Direccion");
-				writer.write("TipoTelefono");
-				writer.write("NumeroTelefono");
-				writer.write("TieneCorreo");
-				writer.write("DireccionCorreo");
-				writer.write("TieneRadio");
-				writer.write("Canal");
-				writer.write("Frecuencia");
-				writer.write("Observaciones_contacto");
-
-				writer.endRecord();
-
-				sqlExterno = baseDatosExterna.createStatement();
-				ResultSet rsExterno = sqlExterno.executeQuery(query);
-
-				while (rsExterno.next()) {
-					writer.write(rsExterno.getString("UPMID"));
-					writer.write(rsExterno.getString("A"));
-					writer.write(rsExterno.getString("B"));
-					writer.write(rsExterno.getString("C"));
-					writer.write(rsExterno.getString("D"));
-					writer.write(rsExterno.getString("E"));
-					writer.write(rsExterno.getString("F"));
-					writer.write(rsExterno.getString("G"));
-					writer.write(rsExterno.getString("H"));
-					writer.write(rsExterno.getString("Estado"));
-					writer.write(rsExterno.getString("Municipio"));
-					writer.write(rsExterno.getString("Region"));
-					writer.write(rsExterno.getString("Proveedor"));
-					writer.write(rsExterno.getString("FechaInicio"));
-					writer.write(rsExterno.getString("FechaFin"));
-					writer.write(rsExterno.getString("Altitud"));
-					writer.write(rsExterno.getString("PendienteRepresentativa"));
-					writer.write(rsExterno.getString("Exposicion"));
-					writer.write(rsExterno.getString("Fisiografia"));
-					writer.write(rsExterno.getString("Predio"));
-					writer.write(rsExterno.getString("Paraje"));
-					writer.write(rsExterno.getString("TipoTenencia"));
-					writer.write(rsExterno.getString("Accesible"));
-					writer.write(rsExterno.getString("GradosLatitud"));
-					writer.write(rsExterno.getString("MinutosLatitud"));
-					writer.write(rsExterno.getString("SegundosLatitud"));
-					writer.write(rsExterno.getString("GradosLongitud"));
-					writer.write(rsExterno.getString("MinutosLongitud"));
-					writer.write(rsExterno.getString("SegundosLongitud"));
-					writer.write(rsExterno.getString("Datum"));
-					writer.write(rsExterno.getString("ErrorPresicion"));
-					writer.write(rsExterno.getString("Azimut"));
-					writer.write(rsExterno.getString("Distancia"));
-					writer.write(rsExterno.getString("TipoInaccesibilidadID"));
-					writer.write(rsExterno.getString("OtroTipoInaccesibilidad"));
-					writer.write(rsExterno.getString("ExplicacionInaccesibilidad"));
-					writer.write(rsExterno.getString("HuboContacto"));
-					writer.write(rsExterno.getString("TipoColocacion"));
-					writer.write(rsExterno.getString("Especifique"));
-					writer.write(rsExterno.getString("Observaciones_Transponder"));
-					writer.write(rsExterno.getString("Observaciones_Sitio"));
-					writer.write(rsExterno.getString("TipoContacto"));
-					writer.write(rsExterno.getString("Nombre"));
-					writer.write(rsExterno.getString("Direccion"));
-					writer.write(rsExterno.getString("TipoTelefono"));
-					writer.write(rsExterno.getString("NumeroTelefono"));
-					writer.write(rsExterno.getString("TieneCorreo"));
-					writer.write(rsExterno.getString("DireccionCorreo"));
-					writer.write(rsExterno.getString("TieneRadio"));
-					writer.write(rsExterno.getString("Canal"));
-					writer.write(rsExterno.getString("Frecuencia"));
-					writer.write(rsExterno.getString("Observaciones_contacto"));
-
-					writer.endRecord();
-				}
-				JOptionPane.showMessageDialog(null, "Se exportó UPM correctamente");
-				writer.close();
-
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			// JOptionPane.showMessageDialog(null, "El archivo que intenta
-			// importar no es una base de datos balida" + e);
-		}
-	}
-
-	public void exportarArbolado(String ruta) {
-		try {
-
-			String exportPathArbolado = exportPath + "_Arbolado" + ".csv";
-			CsvWriter writer = new CsvWriter(new FileWriter(exportPathArbolado), ',');
-
+			String exportPath = f.getAbsolutePath();
+			exportPath = exportPath + ".csv";
+			CsvWriter writer = new CsvWriter(new FileWriter(exportPath), ',');
 			String query = "SELECT  arbolado.UPMID, arbolado.SitioID, arbolado.ArboladoID, upmMala.Estado, upmMala.Municipio, CASE upmMala.ProveedorID WHEN 1 THEN 'DIAAPROY' WHEN 2 THEN 'INYDES' WHEN 3 THEN 'AMAREF' END Proveedor, upm.FechaInicio, upm.FechaFin, upm.Altitud, upm.PendienteRepresentativa, exposicionUPM.Descripcion AS Exposicion, fisiografia.TipoFisiografia AS Fisiografia, sitio.Sitio, claveSerieV.TipoVegetacion , faseSucecional.Clave  AS FaseSucecional, CASE sitio.ArbolFuera WHEN 1 THEN 'SI' WHEN 0 THEN 'NO' END ArbolFuera, sitio.CondicionEcotono, arbolado.Consecutivo, arbolado.NoIndividuo AS Individuo, arbolado.NoRama AS Rama, arbolado.Azimut, arbolado.Distancia, familia.Nombre AS Familia, genero.Nombre AS Genero, especie.Nombre AS Especie, infraespecie.Nombre AS Infraespecie, arbolado.NombreComun, CASE arbolado.EsSubmuestra WHEN 1 THEN 'SI' WHEN 0 THEN 'NO' END EsSubmuestra, formaVida.Descripcion AS FormaVida, formaFuste.Descripcion AS FormaFuste, condicion.Descripcion AS Condicion, muertoPie.Clave AS TipoMuertoPie, gradoPutrefaccion.Clave AS GradoPutrefaccion, tipoTocon.Clave AS TipoTocon, arbolado.DiametroNormal, arbolado.DiametroBasal, arbolado.AlturaTotal, arbolado.AnguloInclinacion, arbolado.AlturaFusteLimpio, arbolado.AlturaComercial, arbolado.DiametroCopaNS, arbolado.DiametroCopaEO, porcentajeCopaViva.Clave AS ProporcionCopaViva, exposicionLuzCopa.Codigo AS ExposicionLuzCopa, posicionCopa.PosicionCopa, densidadCopa.Clave AS DensidadCopa, muerteRegresiva.Clave AS MuerteRegresiva, transparenciaFollaje.Clave AS TransparenciaFollaje, agenteDanio1.Agente1, agenteDanio1.Severidad1, agenteDanio2.Agente2, agenteDanio2.Severidad2, vigor.Descripcion AS Vigor, nivelVigor.Descripcion AS NivelVigor, arbolado.ClaveColecta  FROM TAXONOMIA_Arbolado arbolado JOIN SITIOS_Sitio sitio ON sitio.SitioID=arbolado.SitioID JOIN UPM_UPM upm ON upm.UPMID=arbolado.UPMID JOIN UPM_MallaPuntos upmMala ON upmMala.UPMID=arbolado.UPMID LEFT JOIN CAT_TipoExposicion exposicionUPM ON exposicionUPM.ExposicionID =upm.ExposicionID LEFT JOIN CAT_TipoFisiografia fisiografia ON fisiografia.FisiografiaID=upm.FisiografiaID LEFT JOIN CAT_ClaveSerieV claveSerieV ON claveSerieV.ClaveSerieVID = sitio.ClaveSerieV LEFT JOIN CAT_FaseSucecional faseSucecional on faseSucecional.FaseSucecionalID =sitio.FaseSucecional LEFT JOIN CAT_FamiliaEspecie familia ON arbolado.FamiliaID = familia.FamiliaID  LEFT JOIN CAT_Genero genero ON arbolado.GeneroID = genero.GeneroID  LEFT JOIN CAT_Especie especie ON arbolado.EspecieID = especie.EspecieID  LEFT JOIN CAT_Infraespecie infraespecie ON arbolado.InfraespecieID = infraespecie.InfraespecieID  LEFT JOIN CAT_TipoFormaVidaArbolado formaVida ON arbolado.FormaVidaID = formaVida.FormaVidaID  LEFT JOIN CAT_TipoFormaFuste formaFuste ON arbolado.FormaFusteID = formaFuste.FormaFusteID  LEFT JOIN CAT_CondicionArbolado condicion ON arbolado.CondicionID = condicion.CondicionID  LEFT JOIN CAT_CondicionMuertoPie muertoPie ON arbolado.MuertoPieID = muertoPie.MuertoPieID  LEFT JOIN CAT_GradoPutrefaccionArbolado gradoPutrefaccion ON arbolado.GradoPutrefaccionID = gradoPutrefaccion.GradoPutrefaccionID  LEFT JOIN CAT_TipoTocon tipoTocon ON arbolado.TipoToconID = tipoTocon.TipoToconID LEFT JOIN CAT_PorcentajeArbolado porcentajeCopaViva ON arbolado.ProporcionCopaVivaID = porcentajeCopaViva.PorcentajeArboladoID  LEFT JOIN CAT_ExposicionLuzCopa exposicionLuzCopa ON arbolado.ExposicionCopaID = exposicionLuzCopa.ExposicionLuzID  LEFT JOIN CAT_PosicionCopa posicionCopa ON arbolado.PosicionCopaID = posicionCopa.PosicionCopaID  LEFT JOIN CAT_PorcentajeArbolado densidadCopa ON arbolado.DensidadCopaID = densidadCopa.PorcentajeArboladoID  LEFT JOIN CAT_PorcentajeArbolado muerteRegresiva ON arbolado.MuerteRegresivaID = muerteRegresiva.PorcentajeArboladoID  LEFT JOIN CAT_PorcentajeArbolado transparenciaFollaje ON arbolado.TransparenciaFollajeID = transparenciaFollaje.PorcentajeArboladoID  LEFT JOIN (         SELECT          agenteDanio.ArboladoID,          ca.Agente AS Agente1,          cp.Clave AS Severidad1         FROM ARBOLADO_DanioSeveridad agenteDanio         LEFT JOIN CAT_AgenteDanio ca ON agenteDanio.AgenteDanioID = ca.AgenteDanioID          LEFT JOIN CAT_PorcentajeArbolado cp ON agenteDanio.SeveridadID = cp.PorcentajeArboladoID          WHERE agenteDanio.NumeroDanio = 1         ) agenteDanio1 ON arbolado.ArboladoID = agenteDanio1.ArboladoID  LEFT JOIN (        SELECT         agenteDanio.ArboladoID,         ca.Agente AS Agente2,         cp.Clave AS Severidad2        FROM ARBOLADO_DanioSeveridad agenteDanio        LEFT JOIN CAT_AgenteDanio ca ON agenteDanio.AgenteDanioID = ca.AgenteDanioID         LEFT JOIN CAT_PorcentajeArbolado cp ON agenteDanio.SeveridadID = cp.PorcentajeArboladoID         WHERE agenteDanio.NumeroDanio = 2        ) agenteDanio2 ON arbolado.ArboladoID = agenteDanio2.ArboladoID LEFT JOIN CAT_TipoVigorArbolado vigor ON arbolado.VigorID = vigor.VigorID LEFT JOIN CAT_NivelVigor nivelVigor ON arbolado.NivelVigorID = nivelVigor.NivelVigorID GROUP BY arbolado.UPMID, arbolado.SitioID, arbolado.ArboladoID ORDER BY arbolado.UPMID";
 			this.baseDatosExterna = ExternalConnection.getConnection(ruta);
 
@@ -273,7 +100,7 @@ public class FrmExportar extends JInternalFrame {
 
 			try {
 				// use FileWriter constructor that specifies open for appending
-
+				
 				writer.write("UPMID");
 				writer.write("SitioID");
 				writer.write("ArboladoID");
@@ -392,9 +219,9 @@ public class FrmExportar extends JInternalFrame {
 					writer.write(rsExterno.getString("ClaveColecta"));
 					writer.endRecord();
 				}
-				JOptionPane.showMessageDialog(null, "Se exportó Arbolado correctamente");
+				JOptionPane.showMessageDialog(null, "Se exportó correctamente");
 				writer.close();
-
+				
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -404,5 +231,13 @@ public class FrmExportar extends JInternalFrame {
 			// JOptionPane.showMessageDialog(null, "El archivo que intenta
 			// importar no es una base de datos balida" + e);
 		}
+	}
+	
+	public String getRuta() {
+		return ruta;
+	}
+
+	public void setRuta(String ruta) {
+		this.ruta = ruta;
 	}
 }
