@@ -17,11 +17,13 @@ import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.SpringLayout;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Font;
 import java.sql.Connection;
 import java.sql.ResultSet;
 
 import javax.swing.SwingConstants;
+import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.toedter.components.JSpinField;
@@ -43,6 +45,8 @@ import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -113,6 +117,33 @@ public class FrmExportar extends JInternalFrame {
 			File f = fcBaseDatos.getSelectedFile();
 			exportPath = f.getAbsolutePath();
 			Progress progresoExportado = new Progress(pbProgresoExportacion, lblExportando, ruta, exportPath,chckbxUpms,chckbxSitios,chckbxArbolado);
+			
+			progresoExportado.addPropertyChangeListener(new PropertyChangeListener() {
+				
+				@Override
+				public void propertyChange(PropertyChangeEvent arg0) {
+					if(arg0.getPropertyName().equalsIgnoreCase("progress")){
+						setCursor(new Cursor(Cursor.WAIT_CURSOR));
+					}else{
+						if(arg0.getPropertyName().equalsIgnoreCase("state")){
+							switch ((SwingWorker.StateValue) arg0.getNewValue()) {
+							case DONE:
+								setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+								break;
+							case STARTED:
+								setCursor(new Cursor(Cursor.WAIT_CURSOR));
+								break;
+								case PENDING:
+									break;
+							default:
+								break;
+							}
+						}
+					}
+					
+				}
+			});
+			
 			if (chckbxArbolado.isSelected() == true) {
 				progresoExportado.setArbolado(true);
 				

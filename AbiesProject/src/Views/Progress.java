@@ -42,14 +42,20 @@ public class Progress extends SwingWorker<Integer, String> {
 		getEtiquetaExportacion().setVisible(true);
 		getBarraProgreso().setIndeterminate(true);
 
+		
 		if (upms == true) {
+			etiquetaExportacion.setText("Exportando: UPM's...");
 			exportarUPMs(ruta);
+			Thread.sleep(1000);
 			upms=false;
 		}
 		if (sitios == true) {
-
+			/*exportarSitios(ruta);*/
+			etiquetaExportacion.setText("Exportando: Sitios...");
+			sitios=false;
 		}
 		if (arbolado == true) {
+			etiquetaExportacion.setText("Exportando: Arbolado...");
 			exportarArbolado(ruta);
 			arbolado=false;
 		}
@@ -58,6 +64,8 @@ public class Progress extends SwingWorker<Integer, String> {
 		chkarbolado.setSelected(false);
 		chksitios.setSelected(false);
 		chkupms.setSelected(false);
+		Thread.sleep(500);
+		etiquetaExportacion.setText("Exportando:");
 		JOptionPane.showMessageDialog(null, "Terminó exportacion con exito");
 		return 0;
 

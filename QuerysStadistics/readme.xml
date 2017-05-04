@@ -2,7 +2,7 @@
   <dontWrapJar>false</dontWrapJar>
   <headerType>gui</headerType>
   <jar>C:\Users\Ignacio\Desktop\AbiesProject\AbiesProject.jar</jar>
-  <outfile>C:\Users\Ignacio\Desktop\AbiesProject\AbiesProject (Beta).exe</outfile>
+  <outfile>C:\Users\Ignacio\Desktop\AbiesProject\Abies Project (Windows)\AbiesProject (Beta).exe</outfile>
   <errTitle></errTitle>
   <cmdLine></cmdLine>
   <chdir></chdir>
