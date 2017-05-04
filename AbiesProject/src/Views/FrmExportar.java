@@ -116,7 +116,7 @@ public class FrmExportar extends JInternalFrame {
 		try {
 			File f = fcBaseDatos.getSelectedFile();
 			exportPath = f.getAbsolutePath();
-			Progress progresoExportado = new Progress(pbProgresoExportacion, lblExportando, ruta, exportPath,chckbxUpms,chckbxSitios,chckbxArbolado);
+			ProgressExport progresoExportado = new ProgressExport(pbProgresoExportacion, lblExportando, ruta, exportPath,chckbxUpms,chckbxSitios,chckbxArbolado);
 			
 			progresoExportado.addPropertyChangeListener(new PropertyChangeListener() {
 				

@@ -16,9 +16,9 @@ import com.csvreader.CsvWriter;
 
 import Database.ExternalConnection;
 
-public class Progress extends SwingWorker<Integer, String> {
+public class ProgressExport extends SwingWorker<Integer, String> {
 	JProgressBar barraProgreso;
-	JCheckBox chkupms,chksitios,chkarbolado;
+	JCheckBox chkupms, chksitios, chkarbolado;
 	JLabel etiquetaExportacion;
 	String ruta;
 	private Connection baseDatosExterna;
@@ -26,15 +26,16 @@ public class Progress extends SwingWorker<Integer, String> {
 	public String exportPath;
 	boolean arbolado = false, upms = false, sitios = false;
 
-	public Progress(JProgressBar barraProgreso, JLabel etiquetaExportacion, String ruta, String exportPath,JCheckBox chkupms,JCheckBox chksitios,JCheckBox chkarbolado) {
+	public ProgressExport(JProgressBar barraProgreso, JLabel etiquetaExportacion, String ruta, String exportPath,
+			JCheckBox chkupms, JCheckBox chksitios, JCheckBox chkarbolado) {
 		super();
 		this.barraProgreso = barraProgreso;
 		this.etiquetaExportacion = etiquetaExportacion;
 		this.ruta = ruta;
 		this.exportPath = exportPath;
-		this.chkupms=chkupms;
-		this.chksitios=chksitios;
-		this.chkarbolado=chkarbolado;
+		this.chkupms = chkupms;
+		this.chksitios = chksitios;
+		this.chkarbolado = chkarbolado;
 	}
 
 	@Override
@@ -42,24 +43,24 @@ public class Progress extends SwingWorker<Integer, String> {
 		getEtiquetaExportacion().setVisible(true);
 		getBarraProgreso().setIndeterminate(true);
 
-		
 		if (upms == true) {
 			etiquetaExportacion.setText("Exportando: UPM's...");
 			exportarUPMs(ruta);
 			Thread.sleep(1000);
-			upms=false;
+			upms = false;
 		}
 		if (sitios == true) {
-			/*exportarSitios(ruta);*/
+			/* exportarSitios(ruta); */
 			etiquetaExportacion.setText("Exportando: Sitios...");
-			sitios=false;
+			exportarSitios(ruta);
+			sitios = false;
 		}
 		if (arbolado == true) {
 			etiquetaExportacion.setText("Exportando: Arbolado...");
 			exportarArbolado(ruta);
-			arbolado=false;
+			arbolado = false;
 		}
-		
+
 		getBarraProgreso().setIndeterminate(false);
 		chkarbolado.setSelected(false);
 		chksitios.setSelected(false);
@@ -110,7 +111,7 @@ public class Progress extends SwingWorker<Integer, String> {
 	public void setSitios(boolean sitios) {
 		this.sitios = sitios;
 	}
-	
+
 	public JCheckBox getChkupms() {
 		return chkupms;
 	}
@@ -136,7 +137,7 @@ public class Progress extends SwingWorker<Integer, String> {
 	}
 
 	public void exportarUPMs(String ruta) {
-		
+
 		try {
 			String exportPathUPM = exportPath + "_UPMs" + ".csv";
 			CsvWriter writer = new CsvWriter(new FileWriter(exportPathUPM), ',');
@@ -261,11 +262,11 @@ public class Progress extends SwingWorker<Integer, String> {
 
 					writer.endRecord();
 				}
-				
+
 				writer.close();
-				
+
 			} catch (IOException e) {
-				JOptionPane.showMessageDialog(null, "Error al exportar UPM's\n"+e);
+				JOptionPane.showMessageDialog(null, "Error al exportar UPM's\n" + e);
 			}
 
 		} catch (Exception e) {
@@ -273,7 +274,7 @@ public class Progress extends SwingWorker<Integer, String> {
 			// JOptionPane.showMessageDialog(null, "El archivo que intenta
 			// importar no es una base de datos balida" + e);
 		}
-		
+
 	}
 
 	public void exportarArbolado(String ruta) {
@@ -408,12 +409,11 @@ public class Progress extends SwingWorker<Integer, String> {
 					writer.write(rsExterno.getString("ClaveColecta"));
 					writer.endRecord();
 				}
-				
+
 				writer.close();
-				
 
 			} catch (IOException e) {
-				JOptionPane.showMessageDialog(null, "Error al exportar Arbolado\n"+e);
+				JOptionPane.showMessageDialog(null, "Error al exportar Arbolado\n" + e);
 
 			}
 
@@ -422,7 +422,138 @@ public class Progress extends SwingWorker<Integer, String> {
 			// JOptionPane.showMessageDialog(null, "El archivo que intenta
 			// importar no es una base de datos balida" + e);
 		}
-		
+
+	}
+
+	public void exportarSitios(String ruta) {
+		try {
+			String exportPathUPM = exportPath + "_Sitios" + ".csv";
+			CsvWriter writer = new CsvWriter(new FileWriter(exportPath), ',');
+			String query = "SELECT upm.UPMID, upmMalla.Estado, upmMalla.Municipio, CASE upmMalla.ProveedorID WHEN 1 THEN 'DIAAPROY' WHEN 2 THEN 'INYDES' WHEN 3 THEN 'AMAREF' END Proveedor, upm.FechaInicio, upm.FechaFin, upm.Altitud, upm.PendienteRepresentativa, exposicionUPM.Descripcion AS Exposicion, fisiografia.TipoFisiografia AS Fisiografia, upmMalla.Region, sitio.Sitio, sitio.SenialGPS, sitio.GradosLatitud, sitio.MinutosLatitud, sitio.SegundosLatitud, sitio.GradosLongitud, sitio.MinutosLongitud, sitio.SegundosLongitud, sitio.ErrorPresicion, sitio.EvidenciaMuestreo, sitio.Datum, sitio.Azimut, sitio.Distancia, CASE sitio.SitioAccesible WHEN 1 THEN 'SI' WHEN 0 THEN 'NO' END SitioAccesible, tipoInaccesibilidad.Tipo AS TipoInaccesibilidad, tipoInaccesibilidad.Descripcion AS DescripcionInaccesibilidad, sitio.ExplicacionInaccesibilidad, CASE claveSerieV.EsForestal WHEN 1 THEN 'FORESTAL' WHEN 0 THEN 'NO FORESTAL' END CoberturaForestal, CASE sitio.Condicion WHEN 1 THEN 'Primario' WHEN 0 THEN 'Secundario' END Condicion, claveSerieV.TipoVegetacion , faseSucecional.Clave  AS FaseSucecional, CASE sitio.ArbolFuera WHEN 1 THEN 'SI' WHEN 0 THEN 'NO' END ArbolFuera, sitio.CondicionEcotono, sitio.Ecotono, sitio.CondicionPresenteCampo, sitio.Observaciones, sitio.HipsometroBrujula, sitio.CintaClinometroBrujula, sitio.Cuadrante1, sitio.Cuadrante2, sitio.Cuadrante3, sitio.Cuadrante4, sitio.Distancia1, sitio.Distancia2, sitio.Distancia3, sitio.Distancia4 from SITIOS_Sitio sitio LEFT JOIN UPM_UPM upm ON upm.UPMID=sitio.UPMID LEFT JOIN UPM_MallaPuntos upmMalla ON upmMalla.UPMID=upm.UPMID LEFT JOIN CAT_ClaveSerieV claveSerieV ON claveSerieV.ClaveSerieVID = sitio.ClaveSerieV LEFT JOIN CAT_FaseSucecional faseSucecional on faseSucecional.FaseSucecionalID =sitio.FaseSucecional LEFT JOIN CAT_TipoExposicion exposicionUPM ON exposicionUPM.ExposicionID =upm.ExposicionID LEFT JOIN CAT_TipoFisiografia fisiografia ON fisiografia.FisiografiaID=upm.FisiografiaID LEFT JOIN CAT_TipoInaccesibilidad tipoInaccesibilidad ON tipoInaccesibilidad.TipoInaccesibilidadID=sitio.TipoInaccesibilidad GROUP BY sitio.UPMID, sitio.SitioID ORDER BY sitio.UPMID";
+			this.baseDatosExterna = ExternalConnection.getConnection(ruta);
+
+			// before we open the file check to see if it already exists
+
+			try {
+				// use FileWriter constructor that specifies open for appending
+
+				writer.write("UPMID");
+				writer.write("Estado");
+				writer.write("Municipio");
+				writer.write("Proveedor");
+				writer.write("FechaInicio");
+				writer.write("FechaFin");
+				writer.write("Altitud");
+				writer.write("PendienteRepresentativa");
+				writer.write("Exposicion");
+				writer.write("Fisiografia");
+				writer.write("Region");
+				writer.write("Sitio");
+				writer.write("SenialGPS");
+				writer.write("GradosLatitud");
+				writer.write("MinutosLatitud");
+				writer.write("SegundosLatitud");
+				writer.write("GradosLongitud");
+				writer.write("MinutosLongitud");
+				writer.write("SegundosLongitud");
+				writer.write("ErrorPresicion");
+				writer.write("EvidenciaMuestreo");
+				writer.write("Datum");
+				writer.write("Azimut");
+				writer.write("Distancia");
+				writer.write("SitioAccesible");
+				writer.write("TipoInaccesibilidad");
+				writer.write("DescripcionInaccesibilidad");
+				writer.write("ExplicacionInaccesibilidad");
+				writer.write("CoberturaForestal");
+				writer.write("Condicion");
+				writer.write("TipoVegetacion ");
+				writer.write("FaseSucecional");
+				writer.write("ArbolFuera");
+				writer.write("CondicionEcotono");
+				writer.write("Ecotono");
+				writer.write("CondicionPresenteCampo");
+				writer.write("Observaciones");
+				writer.write("HipsometroBrujula");
+				writer.write("CintaClinometroBrujula");
+				writer.write("Cuadrante1");
+				writer.write("Cuadrante2");
+				writer.write("Cuadrante3");
+				writer.write("Cuadrante4");
+				writer.write("Distancia1");
+				writer.write("Distancia2");
+				writer.write("Distancia3");
+				writer.write("Distancia");
+
+				writer.endRecord();
+
+				sqlExterno = baseDatosExterna.createStatement();
+				ResultSet rsExterno = sqlExterno.executeQuery(query);
+
+				while (rsExterno.next()) {
+
+					writer.write(rsExterno.getString("UPMID"));
+					writer.write(rsExterno.getString("Estado"));
+					writer.write(rsExterno.getString("Municipio"));
+					writer.write(rsExterno.getString("Proveedor"));
+					writer.write(rsExterno.getString("FechaInicio"));
+					writer.write(rsExterno.getString("FechaFin"));
+					writer.write(rsExterno.getString("Altitud"));
+					writer.write(rsExterno.getString("PendienteRepresentativa"));
+					writer.write(rsExterno.getString("Exposicion"));
+					writer.write(rsExterno.getString("Fisiografia"));
+					writer.write(rsExterno.getString("Region"));
+					writer.write(rsExterno.getString("Sitio"));
+					writer.write(rsExterno.getString("SenialGPS"));
+					writer.write(rsExterno.getString("GradosLatitud"));
+					writer.write(rsExterno.getString("MinutosLatitud"));
+					writer.write(rsExterno.getString("SegundosLatitud"));
+					writer.write(rsExterno.getString("GradosLongitud"));
+					writer.write(rsExterno.getString("MinutosLongitud"));
+					writer.write(rsExterno.getString("SegundosLongitud"));
+					writer.write(rsExterno.getString("ErrorPresicion"));
+					writer.write(rsExterno.getString("EvidenciaMuestreo"));
+					writer.write(rsExterno.getString("Datum"));
+					writer.write(rsExterno.getString("Azimut"));
+					writer.write(rsExterno.getString("Distancia"));
+					writer.write(rsExterno.getString("SitioAccesible"));
+					writer.write(rsExterno.getString("TipoInaccesibilidad"));
+					writer.write(rsExterno.getString("DescripcionInaccesibilidad"));
+					writer.write(rsExterno.getString("ExplicacionInaccesibilidad"));
+					writer.write(rsExterno.getString("CoberturaForestal"));
+					writer.write(rsExterno.getString("Condicion"));
+					writer.write(rsExterno.getString("TipoVegetacion "));
+					writer.write(rsExterno.getString("FaseSucecional"));
+					writer.write(rsExterno.getString("ArbolFuera"));
+					writer.write(rsExterno.getString("CondicionEcotono"));
+					writer.write(rsExterno.getString("Ecotono"));
+					writer.write(rsExterno.getString("CondicionPresenteCampo"));
+					writer.write(rsExterno.getString("Observaciones"));
+					writer.write(rsExterno.getString("HipsometroBrujula"));
+					writer.write(rsExterno.getString("CintaClinometroBrujula"));
+					writer.write(rsExterno.getString("Cuadrante1"));
+					writer.write(rsExterno.getString("Cuadrante2"));
+					writer.write(rsExterno.getString("Cuadrante3"));
+					writer.write(rsExterno.getString("Cuadrante4"));
+					writer.write(rsExterno.getString("Distancia1"));
+					writer.write(rsExterno.getString("Distancia2"));
+					writer.write(rsExterno.getString("Distancia3"));
+					writer.write(rsExterno.getString("Distancia"));
+
+					writer.endRecord();
+				}
+				JOptionPane.showMessageDialog(null, "Se exportó correctamente");
+				writer.close();
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			// JOptionPane.showMessageDialog(null, "El archivo que intenta
+			// importar no es una base de datos balida" + e);
+		}
 	}
 
 }
