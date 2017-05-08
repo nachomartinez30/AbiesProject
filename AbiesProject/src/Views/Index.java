@@ -83,6 +83,7 @@ public class Index extends JFrame {
 	private JLabel lblBackground;
 	private JPanel panelIzquierdo;
 	private JCheckBoxMenuItem chckboxOcultarPanelIzquierdo;
+	private JButton btnInfPorUpm;
 
 	/**
 	 * Launch the application.
@@ -173,17 +174,32 @@ public class Index extends JFrame {
 			}
 		});
 		btnExportar.setEnabled(false);
+		
+		btnInfPorUpm = new JButton("Inf. por UPM");
 		GroupLayout gl_panelIzquierdo = new GroupLayout(panelIzquierdo);
-		gl_panelIzquierdo.setHorizontalGroup(gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
+		gl_panelIzquierdo.setHorizontalGroup(
+			gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panelIzquierdo.createSequentialGroup()
-						.addGroup(gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
-								.addComponent(btnEstadisticas, GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
-								.addGroup(Alignment.TRAILING, gl_panelIzquierdo.createSequentialGroup().addGap(1)
-										.addComponent(btnExportar, GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)))
-						.addContainerGap()));
-		gl_panelIzquierdo.setVerticalGroup(gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panelIzquierdo.createSequentialGroup().addGap(30).addComponent(btnEstadisticas).addGap(18)
-						.addComponent(btnExportar).addContainerGap(665, Short.MAX_VALUE)));
+					.addGroup(gl_panelIzquierdo.createParallelGroup(Alignment.TRAILING)
+						.addComponent(btnEstadisticas, GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
+						.addGroup(Alignment.LEADING, gl_panelIzquierdo.createSequentialGroup()
+							.addGap(1)
+							.addGroup(gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
+								.addComponent(btnInfPorUpm, GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
+								.addComponent(btnExportar, GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE))))
+					.addContainerGap())
+		);
+		gl_panelIzquierdo.setVerticalGroup(
+			gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panelIzquierdo.createSequentialGroup()
+					.addGap(30)
+					.addComponent(btnEstadisticas)
+					.addGap(18)
+					.addComponent(btnExportar)
+					.addGap(75)
+					.addComponent(btnInfPorUpm)
+					.addContainerGap(574, Short.MAX_VALUE))
+		);
 		panelIzquierdo.setLayout(gl_panelIzquierdo);
 
 		JPanel panelSuperior = new JPanel();
