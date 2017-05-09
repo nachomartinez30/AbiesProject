@@ -31,18 +31,19 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartFrame;
 import org.jfree.chart.ChartPanel;
+import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.block.BlockParams;
+import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.data.general.DefaultPieDataset;
 
 import Database.ExternalConnection;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+
 import javax.swing.LayoutStyle.ComponentPlacement;
 import java.awt.Color;
 import java.awt.ComponentOrientation;
@@ -64,8 +65,6 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 	private JTextField txtIndividuosTotales;
 	private JTable tblVegetacionPorSitio;
 	private JTable tblEspeciesPorSitio;
-	private JPanel panelDiametrosNormales;
-	private JPanel panelAlturasTotales;
 	private JLabel lblUPM;
 	private JList<String> lsUPM;
 	Vector<String> upmTotal = new Vector<String>();
@@ -76,11 +75,13 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 
 	public DefaultTableModel vegetacionPorSitioModel = new DefaultTableModel(null, vegetacionPorSitioColumnName);
 	public DefaultTableModel especiesPorSitioModel = new DefaultTableModel(null, especiesPorSitioColumnName);
+	private JPanel panelDiametrosNormales;
 
 	public FrmInformacionPorUPM(String ruta) {
+
 		this.ruta = ruta;
 		setUpmsTotales(ruta);
-		setBounds(100, 100, 979, 895);
+		setBounds(100, 100, 1060, 895);
 
 		JScrollPane scrollPane = new JScrollPane();
 		getContentPane().add(scrollPane, BorderLayout.WEST);
@@ -100,23 +101,13 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 					getIndividuosTotales(ruta, upmInt);
 					getInformacionUPM(ruta, upmInt);
 					getvegetacionPorSitio(ruta, upmInt);
-					getespeciesPorSitio(ruta, upmInt);
+					getEspeciesPorSitio(ruta, upmInt);
+					charNuevo();
 				}
 
 			}
 		});
 		lsUPM.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		lsUPM.setModel(new AbstractListModel() {
-			String[] values = new String[] {};
-
-			public int getSize() {
-				return values.length;
-			}
-
-			public Object getElementAt(int index) {
-				return values[index];
-			}
-		});
 		scrollPane.setViewportView(lsUPM);
 
 		JLabel lblUpms = new JLabel("UPMS");
@@ -128,9 +119,11 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		scrollPane.setRowHeaderView(panel_1);
 
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.setAutoscrolls(true);
 		getContentPane().add(tabbedPane, BorderLayout.CENTER);
 
 		JLayeredPane layeredPane_1 = new JLayeredPane();
+		layeredPane_1.setAutoscrolls(true);
 		tabbedPane.addTab("Arbolado", null, layeredPane_1, null);
 
 		JLabel lblNewLabel_2 = new JLabel("No. Registros totales:");
@@ -182,10 +175,6 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		lblEspeciesPorSitio.setFont(new Font("Dialog", Font.BOLD, 16));
 		lblEspeciesPorSitio.setHorizontalAlignment(SwingConstants.CENTER);
 
-		panelDiametrosNormales = new JPanel();
-
-		panelAlturasTotales = new JPanel();
-
 		JLabel lblDiametrosNormales = new JLabel("Diametros normales");
 		lblDiametrosNormales.setHorizontalAlignment(SwingConstants.CENTER);
 		lblDiametrosNormales.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -193,6 +182,10 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		JLabel lblAlturasTotales = new JLabel("Alturas totales");
 		lblAlturasTotales.setHorizontalTextPosition(SwingConstants.CENTER);
 		lblAlturasTotales.setHorizontalAlignment(SwingConstants.CENTER);
+
+		panelDiametrosNormales = new JPanel();
+
+		JPanel panel_2 = new JPanel();
 		GroupLayout gl_layeredPane_1 = new GroupLayout(layeredPane_1);
 		gl_layeredPane_1.setHorizontalGroup(gl_layeredPane_1.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_layeredPane_1.createSequentialGroup().addGap(151)
@@ -205,19 +198,24 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 						.addGap(6)
 						.addComponent(txtIndividuosTotales, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE))
 				.addGroup(gl_layeredPane_1.createSequentialGroup().addGap(27)
-						.addComponent(lblTipoDeVetacion, GroupLayout.DEFAULT_SIZE, 869, Short.MAX_VALUE).addGap(2))
+						.addComponent(lblTipoDeVetacion, GroupLayout.DEFAULT_SIZE, 725, Short.MAX_VALUE).addGap(32))
 				.addGroup(gl_layeredPane_1.createSequentialGroup().addGap(27)
-						.addComponent(scrollPane_1, GroupLayout.DEFAULT_SIZE, 869, Short.MAX_VALUE).addGap(2))
+						.addComponent(scrollPane_1, GroupLayout.DEFAULT_SIZE, 725, Short.MAX_VALUE).addGap(32))
+				.addGroup(gl_layeredPane_1.createSequentialGroup().addGap(27).addComponent(lblEspeciesPorSitio,
+						GroupLayout.PREFERRED_SIZE, 715, GroupLayout.PREFERRED_SIZE))
 				.addGroup(gl_layeredPane_1.createSequentialGroup().addGap(27)
-						.addComponent(lblEspeciesPorSitio, GroupLayout.DEFAULT_SIZE, 869, Short.MAX_VALUE).addGap(2))
-				.addGroup(gl_layeredPane_1.createSequentialGroup().addGap(27)
-						.addComponent(scrollPane_2, GroupLayout.DEFAULT_SIZE, 869, Short.MAX_VALUE).addGap(2))
-				.addGroup(gl_layeredPane_1.createSequentialGroup().addGap(27)
-						.addComponent(lblDiametrosNormales, GroupLayout.DEFAULT_SIZE, 404, Short.MAX_VALUE).addGap(51)
-						.addComponent(lblAlturasTotales, GroupLayout.DEFAULT_SIZE, 404, Short.MAX_VALUE).addGap(12))
-				.addGroup(gl_layeredPane_1.createSequentialGroup().addGap(27)
-						.addComponent(panelDiametrosNormales, GroupLayout.DEFAULT_SIZE, 404, Short.MAX_VALUE).addGap(51)
-						.addComponent(panelAlturasTotales, GroupLayout.DEFAULT_SIZE, 404, Short.MAX_VALUE).addGap(12)));
+						.addComponent(scrollPane_2, GroupLayout.DEFAULT_SIZE, 727, Short.MAX_VALUE).addGap(30))
+				.addGroup(Alignment.TRAILING, gl_layeredPane_1.createSequentialGroup().addGap(52)
+						.addGroup(gl_layeredPane_1.createParallelGroup(Alignment.LEADING)
+								.addComponent(lblDiametrosNormales, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
+										Short.MAX_VALUE)
+								.addComponent(panelDiametrosNormales, GroupLayout.DEFAULT_SIZE, 347, Short.MAX_VALUE))
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addGroup(gl_layeredPane_1.createParallelGroup(Alignment.TRAILING)
+								.addComponent(panel_2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
+										Short.MAX_VALUE)
+								.addComponent(lblAlturasTotales, GroupLayout.DEFAULT_SIZE, 343, Short.MAX_VALUE))
+						.addGap(30)));
 		gl_layeredPane_1.setVerticalGroup(gl_layeredPane_1.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_layeredPane_1.createSequentialGroup().addGap(12)
 						.addGroup(gl_layeredPane_1.createParallelGroup(Alignment.LEADING)
@@ -230,28 +228,23 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 										GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 						.addGap(12)
 						.addComponent(lblTipoDeVetacion, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
-						.addGap(8).addComponent(scrollPane_1, GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE).addGap(12)
-						.addComponent(lblEspeciesPorSitio, GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE).addGap(6)
-						.addComponent(scrollPane_2, GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE).addGap(12)
+						.addGap(8)
+						.addComponent(scrollPane_1, GroupLayout.PREFERRED_SIZE, 106, GroupLayout.PREFERRED_SIZE)
+						.addGap(12)
+						.addComponent(lblEspeciesPorSitio, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE)
+						.addGap(6)
+						.addComponent(scrollPane_2, GroupLayout.PREFERRED_SIZE, 163, GroupLayout.PREFERRED_SIZE)
+						.addGap(12)
 						.addGroup(gl_layeredPane_1.createParallelGroup(Alignment.LEADING)
-								.addComponent(lblDiametrosNormales).addComponent(lblAlturasTotales))
-						.addGap(5)
+								.addComponent(lblDiametrosNormales, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
+										Short.MAX_VALUE)
+								.addComponent(lblAlturasTotales))
+						.addGap(12)
 						.addGroup(gl_layeredPane_1.createParallelGroup(Alignment.LEADING)
-								.addGroup(gl_layeredPane_1.createSequentialGroup()
-										.addComponent(panelDiametrosNormales, GroupLayout.DEFAULT_SIZE, 319,
-												Short.MAX_VALUE)
-										.addGap(12))
-								.addComponent(panelAlturasTotales, GroupLayout.DEFAULT_SIZE, 349, Short.MAX_VALUE))));
+								.addComponent(panel_2, GroupLayout.PREFERRED_SIZE, 376, GroupLayout.PREFERRED_SIZE)
+								.addComponent(panelDiametrosNormales, GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE))
+						.addContainerGap()));
 		layeredPane_1.setLayout(gl_layeredPane_1);
-
-		JLayeredPane layeredPane_2 = new JLayeredPane();
-		tabbedPane.addTab("Sotobosque", null, layeredPane_2, null);
-
-		JLayeredPane layeredPane = new JLayeredPane();
-		tabbedPane.addTab("Repoblado", null, layeredPane, null);
-
-		JLayeredPane layeredPane_3 = new JLayeredPane();
-		tabbedPane.addTab("Modulo H", null, layeredPane_3, null);
 
 		JPanel panel = new JPanel();
 		getContentPane().add(panel, BorderLayout.NORTH);
@@ -349,7 +342,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		panel.add(separator_4);
 		panel.add(lblNewLabel_1);
 		panel.add(lblFisiografiaResp);
-		
+
 		lsUPM.setListData(upmTotal);
 
 	}
@@ -452,13 +445,13 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		tblVegetacionPorSitio.setModel(vegetacionPorSitioModel);
 		alignCellsTables(vegetacionPorSitioModel, tblVegetacionPorSitio);
 
 	}
 
-	public void getespeciesPorSitio(String ruta, int upmid) {
+	public void getEspeciesPorSitio(String ruta, int upmid) {
 		String query = "SELECT  DISTINCT sitio.sitio, printf('%s %s %s', genero.Nombre, especie.Nombre, infraespecie.Nombre) as Entidad, formaVida.Descripcion AS FormaVida FROM TAXONOMIA_Arbolado arbolado JOIN SITIOS_Sitio sitio ON sitio.SitioID=arbolado.SitioID LEFT JOIN CAT_ClaveSerieV claveSerieV ON claveSerieV.ClaveSerieVID = sitio.ClaveSerieV LEFT JOIN CAT_FaseSucecional faseSucecional on faseSucecional.FaseSucecionalID =sitio.FaseSucecional LEFT JOIN CAT_FamiliaEspecie familia ON arbolado.FamiliaID = familia.FamiliaID  LEFT JOIN CAT_Genero genero ON arbolado.GeneroID = genero.GeneroID  LEFT JOIN CAT_Especie especie ON arbolado.EspecieID = especie.EspecieID  LEFT JOIN CAT_Infraespecie infraespecie ON arbolado.InfraespecieID = infraespecie.InfraespecieID  LEFT JOIN CAT_TipoFormaVidaArbolado formaVida ON arbolado.FormaVidaID = formaVida.FormaVidaID  WHERE arbolado.CondicionID!=2 and  arbolado.UPMID="
 				+ upmid + " GROUP BY arbolado.UPMID, arbolado.SitioID, arbolado.ArboladoID ORDER BY sitio.sitio ";
 		String genero = null, especie = null, infraespecie = null, entidadTaxonomica;
@@ -482,17 +475,65 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		}
 
 		tblEspeciesPorSitio.setModel(especiesPorSitioModel);
-		alignCellsTables(especiesPorSitioModel, tblEspeciesPorSitio);
-	}
-	
-	public void alignCellsTables(DefaultTableModel model,JTable tbl){
 		DefaultTableCellRenderer cellRenderedCenter = new DefaultTableCellRenderer();
 
 		cellRenderedCenter.setHorizontalAlignment(JLabel.CENTER);
-		for(int i=0;i<model.getColumnCount();i++){
-		tbl.getColumnModel().getColumn(i).setCellRenderer(cellRenderedCenter);
+		tblEspeciesPorSitio.getColumnModel().getColumn(0).setCellRenderer(cellRenderedCenter);
+		tblEspeciesPorSitio.getColumnModel().getColumn(2).setCellRenderer(cellRenderedCenter);
+	}
+
+	public void alignCellsTables(DefaultTableModel model, JTable tbl) {
+		DefaultTableCellRenderer cellRenderedCenter = new DefaultTableCellRenderer();
+
+		cellRenderedCenter.setHorizontalAlignment(JLabel.CENTER);
+		for (int i = 0; i < model.getColumnCount(); i++) {
+			tbl.getColumnModel().getColumn(i).setCellRenderer(cellRenderedCenter);
 		}
 
 	}
 
+	public void charNuevo() {
+		try {
+			final String fait = "FAIT";
+			final String audi = "AUDI";
+			final String ford = "FORD";
+			final String speed = "Speed";
+			final String popular = "Popular";
+			final String mailage = "Mailage";
+			final String userrating = "User Rating";
+			final String safety = "safety";
+			final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
+			dataset.addValue(1.0, fait, speed);
+			dataset.addValue(4.0, fait, popular);
+			dataset.addValue(3.0, fait, userrating);
+			dataset.addValue(5.0, fait, mailage);
+			dataset.addValue(5.0, fait, safety);
+
+			dataset.addValue(5.0, audi, speed);
+			dataset.addValue(7.0, audi, popular);
+			dataset.addValue(6.0, audi, userrating);
+			dataset.addValue(10.0, audi, mailage);
+			dataset.addValue(4.0, audi, safety);
+
+			dataset.addValue(4.0, ford, speed);
+			dataset.addValue(3.0, ford, popular);
+			dataset.addValue(2.0, ford, userrating);
+			dataset.addValue(3.0, ford, mailage);
+			dataset.addValue(6.0, ford, safety);
+
+			JFreeChart barChart = ChartFactory.createBarChart3D("Car Usage Statistics", "Category", "Score", dataset,
+					PlotOrientation.VERTICAL, true, true, false);
+
+			int width = 640; /* Width of the image */
+			int height = 480; /* Height of the image */
+			ChartPanel chartPanel = new ChartPanel(barChart);
+			
+			chartPanel.setBounds(panelDiametrosNormales.getBounds());
+			panelDiametrosNormales.add(chartPanel, BorderLayout.CENTER);
+
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
 }// Final
