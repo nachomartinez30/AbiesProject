@@ -50,11 +50,18 @@ import java.awt.ComponentOrientation;
 import java.awt.Cursor;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.MatteBorder;
+import javax.swing.plaf.DesktopPaneUI;
+import javax.swing.JButton;
+import javax.swing.JDesktopPane;
+
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class FrmInformacionPorUPM extends JInternalFrame {
 	public String ruta;
 	private Connection baseDatosExterna;
 	private java.sql.Statement sqlExterno;
+	int upmInt =0;
 	private JLabel lblEstadoResp;
 	private JLabel lblMunicipioResp;
 	private JLabel lblAltitudResp;
@@ -68,17 +75,28 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 	private JLabel lblUPM;
 	private JList<String> lsUPM;
 	Vector<String> upmTotal = new Vector<String>();
-
-	public String[] vegetacionPorSitioColumnName = { "Sitio", "Tipo vegetación", "Fase sucesional", "Conte registros",
-			"conte individuos" };
+	JDesktopPane desktopPanelCentral;
+	public String[] vegetacionPorSitioColumnName = { "Sitio", "Tipo vegetación", "Fase sucesional", "Conteo registros",
+			"Conteo individuos" };
 	public String[] especiesPorSitioColumnName = { "Sitio", "Entidad taxonomica", "Forma de vida" };
+	public String[] informacionSitioColumnName = { "Sitio", "Sitio accesible", "Tipo inaccesibilidad",
+			"Descripcion inaccesibilidad", "Tipo de vegetación", "Fase sucecional" };
 
 	public DefaultTableModel vegetacionPorSitioModel = new DefaultTableModel(null, vegetacionPorSitioColumnName);
 	public DefaultTableModel especiesPorSitioModel = new DefaultTableModel(null, especiesPorSitioColumnName);
-	private JPanel panelDiametrosNormales;
+	public DefaultTableModel informacionSitioModel = new DefaultTableModel(null, informacionSitioColumnName);
+	private JTable tblInformacionSItio;
+	private JLabel lblAccesible;
+	private JLabel lbl_25;
+	private JLabel lblTipo;
+	
 
-	public FrmInformacionPorUPM(String ruta) {
-
+	public FrmInformacionPorUPM(String ruta, JDesktopPane desktopPanelCentral) {
+		setFrameIcon(null);
+		setMaximizable(true);
+		setResizable(true);
+		setClosable(true);
+		this.desktopPanelCentral = desktopPanelCentral;
 		this.ruta = ruta;
 		setUpmsTotales(ruta);
 		setBounds(100, 100, 1060, 895);
@@ -93,16 +111,16 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 				if (arg0.getClickCount() == 2 && !arg0.isConsumed()) {
 					arg0.consume();
 					String UPMElegido = (String) lsUPM.getSelectedValue();
-					int upmInt = Integer.parseInt(UPMElegido);
+					upmInt = Integer.parseInt(UPMElegido);
 
 					lblUPM.setText(UPMElegido);
-
+					
 					getRegistrosTotales(ruta, upmInt);
 					getIndividuosTotales(ruta, upmInt);
 					getInformacionUPM(ruta, upmInt);
 					getvegetacionPorSitio(ruta, upmInt);
 					getEspeciesPorSitio(ruta, upmInt);
-					charNuevo();
+					getInformacionSitio(ruta, upmInt);
 				}
 
 			}
@@ -175,75 +193,98 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		lblEspeciesPorSitio.setFont(new Font("Dialog", Font.BOLD, 16));
 		lblEspeciesPorSitio.setHorizontalAlignment(SwingConstants.CENTER);
 
-		JLabel lblDiametrosNormales = new JLabel("Diametros normales");
-		lblDiametrosNormales.setHorizontalAlignment(SwingConstants.CENTER);
-		lblDiametrosNormales.setHorizontalTextPosition(SwingConstants.CENTER);
+		JScrollPane scrollPane_3 = new JScrollPane();
+		scrollPane_3.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		scrollPane_3.setBackground(Color.WHITE);
 
-		JLabel lblAlturasTotales = new JLabel("Alturas totales");
-		lblAlturasTotales.setHorizontalTextPosition(SwingConstants.CENTER);
-		lblAlturasTotales.setHorizontalAlignment(SwingConstants.CENTER);
+		tblInformacionSItio = new JTable();
+		scrollPane_3.setViewportView(tblInformacionSItio);
 
-		panelDiametrosNormales = new JPanel();
+		JLabel lblInformacinDeSitios = new JLabel("Informaci\u00F3n de sitios");
+		lblInformacinDeSitios.setHorizontalAlignment(SwingConstants.CENTER);
+		lblInformacinDeSitios.setFont(new Font("Dialog", Font.BOLD, 16));
 
-		JPanel panel_2 = new JPanel();
+		JButton btnNewButton = new JButton("Gr\u00E1ficas");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				FrmGraficasArbolado graficasArb = new FrmGraficasArbolado(ruta);
+				graficasArb.setUpmid(upmInt);
+				if (graficasArb.isVisible() == false) {
+					graficasArb.setVisible(true);
+					desktopPanelCentral.add(graficasArb);
+					graficasArb.generateBarChartDiametrosNormales(ruta, upmInt);
+				}
+
+				if (graficasArb.isBackgroundSet()) {
+					graficasArb.moveToFront();
+				}
+			}
+		});
 		GroupLayout gl_layeredPane_1 = new GroupLayout(layeredPane_1);
-		gl_layeredPane_1.setHorizontalGroup(gl_layeredPane_1.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_layeredPane_1.createSequentialGroup().addGap(151)
-						.addComponent(lblNewLabel_2, GroupLayout.PREFERRED_SIZE, 132, GroupLayout.PREFERRED_SIZE)
-						.addGap(6)
-						.addComponent(txtRegistrosTotales, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE)
-						.addGap(193)
-						.addComponent(lblNoIndividuosTotales, GroupLayout.PREFERRED_SIZE,
-								132, GroupLayout.PREFERRED_SIZE)
-						.addGap(6)
-						.addComponent(txtIndividuosTotales, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE))
-				.addGroup(gl_layeredPane_1.createSequentialGroup().addGap(27)
-						.addComponent(lblTipoDeVetacion, GroupLayout.DEFAULT_SIZE, 725, Short.MAX_VALUE).addGap(32))
-				.addGroup(gl_layeredPane_1.createSequentialGroup().addGap(27)
-						.addComponent(scrollPane_1, GroupLayout.DEFAULT_SIZE, 725, Short.MAX_VALUE).addGap(32))
-				.addGroup(gl_layeredPane_1.createSequentialGroup().addGap(27).addComponent(lblEspeciesPorSitio,
-						GroupLayout.PREFERRED_SIZE, 715, GroupLayout.PREFERRED_SIZE))
-				.addGroup(gl_layeredPane_1.createSequentialGroup().addGap(27)
-						.addComponent(scrollPane_2, GroupLayout.DEFAULT_SIZE, 727, Short.MAX_VALUE).addGap(30))
-				.addGroup(Alignment.TRAILING, gl_layeredPane_1.createSequentialGroup().addGap(52)
-						.addGroup(gl_layeredPane_1.createParallelGroup(Alignment.LEADING)
-								.addComponent(lblDiametrosNormales, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
-										Short.MAX_VALUE)
-								.addComponent(panelDiametrosNormales, GroupLayout.DEFAULT_SIZE, 347, Short.MAX_VALUE))
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addGroup(gl_layeredPane_1.createParallelGroup(Alignment.TRAILING)
-								.addComponent(panel_2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
-										Short.MAX_VALUE)
-								.addComponent(lblAlturasTotales, GroupLayout.DEFAULT_SIZE, 343, Short.MAX_VALUE))
-						.addGap(30)));
+		gl_layeredPane_1.setHorizontalGroup(
+				gl_layeredPane_1.createParallelGroup(Alignment.TRAILING).addGroup(gl_layeredPane_1
+						.createSequentialGroup().addGap(27).addGroup(gl_layeredPane_1
+								.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_layeredPane_1
+										.createSequentialGroup()
+										.addComponent(lblInformacinDeSitios, GroupLayout.DEFAULT_SIZE, 459,
+												Short.MAX_VALUE)
+										.addGap(266))
+								.addGroup(gl_layeredPane_1.createSequentialGroup()
+										.addComponent(scrollPane_3, GroupLayout.DEFAULT_SIZE, 459, Short.MAX_VALUE)
+										.addGap(59)
+										.addGroup(gl_layeredPane_1.createParallelGroup(Alignment.LEADING)
+												.addComponent(lblNewLabel_2, GroupLayout.PREFERRED_SIZE, 132,
+														GroupLayout.PREFERRED_SIZE)
+												.addComponent(lblNoIndividuosTotales, GroupLayout.PREFERRED_SIZE, 132,
+														GroupLayout.PREFERRED_SIZE))
+										.addGap(6)
+										.addGroup(gl_layeredPane_1.createParallelGroup(Alignment.LEADING)
+												.addComponent(txtRegistrosTotales, GroupLayout.PREFERRED_SIZE, 67,
+														GroupLayout.PREFERRED_SIZE)
+												.addComponent(txtIndividuosTotales, GroupLayout.PREFERRED_SIZE, 67,
+														GroupLayout.PREFERRED_SIZE))
+										.addGap(2))
+								.addGroup(
+										gl_layeredPane_1.createSequentialGroup()
+												.addComponent(lblTipoDeVetacion, GroupLayout.DEFAULT_SIZE, 723,
+														Short.MAX_VALUE)
+												.addGap(2))
+								.addGroup(
+										gl_layeredPane_1.createSequentialGroup()
+												.addComponent(scrollPane_1, GroupLayout.DEFAULT_SIZE, 723,
+														Short.MAX_VALUE)
+												.addGap(2))
+								.addComponent(lblEspeciesPorSitio, GroupLayout.PREFERRED_SIZE, 725,
+										GroupLayout.PREFERRED_SIZE)
+								.addComponent(scrollPane_2, GroupLayout.DEFAULT_SIZE, 725, Short.MAX_VALUE))
+						.addGap(30))
+						.addGroup(gl_layeredPane_1.createSequentialGroup().addGap(384)
+								.addComponent(btnNewButton, GroupLayout.DEFAULT_SIZE, 82, Short.MAX_VALUE)
+								.addGap(316)));
 		gl_layeredPane_1.setVerticalGroup(gl_layeredPane_1.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_layeredPane_1.createSequentialGroup().addGap(12)
-						.addGroup(gl_layeredPane_1.createParallelGroup(Alignment.LEADING)
-								.addComponent(lblNewLabel_2, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
-								.addComponent(txtRegistrosTotales, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
-								.addComponent(lblNoIndividuosTotales, GroupLayout.PREFERRED_SIZE, 20,
-										GroupLayout.PREFERRED_SIZE)
-								.addComponent(txtIndividuosTotales, GroupLayout.PREFERRED_SIZE,
-										GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+				.addGroup(gl_layeredPane_1.createSequentialGroup().addGap(30)
+						.addComponent(lblInformacinDeSitios, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
 						.addGap(12)
+						.addGroup(gl_layeredPane_1.createParallelGroup(Alignment.LEADING)
+								.addComponent(scrollPane_3, GroupLayout.PREFERRED_SIZE, 135, GroupLayout.PREFERRED_SIZE)
+								.addGroup(gl_layeredPane_1.createSequentialGroup().addGap(29)
+										.addComponent(lblNewLabel_2, GroupLayout.PREFERRED_SIZE,
+												20, GroupLayout.PREFERRED_SIZE)
+										.addGap(12).addComponent(lblNoIndividuosTotales, GroupLayout.PREFERRED_SIZE, 20,
+												GroupLayout.PREFERRED_SIZE))
+								.addGroup(gl_layeredPane_1.createSequentialGroup().addGap(29)
+										.addComponent(txtRegistrosTotales, GroupLayout.PREFERRED_SIZE,
+												GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+										.addGap(12).addComponent(txtIndividuosTotales, GroupLayout.PREFERRED_SIZE,
+												GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+						.addGap(33)
 						.addComponent(lblTipoDeVetacion, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
-						.addGap(8)
-						.addComponent(scrollPane_1, GroupLayout.PREFERRED_SIZE, 106, GroupLayout.PREFERRED_SIZE)
+						.addGap(12).addComponent(scrollPane_1, GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
 						.addGap(12)
 						.addComponent(lblEspeciesPorSitio, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE)
-						.addGap(6)
-						.addComponent(scrollPane_2, GroupLayout.PREFERRED_SIZE, 163, GroupLayout.PREFERRED_SIZE)
-						.addGap(12)
-						.addGroup(gl_layeredPane_1.createParallelGroup(Alignment.LEADING)
-								.addComponent(lblDiametrosNormales, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
-										Short.MAX_VALUE)
-								.addComponent(lblAlturasTotales))
-						.addGap(12)
-						.addGroup(gl_layeredPane_1.createParallelGroup(Alignment.LEADING)
-								.addComponent(panel_2, GroupLayout.PREFERRED_SIZE, 376, GroupLayout.PREFERRED_SIZE)
-								.addComponent(panelDiametrosNormales, GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE))
-						.addContainerGap()));
+						.addGap(6).addComponent(scrollPane_2, GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE).addGap(42)
+						.addComponent(btnNewButton).addGap(60)));
 		layeredPane_1.setLayout(gl_layeredPane_1);
 
 		JPanel panel = new JPanel();
@@ -342,7 +383,29 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		panel.add(separator_4);
 		panel.add(lblNewLabel_1);
 		panel.add(lblFisiografiaResp);
-
+		
+		JLabel label_18 = new JLabel("Accesible");
+		label_18.setHorizontalAlignment(SwingConstants.LEFT);
+		label_18.setFont(new Font("Dialog", Font.PLAIN, 14));
+		panel.add(label_18);
+		
+		lblAccesible = new JLabel("...");
+		lblAccesible.setForeground(Color.ORANGE);
+		lblAccesible.setFont(new Font("Dialog", Font.BOLD | Font.ITALIC, 12));
+		lblAccesible.setAlignmentX(1.0f);
+		panel.add(lblAccesible);
+		
+		lbl_25 = new JLabel("Tipo:");
+		lbl_25.setHorizontalAlignment(SwingConstants.LEFT);
+		lbl_25.setFont(new Font("Dialog", Font.PLAIN, 14));
+		panel.add(lbl_25);
+		
+		lblTipo = new JLabel("...");
+		lblTipo.setForeground(Color.ORANGE);
+		lblTipo.setFont(new Font("Dialog", Font.BOLD | Font.ITALIC, 12));
+		lblTipo.setAlignmentX(1.0f);
+		panel.add(lblTipo);
+		
 		lsUPM.setListData(upmTotal);
 
 	}
@@ -367,15 +430,17 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 	public void getIndividuosTotales(String ruta, int upmid) {
 		String query = "SELECT DISTINCT  NoIndividuo FROM  TAXONOMIA_Arbolado WHERE UPMID=" + upmid
 				+ " GROUP BY UPMID,SitioID ORDER BY UPMID ";
-
+		int total = 0, totalrs;
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
 		try {
 			sqlExterno = baseDatosExterna.createStatement();
 			ResultSet rsExterno = sqlExterno.executeQuery(query);
 
 			while (rsExterno.next()) {
-				txtIndividuosTotales.setText(Integer.toString(rsExterno.getInt("NoIndividuo")));
+				totalrs = rsExterno.getInt("NoIndividuo");
+				total = total + totalrs;
 			}
+			txtIndividuosTotales.setText(Integer.toString(total));
 			baseDatosExterna.close();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -383,7 +448,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 	}
 
 	public void getInformacionUPM(String ruta, int upmid) {
-		String query = "SELECT  upmMalla.Estado, upmMalla.Municipio, upm.Altitud, upm.PendienteRepresentativa, exposicionUPM.Descripcion AS Exposicion, fisiografia.TipoFisiografia AS Fisiografia FROM UPM_UPM upm JOIN UPM_MallaPuntos upmMalla ON upm.UPMID=upmMalla.UPMID LEFT JOIN CAT_TipoExposicion exposicionUPM ON exposicionUPM.ExposicionID =upm.ExposicionID LEFT JOIN CAT_TipoFisiografia fisiografia ON fisiografia.FisiografiaID=upm.FisiografiaID where upm.UPMID= "
+		String query = "SELECT  upmMalla.Estado, upmMalla.Municipio, upm.Altitud, upm.PendienteRepresentativa, CASE upm.Accesible WHEN 1 THEN 'SI' WHEN 2 THEN 'NO' END Accesible, tipoUPM.TipoUPM, exposicionUPM.Descripcion AS Exposicion, fisiografia.TipoFisiografia AS Fisiografia FROM UPM_UPM upm JOIN UPM_MallaPuntos upmMalla ON upm.UPMID=upmMalla.UPMID LEFT JOIN CAT_TipoUPM tipoUPM ON tipoUPM.TipoUPMID=upm.TipoUPMID LEFT JOIN CAT_TipoExposicion exposicionUPM ON exposicionUPM.ExposicionID =upm.ExposicionID LEFT JOIN CAT_TipoFisiografia fisiografia ON fisiografia.FisiografiaID=upm.FisiografiaID where upm.UPMID="
 				+ upmid;
 
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -398,6 +463,8 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 				lblPendienteRepresentativaResp.setText(Integer.toString(rsExterno.getInt("PendienteRepresentativa")));
 				lblExposicionResp.setText(rsExterno.getString("Exposicion"));
 				lblFisiografiaResp.setText(rsExterno.getString("Fisiografia"));
+				lblAccesible.setText(rsExterno.getString("Accesible"));
+				lblTipo.setText(rsExterno.getString("TipoUPM"));
 			}
 			baseDatosExterna.close();
 		} catch (Exception e) {
@@ -406,7 +473,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 	}
 
 	public void setUpmsTotales(String ruta) {
-		String query = "SELECT UPMID FROM UPM_UPM order by UPMID";
+		String query = "SELECT UPMID FROM UPM_UPM WHERE Accesible=1 order by UPMID";
 
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
 		try {
@@ -423,8 +490,8 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 	}
 
 	public void getvegetacionPorSitio(String ruta, int upmid) {
-		String query = "SELECT DISTINCT sitio.Sitio, claveSerieV.TipoVegetacion , faseSucecional.Clave  AS FaseSucecional, arbolado.Consecutivo as No_registros, arbolado.NoIndividuo AS Individuo FROM TAXONOMIA_Arbolado arbolado JOIN SITIOS_Sitio sitio ON sitio.SitioID=arbolado.SitioID JOIN UPM_UPM upm ON upm.UPMID=arbolado.UPMID JOIN UPM_MallaPuntos upmMalla ON upmMalla.UPMID=arbolado.UPMID LEFT JOIN CAT_TipoExposicion exposicionUPM ON exposicionUPM.ExposicionID =upm.ExposicionID LEFT JOIN CAT_TipoFisiografia fisiografia ON fisiografia.FisiografiaID=upm.FisiografiaID LEFT JOIN CAT_ClaveSerieV claveSerieV ON claveSerieV.ClaveSerieVID = sitio.ClaveSerieV LEFT JOIN CAT_FaseSucecional faseSucecional on faseSucecional.FaseSucecionalID =sitio.FaseSucecional WHERE arbolado.UPMID="
-				+ upmid + " GROUP BY arbolado.UPMID, arbolado.SitioID ORDER BY arbolado.UPMID ";
+		String query = "SELECT DISTINCT sitio.SitioID, sitio.Sitio, claveSerieV.TipoVegetacion, faseSucecional.Clave  AS FaseSucecional, arbolado.Consecutivo as No_registros, arbolado.NoIndividuo AS Individuo FROM TAXONOMIA_Arbolado arbolado LEFT JOIN SITIOS_Sitio sitio ON sitio.SitioID=arbolado.SitioID and sitio.UPMID=arbolado.UPMID LEFT JOIN CAT_ClaveSerieV claveSerieV ON claveSerieV.ClaveSerieVID = sitio.ClaveSerieV LEFT JOIN CAT_FaseSucecional faseSucecional on faseSucecional.FaseSucecionalID =sitio.FaseSucecional WHERE arbolado.UPMID="
+				+ upmid + " GROUP BY arbolado.UPMID, arbolado.SitioID ORDER BY arbolado.UPMID  ";
 
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
 		try {
@@ -452,7 +519,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 	}
 
 	public void getEspeciesPorSitio(String ruta, int upmid) {
-		String query = "SELECT  DISTINCT sitio.sitio, printf('%s %s %s', genero.Nombre, especie.Nombre, infraespecie.Nombre) as Entidad, formaVida.Descripcion AS FormaVida FROM TAXONOMIA_Arbolado arbolado JOIN SITIOS_Sitio sitio ON sitio.SitioID=arbolado.SitioID LEFT JOIN CAT_ClaveSerieV claveSerieV ON claveSerieV.ClaveSerieVID = sitio.ClaveSerieV LEFT JOIN CAT_FaseSucecional faseSucecional on faseSucecional.FaseSucecionalID =sitio.FaseSucecional LEFT JOIN CAT_FamiliaEspecie familia ON arbolado.FamiliaID = familia.FamiliaID  LEFT JOIN CAT_Genero genero ON arbolado.GeneroID = genero.GeneroID  LEFT JOIN CAT_Especie especie ON arbolado.EspecieID = especie.EspecieID  LEFT JOIN CAT_Infraespecie infraespecie ON arbolado.InfraespecieID = infraespecie.InfraespecieID  LEFT JOIN CAT_TipoFormaVidaArbolado formaVida ON arbolado.FormaVidaID = formaVida.FormaVidaID  WHERE arbolado.CondicionID!=2 and  arbolado.UPMID="
+		String query = "SELECT  DISTINCT sitio.sitio, printf('%s %s %s', genero.Nombre, especie.Nombre, infraespecie.Nombre) as Entidad, formaVida.Descripcion AS FormaVida FROM TAXONOMIA_Arbolado arbolado JOIN SITIOS_Sitio sitio ON sitio.SitioID=arbolado.SitioID LEFT JOIN CAT_ClaveSerieV claveSerieV ON claveSerieV.ClaveSerieVID = sitio.ClaveSerieV and sitio.UPMID=arbolado.UPMID LEFT JOIN CAT_FaseSucecional faseSucecional on faseSucecional.FaseSucecionalID =sitio.FaseSucecional LEFT JOIN CAT_FamiliaEspecie familia ON arbolado.FamiliaID = familia.FamiliaID  LEFT JOIN CAT_Genero genero ON arbolado.GeneroID = genero.GeneroID  LEFT JOIN CAT_Especie especie ON arbolado.EspecieID = especie.EspecieID  LEFT JOIN CAT_Infraespecie infraespecie ON arbolado.InfraespecieID = infraespecie.InfraespecieID  LEFT JOIN CAT_TipoFormaVidaArbolado formaVida ON arbolado.FormaVidaID = formaVida.FormaVidaID  WHERE /*arbolado.CondicionID!=2 and*/ arbolado.UPMID="
 				+ upmid + " GROUP BY arbolado.UPMID, arbolado.SitioID, arbolado.ArboladoID ORDER BY sitio.sitio ";
 		String genero = null, especie = null, infraespecie = null, entidadTaxonomica;
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -492,48 +559,31 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 
 	}
 
-	public void charNuevo() {
+	public void getInformacionSitio(String ruta, int upmid) {
+		String query = "SELECT sitio.SitioID, sitio.Sitio, CASE sitio.SitioAccesible WHEN 1 THEN 'SI' WHEN 0 THEN 'NO' END SitioAccesible, tipoInaccesibilidad.Tipo AS TipoInaccesibilidad, tipoInaccesibilidad.Descripcion AS DescripcionInaccesibilidad, claveSerieV.Clave, faseSucecional.Clave  AS FaseSucecional from SITIOS_Sitio sitio LEFT JOIN CAT_ClaveSerieV claveSerieV ON claveSerieV.ClaveSerieVID = sitio.ClaveSerieV LEFT JOIN CAT_FaseSucecional faseSucecional on faseSucecional.FaseSucecionalID =sitio.FaseSucecional LEFT JOIN CAT_TipoInaccesibilidad tipoInaccesibilidad ON tipoInaccesibilidad.TipoInaccesibilidadID=sitio.TipoInaccesibilidad WHERE sitio.UPMID="
+				+ upmid + " GROUP BY sitio.UPMID, sitio.SitioID ORDER BY sitio.sitio ";
+
+		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
 		try {
-			final String fait = "FAIT";
-			final String audi = "AUDI";
-			final String ford = "FORD";
-			final String speed = "Speed";
-			final String popular = "Popular";
-			final String mailage = "Mailage";
-			final String userrating = "User Rating";
-			final String safety = "safety";
-			final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-
-			dataset.addValue(1.0, fait, speed);
-			dataset.addValue(4.0, fait, popular);
-			dataset.addValue(3.0, fait, userrating);
-			dataset.addValue(5.0, fait, mailage);
-			dataset.addValue(5.0, fait, safety);
-
-			dataset.addValue(5.0, audi, speed);
-			dataset.addValue(7.0, audi, popular);
-			dataset.addValue(6.0, audi, userrating);
-			dataset.addValue(10.0, audi, mailage);
-			dataset.addValue(4.0, audi, safety);
-
-			dataset.addValue(4.0, ford, speed);
-			dataset.addValue(3.0, ford, popular);
-			dataset.addValue(2.0, ford, userrating);
-			dataset.addValue(3.0, ford, mailage);
-			dataset.addValue(6.0, ford, safety);
-
-			JFreeChart barChart = ChartFactory.createBarChart3D("Car Usage Statistics", "Category", "Score", dataset,
-					PlotOrientation.VERTICAL, true, true, false);
-
-			int width = 640; /* Width of the image */
-			int height = 480; /* Height of the image */
-			ChartPanel chartPanel = new ChartPanel(barChart);
-			
-			chartPanel.setBounds(panelDiametrosNormales.getBounds());
-			panelDiametrosNormales.add(chartPanel, BorderLayout.CENTER);
-
+			sqlExterno = baseDatosExterna.createStatement();
+			ResultSet rsExterno = sqlExterno.executeQuery(query);
+			if (informacionSitioModel.getRowCount() > 0) {
+				for (int i = informacionSitioModel.getRowCount() - 1; i > -1; i--) {
+					informacionSitioModel.removeRow(i);
+				}
+			}
+			while (rsExterno.next()) {
+				informacionSitioModel.addRow(new Object[] { rsExterno.getString("Sitio"),
+						rsExterno.getString("SitioAccesible"), rsExterno.getString("TipoInaccesibilidad"),
+						rsExterno.getString("DescripcionInaccesibilidad"), rsExterno.getString("Clave"),
+						rsExterno.getString("FaseSucecional") });
+			}
+			baseDatosExterna.close();
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
+
+		tblInformacionSItio.setModel(informacionSitioModel);
+		alignCellsTables(informacionSitioModel, tblInformacionSItio);
 	}
 }// Final

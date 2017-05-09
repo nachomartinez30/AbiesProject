@@ -347,7 +347,7 @@ public class Index extends JFrame {
 			} else {
 				externalConnection.getConnection(ruta);
 				enabledLeftPanelButtons();
-				informacionUpm=new FrmInformacionPorUPM(ruta);
+				informacionUpm=new FrmInformacionPorUPM(ruta,this.desktopPanelCentral);
 				estadistica = new FrmEstadisticas(ruta);
 				exportar = new FrmExportar(ruta);
 				textField.setText(ruta);
