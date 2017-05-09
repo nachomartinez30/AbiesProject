@@ -60,8 +60,10 @@ import javax.swing.ImageIcon;
 import java.awt.Toolkit;
 
 public class Index extends JFrame {
+	
 	FrmEstadisticas estadistica;
 	FrmExportar exportar;
+	FrmInformacionPorUPM informacionUpm;
 	private boolean temaClaro = false;
 	private JPanel contentPane;
 	private JTable table;
@@ -176,6 +178,26 @@ public class Index extends JFrame {
 		btnExportar.setEnabled(false);
 		
 		btnInfPorUpm = new JButton("Inf. por UPM");
+		btnInfPorUpm.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (informacionUpm.isVisible() == false) {
+					informacionUpm.setVisible(true);
+					desktopPanelCentral.add(informacionUpm);
+
+				}
+
+				if (informacionUpm.isBackgroundSet()) {
+					informacionUpm.moveToFront();
+				}
+
+				try {
+					informacionUpm.setMaximum(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+			}
+		});
 		btnInfPorUpm.setEnabled(false);
 		GroupLayout gl_panelIzquierdo = new GroupLayout(panelIzquierdo);
 		gl_panelIzquierdo.setHorizontalGroup(
@@ -325,16 +347,14 @@ public class Index extends JFrame {
 			} else {
 				externalConnection.getConnection(ruta);
 				enabledLeftPanelButtons();
+				informacionUpm=new FrmInformacionPorUPM(ruta);
 				estadistica = new FrmEstadisticas(ruta);
 				exportar = new FrmExportar(ruta);
 				textField.setText(ruta);
 				JOptionPane.showMessageDialog(null, "Se conectó satisfactoriamente");
 
-				// System.out.println(ruta);
 			}
 		} catch (Exception e) {
-			// JOptionPane.showMessageDialog(null, "El archivo que intenta
-			// importar no es una base de datos balida" + e);
 		}
 	}
 
