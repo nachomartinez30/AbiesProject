@@ -35,6 +35,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 public class FrmEstadisticas extends JInternalFrame {
+	public String ruta;
+	private Connection baseDatosExterna;
+	private java.sql.Statement sqlExterno;
 
 	private JTextField txtTotalUpms;
 
@@ -42,10 +45,6 @@ public class FrmEstadisticas extends JInternalFrame {
 	private JTable tblTipoUPM;
 	private JTable tblDiasMuestreo;
 	private JTable tblColocacionTAG;
-
-	public String ruta;
-	private Connection baseDatosExterna;
-	private java.sql.Statement sqlExterno;
 
 	private JFormattedTextField ftxtfechaInicial;
 	private JFormattedTextField ftxtfechafinal;

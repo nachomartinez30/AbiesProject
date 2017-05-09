@@ -176,6 +176,7 @@ public class Index extends JFrame {
 		btnExportar.setEnabled(false);
 		
 		btnInfPorUpm = new JButton("Inf. por UPM");
+		btnInfPorUpm.setEnabled(false);
 		GroupLayout gl_panelIzquierdo = new GroupLayout(panelIzquierdo);
 		gl_panelIzquierdo.setHorizontalGroup(
 			gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
@@ -340,6 +341,7 @@ public class Index extends JFrame {
 	public void enabledLeftPanelButtons() {
 		btnEstadisticas.setEnabled(true);
 		btnExportar.setEnabled(true);
+		btnInfPorUpm.setEnabled(true);
 	}
 
 	public void getUserConfigs(String ruta) {
