@@ -19,7 +19,6 @@ import javax.swing.JTable;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
-import org.jfree.data.io.CSV;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import javax.swing.JProgressBar;
