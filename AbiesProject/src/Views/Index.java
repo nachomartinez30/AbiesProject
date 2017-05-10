@@ -116,7 +116,7 @@ public class Index extends JFrame {
 		configUserConnection.getConnection(configUser);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Index.class.getResource("/Icons/g5296.png")));
 		setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
-		setTitle("Estadisticas UPM");
+		setTitle("Abies (V_1.2)");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1023, 824);
 		contentPane = new JPanel();
