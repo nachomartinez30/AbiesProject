@@ -60,7 +60,7 @@ import javax.swing.ImageIcon;
 import java.awt.Toolkit;
 
 public class Index extends JFrame {
-	
+
 	FrmEstadisticas estadistica;
 	FrmExportar exportar;
 	FrmInformacionPorUPM informacionUpm;
@@ -176,7 +176,7 @@ public class Index extends JFrame {
 			}
 		});
 		btnExportar.setEnabled(false);
-		
+
 		btnInfPorUpm = new JButton("Inf. por UPM");
 		btnInfPorUpm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -195,34 +195,24 @@ public class Index extends JFrame {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				
+
 			}
 		});
 		btnInfPorUpm.setEnabled(false);
 		GroupLayout gl_panelIzquierdo = new GroupLayout(panelIzquierdo);
-		gl_panelIzquierdo.setHorizontalGroup(
-			gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panelIzquierdo.createSequentialGroup()
-					.addGroup(gl_panelIzquierdo.createParallelGroup(Alignment.TRAILING)
+		gl_panelIzquierdo.setHorizontalGroup(gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panelIzquierdo.createSequentialGroup().addGroup(gl_panelIzquierdo
+						.createParallelGroup(Alignment.TRAILING)
 						.addComponent(btnEstadisticas, GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
-						.addGroup(Alignment.LEADING, gl_panelIzquierdo.createSequentialGroup()
-							.addGap(1)
-							.addGroup(gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
-								.addComponent(btnInfPorUpm, GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
-								.addComponent(btnExportar, GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE))))
-					.addContainerGap())
-		);
-		gl_panelIzquierdo.setVerticalGroup(
-			gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panelIzquierdo.createSequentialGroup()
-					.addGap(30)
-					.addComponent(btnEstadisticas)
-					.addGap(18)
-					.addComponent(btnExportar)
-					.addGap(75)
-					.addComponent(btnInfPorUpm)
-					.addContainerGap(574, Short.MAX_VALUE))
-		);
+						.addGroup(Alignment.LEADING, gl_panelIzquierdo.createSequentialGroup().addGap(1)
+								.addGroup(gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
+										.addComponent(btnInfPorUpm, GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
+										.addComponent(btnExportar, GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE))))
+						.addContainerGap()));
+		gl_panelIzquierdo.setVerticalGroup(gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panelIzquierdo.createSequentialGroup().addGap(30).addComponent(btnEstadisticas).addGap(18)
+						.addComponent(btnExportar).addGap(75).addComponent(btnInfPorUpm).addContainerGap(574,
+								Short.MAX_VALUE)));
 		panelIzquierdo.setLayout(gl_panelIzquierdo);
 
 		JPanel panelSuperior = new JPanel();
@@ -330,7 +320,7 @@ public class Index extends JFrame {
 		FileNameExtensionFilter filtro = new FileNameExtensionFilter("*.cons", "cons");
 		fcBaseDatos.setAcceptAllFileFilterUsed(false);
 		fcBaseDatos.setFileFilter(filtro);
-		fcBaseDatos.showOpenDialog(this);
+		int returnVal =fcBaseDatos.showOpenDialog(this);
 		// fcBaseDatos.showOpenDialog(Main.main);
 		try {
 			File baseDatos = fcBaseDatos.getSelectedFile();
@@ -345,14 +335,16 @@ public class Index extends JFrame {
 						"Importación", JOptionPane.INFORMATION_MESSAGE);
 
 			} else {
-				externalConnection.getConnection(ruta);
-				enabledLeftPanelButtons();
-				informacionUpm=new FrmInformacionPorUPM(ruta,this.desktopPanelCentral);
-				estadistica = new FrmEstadisticas(ruta);
-				exportar = new FrmExportar(ruta);
-				textField.setText(ruta);
-				JOptionPane.showMessageDialog(null, "Se conectó satisfactoriamente");
 
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					externalConnection.getConnection(ruta);
+					enabledLeftPanelButtons();
+					informacionUpm = new FrmInformacionPorUPM(ruta, this.desktopPanelCentral);
+					estadistica = new FrmEstadisticas(ruta);
+					exportar = new FrmExportar(ruta);
+					textField.setText(ruta);
+					JOptionPane.showMessageDialog(null, "Se conectó satisfactoriamente");
+				}
 			}
 		} catch (Exception e) {
 		}

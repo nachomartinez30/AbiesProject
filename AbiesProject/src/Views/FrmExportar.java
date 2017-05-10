@@ -167,7 +167,6 @@ public class FrmExportar extends JInternalFrame {
 					exportPath, chckbxUpms, chckbxSitios, chckbxArbolado,chckbxSotobosque,chckbxRepoblado,chckbxTodo, btnExportar);
 
 			progresoExportado.addPropertyChangeListener(new PropertyChangeListener() {
-
 				@Override
 				public void propertyChange(PropertyChangeEvent arg0) {
 					if (arg0.getPropertyName().equalsIgnoreCase("progress")) {

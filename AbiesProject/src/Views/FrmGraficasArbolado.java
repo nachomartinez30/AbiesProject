@@ -28,6 +28,7 @@ public class FrmGraficasArbolado extends JInternalFrame {
 	private Connection baseDatosExterna;
 	private java.sql.Statement sqlExterno;
 	private JPanel panelDN;
+	private JPanel panelAT;
 
 	public FrmGraficasArbolado(String ruta) {
 		setMaximizable(true);
@@ -47,13 +48,35 @@ public class FrmGraficasArbolado extends JInternalFrame {
 		scrollPane.setViewportView(panelDN);
 
 		JScrollPane scrollPane_1 = new JScrollPane();
-		tabbedPane.addTab("New tab", null, scrollPane_1, null);
+		tabbedPane.addTab("Alturas totales", null, scrollPane_1, null);
+
+		panelAT = new JPanel();
+		scrollPane_1.setViewportView(panelAT);
 	}
 
-	public int setRegistrosTotales(String ruta, int upmid, String rangoMenor, String rangoMayor) {
+	public int setDiametrosTotales(String ruta, int upmid, String rangoMenor, String rangoMayor) {
 		int result = 0;
 		String query = "SELECT count(ArboladoID) AS CONTEO FROM TAXONOMIA_Arbolado WHERE DiametroNormal>=" + rangoMenor
 				+ " and DiametroNormal<=" + rangoMayor + " and UPMID=" + upmid;
+		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
+		try {
+			sqlExterno = baseDatosExterna.createStatement();
+			ResultSet rsExterno = sqlExterno.executeQuery(query);
+			while (rsExterno.next()) {
+				result = rsExterno.getInt("CONTEO");
+
+			}
+			baseDatosExterna.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	public int setALturasTotales(String ruta, int upmid, String rangoMenor, String rangoMayor) {
+		int result = 0;
+		String query = "SELECT count(ArboladoID) AS CONTEO FROM TAXONOMIA_Arbolado WHERE AlturaTotal>=" + rangoMenor
+				+ " and AlturaTotal<=" + rangoMayor + " and UPMID=" + upmid;
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
 		try {
 			sqlExterno = baseDatosExterna.createStatement();
@@ -76,19 +99,19 @@ public class FrmGraficasArbolado extends JInternalFrame {
 
 			final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
-			dataset.addValue(setRegistrosTotales(ruta, upmid, "7.5", "10"), "7.5-10", "Individuos");
-			dataset.addValue(setRegistrosTotales(ruta, upmid, "11", "15"), "11-15", "Individuos");
-			dataset.addValue(setRegistrosTotales(ruta, upmid, "16", "20"), "16-20", "Individuos");
-			dataset.addValue(setRegistrosTotales(ruta, upmid, "21", "25"), "21-25", "Individuos");
-			dataset.addValue(setRegistrosTotales(ruta, upmid, "26", "30"), "26-30", "Individuos");
-			dataset.addValue(setRegistrosTotales(ruta, upmid, "31", "40"), "31-40", "Individuos");
-			dataset.addValue(setRegistrosTotales(ruta, upmid, "41", "50"), "41-50", "Individuos");
-			dataset.addValue(setRegistrosTotales(ruta, upmid, "51", "70"), "51-70", "Individuos");
-			dataset.addValue(setRegistrosTotales(ruta, upmid, "71", "90"), "71-90", "Individuos");
-			dataset.addValue(setRegistrosTotales(ruta, upmid, "91", "120"), "91-120", "Individuos");
-			dataset.addValue(setRegistrosTotales(ruta, upmid, "121", "150"), "121-150", "Individuos");
-			dataset.addValue(setRegistrosTotales(ruta, upmid, "151", "250"), "151-250", "Individuos");
-			dataset.addValue(setRegistrosTotales(ruta, upmid, "251", "500"), "251-n", "Individuos");
+			dataset.addValue(setDiametrosTotales(ruta, upmid, "7.5", "10"), "7.5-10 cm", "Individuos");
+			dataset.addValue(setDiametrosTotales(ruta, upmid, "11", "15"), "11-15 cm", "Individuos");
+			dataset.addValue(setDiametrosTotales(ruta, upmid, "16", "20"), "16-20 cm", "Individuos");
+			dataset.addValue(setDiametrosTotales(ruta, upmid, "21", "25"), "21-25 cm", "Individuos");
+			dataset.addValue(setDiametrosTotales(ruta, upmid, "26", "30"), "26-30 cm", "Individuos");
+			dataset.addValue(setDiametrosTotales(ruta, upmid, "31", "40"), "31-40 cm", "Individuos");
+			dataset.addValue(setDiametrosTotales(ruta, upmid, "41", "50"), "41-50 cm", "Individuos");
+			dataset.addValue(setDiametrosTotales(ruta, upmid, "51", "70"), "51-70 cm", "Individuos");
+			dataset.addValue(setDiametrosTotales(ruta, upmid, "71", "90"), "71-90 cm", "Individuos");
+			dataset.addValue(setDiametrosTotales(ruta, upmid, "91", "120"), "91-120 cm", "Individuos");
+			dataset.addValue(setDiametrosTotales(ruta, upmid, "121", "150"), "121-150 cm", "Individuos");
+			dataset.addValue(setDiametrosTotales(ruta, upmid, "151", "250"), "151-250 cm", "Individuos");
+			dataset.addValue(setDiametrosTotales(ruta, upmid, "251", "500"), "251-n cm", "Individuos");
 			JFreeChart barChart = ChartFactory.createBarChart3D("Diametros normales", "Rangos cm", "No.Registros",
 					dataset, PlotOrientation.VERTICAL, true, true, false);
 
@@ -103,6 +126,44 @@ public class FrmGraficasArbolado extends JInternalFrame {
 					.addGroup(gl_panelDN.createSequentialGroup().addGap(5)
 							.addComponent(chartPanel, GroupLayout.DEFAULT_SIZE, 561, Short.MAX_VALUE).addGap(91)));
 			panelDN.setLayout(gl_panelDN);
+
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
+
+	public void generateBarChartAlturasTotales(String ruta, int upmid) {
+
+		try {
+			int Resultado = 0;
+
+			final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
+			dataset.addValue(setALturasTotales(ruta, upmid, "0", "5"), "0-5 m", "Individuos");
+			dataset.addValue(setALturasTotales(ruta, upmid, "6", "10"), "6-10 m", "Individuos");
+			dataset.addValue(setALturasTotales(ruta, upmid, "11", "15"), "11-15 m", "Individuos");
+			dataset.addValue(setALturasTotales(ruta, upmid, "16", "20"), "16-20 m", "Individuos");
+			dataset.addValue(setALturasTotales(ruta, upmid, "21", "25"), "21-25 m", "Individuos");
+			dataset.addValue(setALturasTotales(ruta, upmid, "26", "30"), "26-30 m", "Individuos");
+			dataset.addValue(setALturasTotales(ruta, upmid, "31", "35"), "31-35 m", "Individuos");
+			dataset.addValue(setALturasTotales(ruta, upmid, "36", "40"), "36-40 m", "Individuos");
+			dataset.addValue(setALturasTotales(ruta, upmid, "41", "45"), "41-45 m", "Individuos");
+			dataset.addValue(setALturasTotales(ruta, upmid, "46", "50"), "46-50 m", "Individuos");
+			dataset.addValue(setALturasTotales(ruta, upmid, "50", "100"), "50-n m", "Individuos");
+			JFreeChart barChart = ChartFactory.createBarChart3D("Alturas Totales", "Alturas m", "No.Registros", dataset,
+					PlotOrientation.VERTICAL, true, true, false);
+
+			ChartPanel chartPanel = new ChartPanel(barChart);
+
+			chartPanel.setBounds(panelAT.getBounds());
+			GroupLayout gl_panelDN = new GroupLayout(panelAT);
+			gl_panelDN.setHorizontalGroup(gl_panelDN.createParallelGroup(Alignment.LEADING)
+					.addGroup(gl_panelDN.createSequentialGroup().addGap(31)
+							.addComponent(chartPanel, GroupLayout.DEFAULT_SIZE, 805, Short.MAX_VALUE).addGap(22)));
+			gl_panelDN.setVerticalGroup(gl_panelDN.createParallelGroup(Alignment.LEADING)
+					.addGroup(gl_panelDN.createSequentialGroup().addGap(5)
+							.addComponent(chartPanel, GroupLayout.DEFAULT_SIZE, 561, Short.MAX_VALUE).addGap(91)));
+			panelAT.setLayout(gl_panelDN);
 
 		} catch (Exception e) {
 			// TODO: handle exception

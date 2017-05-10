@@ -213,6 +213,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 					graficasArb.setVisible(true);
 					desktopPanelCentral.add(graficasArb);
 					graficasArb.generateBarChartDiametrosNormales(ruta, upmInt);
+					graficasArb.generateBarChartAlturasTotales(ruta, upmInt);
 				}
 
 				if (graficasArb.isBackgroundSet()) {
