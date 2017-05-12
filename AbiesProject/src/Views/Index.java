@@ -116,7 +116,7 @@ public class Index extends JFrame {
 		configUserConnection.getConnection(configUser);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Index.class.getResource("/Icons/g5296.png")));
 		setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
-		setTitle("Abies (V_1.2)");
+		setTitle("Abies (V_1.3)");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1023, 824);
 		contentPane = new JPanel();
@@ -200,19 +200,30 @@ public class Index extends JFrame {
 		});
 		btnInfPorUpm.setEnabled(false);
 		GroupLayout gl_panelIzquierdo = new GroupLayout(panelIzquierdo);
-		gl_panelIzquierdo.setHorizontalGroup(gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panelIzquierdo.createSequentialGroup().addGroup(gl_panelIzquierdo
-						.createParallelGroup(Alignment.TRAILING)
+		gl_panelIzquierdo.setHorizontalGroup(
+			gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panelIzquierdo.createSequentialGroup()
+					.addGroup(gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
 						.addComponent(btnEstadisticas, GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
-						.addGroup(Alignment.LEADING, gl_panelIzquierdo.createSequentialGroup().addGap(1)
-								.addGroup(gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
-										.addComponent(btnInfPorUpm, GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
-										.addComponent(btnExportar, GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE))))
-						.addContainerGap()));
-		gl_panelIzquierdo.setVerticalGroup(gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panelIzquierdo.createSequentialGroup().addGap(30).addComponent(btnEstadisticas).addGap(18)
-						.addComponent(btnExportar).addGap(75).addComponent(btnInfPorUpm).addContainerGap(574,
-								Short.MAX_VALUE)));
+						.addGroup(gl_panelIzquierdo.createSequentialGroup()
+							.addContainerGap()
+							.addComponent(btnExportar, GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE))
+						.addGroup(Alignment.TRAILING, gl_panelIzquierdo.createSequentialGroup()
+							.addGap(1)
+							.addComponent(btnInfPorUpm, GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)))
+					.addContainerGap())
+		);
+		gl_panelIzquierdo.setVerticalGroup(
+			gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panelIzquierdo.createSequentialGroup()
+					.addGap(30)
+					.addComponent(btnEstadisticas)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(btnInfPorUpm)
+					.addPreferredGap(ComponentPlacement.RELATED, 471, Short.MAX_VALUE)
+					.addComponent(btnExportar)
+					.addGap(185))
+		);
 		panelIzquierdo.setLayout(gl_panelIzquierdo);
 
 		JPanel panelSuperior = new JPanel();
