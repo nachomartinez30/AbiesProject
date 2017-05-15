@@ -86,6 +86,7 @@ public class Index extends JFrame {
 	private JPanel panelIzquierdo;
 	private JCheckBoxMenuItem chckboxOcultarPanelIzquierdo;
 	private JButton btnInfPorUpm;
+	private JButton btnCalidad;
 
 	/**
 	 * Launch the application.
@@ -177,7 +178,7 @@ public class Index extends JFrame {
 		});
 		btnExportar.setEnabled(false);
 
-		btnInfPorUpm = new JButton("Inf. por UPM");
+		btnInfPorUpm = new JButton("Inf. Por UPM");
 		btnInfPorUpm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (informacionUpm.isVisible() == false) {
@@ -199,18 +200,24 @@ public class Index extends JFrame {
 			}
 		});
 		btnInfPorUpm.setEnabled(false);
+		
+		btnCalidad = new JButton("Ctrl. Calidad");
+		btnCalidad.setEnabled(false);
 		GroupLayout gl_panelIzquierdo = new GroupLayout(panelIzquierdo);
 		gl_panelIzquierdo.setHorizontalGroup(
 			gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panelIzquierdo.createSequentialGroup()
 					.addGroup(gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
-						.addComponent(btnEstadisticas, GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
-						.addGroup(gl_panelIzquierdo.createSequentialGroup()
+						.addComponent(btnEstadisticas, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE)
+						.addGroup(Alignment.TRAILING, gl_panelIzquierdo.createSequentialGroup()
 							.addContainerGap()
 							.addComponent(btnExportar, GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE))
+						.addGroup(gl_panelIzquierdo.createSequentialGroup()
+							.addGap(1)
+							.addComponent(btnInfPorUpm, GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE))
 						.addGroup(Alignment.TRAILING, gl_panelIzquierdo.createSequentialGroup()
 							.addGap(1)
-							.addComponent(btnInfPorUpm, GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)))
+							.addComponent(btnCalidad, GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)))
 					.addContainerGap())
 		);
 		gl_panelIzquierdo.setVerticalGroup(
@@ -220,7 +227,9 @@ public class Index extends JFrame {
 					.addComponent(btnEstadisticas)
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addComponent(btnInfPorUpm)
-					.addPreferredGap(ComponentPlacement.RELATED, 471, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(btnCalidad)
+					.addPreferredGap(ComponentPlacement.RELATED, 436, Short.MAX_VALUE)
 					.addComponent(btnExportar)
 					.addGap(185))
 		);
@@ -314,12 +323,20 @@ public class Index extends JFrame {
 		lblBackground = new JLabel("");
 		lblBackground.setHorizontalAlignment(SwingConstants.CENTER);
 		GroupLayout gl_desktopPanelCentral = new GroupLayout(desktopPanelCentral);
-		gl_desktopPanelCentral.setHorizontalGroup(gl_desktopPanelCentral.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_desktopPanelCentral.createSequentialGroup().addGap(61)
-						.addComponent(lblBackground, GroupLayout.DEFAULT_SIZE, 742, Short.MAX_VALUE).addGap(79)));
-		gl_desktopPanelCentral.setVerticalGroup(gl_desktopPanelCentral.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_desktopPanelCentral.createSequentialGroup().addGap(29)
-						.addComponent(lblBackground, GroupLayout.DEFAULT_SIZE, 697, Short.MAX_VALUE).addGap(35)));
+		gl_desktopPanelCentral.setHorizontalGroup(
+			gl_desktopPanelCentral.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_desktopPanelCentral.createSequentialGroup()
+					.addGap(48)
+					.addComponent(lblBackground, GroupLayout.DEFAULT_SIZE, 741, Short.MAX_VALUE)
+					.addGap(92))
+		);
+		gl_desktopPanelCentral.setVerticalGroup(
+			gl_desktopPanelCentral.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_desktopPanelCentral.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(lblBackground, GroupLayout.DEFAULT_SIZE, 705, Short.MAX_VALUE)
+					.addGap(52))
+		);
 		desktopPanelCentral.setLayout(gl_desktopPanelCentral);
 
 		getUserConfigs(configUser);
@@ -342,8 +359,7 @@ public class Index extends JFrame {
 
 			if (!extension.equals("cons")) {
 				// System.out.println(extension);
-				JOptionPane.showMessageDialog(null, "Debe seleccionar un base de datos valida a importar" + "",
-						"Importación", JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(null, "Debe seleccionar un base de datos valida a importar" + "","Importación", JOptionPane.INFORMATION_MESSAGE);
 
 			} else {
 
@@ -364,6 +380,7 @@ public class Index extends JFrame {
 	public void enabledLeftPanelButtons() {
 		btnEstadisticas.setEnabled(true);
 		btnExportar.setEnabled(true);
+		btnCalidad.setEnabled(true);
 		btnInfPorUpm.setEnabled(true);
 	}
 

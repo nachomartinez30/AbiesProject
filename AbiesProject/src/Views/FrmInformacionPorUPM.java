@@ -429,8 +429,9 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 	}
 
 	public void getIndividuosTotales(String ruta, int upmid) {
-		String query = "SELECT DISTINCT  NoIndividuo FROM  TAXONOMIA_Arbolado WHERE UPMID=" + upmid
-				+ " GROUP BY UPMID,SitioID ORDER BY UPMID ";
+		String query ="SELECT DISTINCT sitio.SitioID, sitio.Sitio, claveSerieV.TipoVegetacion, faseSucecional.Clave  AS FaseSucecional, arbolado.Consecutivo as No_registros, arbolado.NoIndividuo AS Individuo FROM TAXONOMIA_Arbolado arbolado LEFT JOIN SITIOS_Sitio sitio ON sitio.SitioID=arbolado.SitioID and sitio.UPMID=arbolado.UPMID LEFT JOIN CAT_ClaveSerieV claveSerieV ON claveSerieV.ClaveSerieVID = sitio.ClaveSerieV LEFT JOIN CAT_FaseSucecional faseSucecional on faseSucecional.FaseSucecionalID =sitio.FaseSucecional WHERE arbolado.UPMID="
+				+ upmid + " GROUP BY arbolado.UPMID, arbolado.SitioID ORDER BY arbolado.UPMID  ";
+		System.out.println(query);
 		int total = 0, totalrs;
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
 		try {
@@ -438,7 +439,8 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 			ResultSet rsExterno = sqlExterno.executeQuery(query);
 
 			while (rsExterno.next()) {
-				totalrs = rsExterno.getInt("NoIndividuo");
+				totalrs = Integer.parseInt(rsExterno.getString("Individuo"));
+				
 				total = total + totalrs;
 			}
 			txtIndividuosTotales.setText(Integer.toString(total));
