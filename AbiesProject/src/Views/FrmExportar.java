@@ -29,6 +29,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import com.toedter.components.JSpinField;
 
 import Database.ExternalConnection;
+import Database.ProgressExport;
 
 import com.csvreader.CsvWriter;
 import com.toedter.calendar.JDateChooser;

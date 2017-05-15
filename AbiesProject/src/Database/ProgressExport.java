@@ -1,4 +1,4 @@
-package Views;
+package Database;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -14,8 +14,6 @@ import javax.swing.SwingWorker;
 import javax.swing.event.TreeWillExpandListener;
 
 import com.csvreader.CsvWriter;
-
-import Database.ExternalConnection;
 
 public class ProgressExport extends SwingWorker<Integer, String> {
 	JProgressBar barraProgreso;
@@ -45,6 +43,7 @@ public class ProgressExport extends SwingWorker<Integer, String> {
 		this.chktodo = chkTodo;
 	}
 
+	
 	@Override
 	protected Integer doInBackground() throws Exception {
 		setCargandoComponentesGraficos();
