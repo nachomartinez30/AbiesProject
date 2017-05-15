@@ -1,18 +1,13 @@
 package Views;
 
-import java.awt.EventQueue;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.swing.JInternalFrame;
-import javax.swing.JSplitPane;
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
 import javax.swing.JList;
-import javax.swing.AbstractListModel;
-import javax.swing.DefaultListModel;
 import javax.swing.JScrollPane;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -30,27 +25,14 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.ChartUtilities;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.category.DefaultCategoryDataset;
-
 import Database.ExternalConnection;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
-
-import javax.swing.LayoutStyle.ComponentPlacement;
 import java.awt.Color;
 import java.awt.ComponentOrientation;
 import java.awt.Cursor;
 import javax.swing.border.BevelBorder;
-import javax.swing.border.MatteBorder;
-import javax.swing.plaf.DesktopPaneUI;
 import javax.swing.JButton;
 import javax.swing.JDesktopPane;
 
@@ -110,7 +92,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 			public void mouseClicked(MouseEvent arg0) {
 				if (arg0.getClickCount() == 2 && !arg0.isConsumed()) {
 					arg0.consume();
-					String UPMElegido = (String) lsUPM.getSelectedValue();
+					String UPMElegido = lsUPM.getSelectedValue();
 					upmInt = Integer.parseInt(UPMElegido);
 
 					lblUPM.setText(UPMElegido);
@@ -136,7 +118,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		JPanel panel_1 = new JPanel();
 		scrollPane.setRowHeaderView(panel_1);
 
-		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		JTabbedPane tabbedPane = new JTabbedPane(SwingConstants.TOP);
 		tabbedPane.setAutoscrolls(true);
 		getContentPane().add(tabbedPane, BorderLayout.CENTER);
 
@@ -206,6 +188,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 
 		JButton btnNewButton = new JButton("Gr\u00E1ficas");
 		btnNewButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				FrmGraficasArbolado graficasArb = new FrmGraficasArbolado(ruta);
 				graficasArb.setUpmid(upmInt);
@@ -547,7 +530,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		tblEspeciesPorSitio.setModel(especiesPorSitioModel);
 		DefaultTableCellRenderer cellRenderedCenter = new DefaultTableCellRenderer();
 
-		cellRenderedCenter.setHorizontalAlignment(JLabel.CENTER);
+		cellRenderedCenter.setHorizontalAlignment(SwingConstants.CENTER);
 		tblEspeciesPorSitio.getColumnModel().getColumn(0).setCellRenderer(cellRenderedCenter);
 		tblEspeciesPorSitio.getColumnModel().getColumn(2).setCellRenderer(cellRenderedCenter);
 	}
@@ -555,7 +538,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 	public void alignCellsTables(DefaultTableModel model, JTable tbl) {
 		DefaultTableCellRenderer cellRenderedCenter = new DefaultTableCellRenderer();
 
-		cellRenderedCenter.setHorizontalAlignment(JLabel.CENTER);
+		cellRenderedCenter.setHorizontalAlignment(SwingConstants.CENTER);
 		for (int i = 0; i < model.getColumnCount(); i++) {
 			tbl.getColumnModel().getColumn(i).setCellRenderer(cellRenderedCenter);
 		}
