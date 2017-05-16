@@ -56,15 +56,15 @@ public class FrmGraficasArbolado extends JInternalFrame {
 
 	public int setDiametrosTotales(String ruta, int upmid, String rangoMenor, String rangoMayor) {
 		int result = 0;
-		String query = "SELECT count(ArboladoID) AS CONTEO FROM TAXONOMIA_Arbolado WHERE DiametroNormal>=" + rangoMenor
+		String query = "SELECT count(*) AS CONTEO FROM TAXONOMIA_Arbolado WHERE DiametroNormal>=" + rangoMenor
 				+ " and DiametroNormal<=" + rangoMayor + " and UPMID=" + upmid;
+		//System.out.println(query);
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
 		try {
 			sqlExterno = baseDatosExterna.createStatement();
 			ResultSet rsExterno = sqlExterno.executeQuery(query);
 			while (rsExterno.next()) {
 				result = rsExterno.getInt("CONTEO");
-
 			}
 			baseDatosExterna.close();
 		} catch (Exception e) {
@@ -75,7 +75,7 @@ public class FrmGraficasArbolado extends JInternalFrame {
 
 	public int setALturasTotales(String ruta, int upmid, String rangoMenor, String rangoMayor) {
 		int result = 0;
-		String query = "SELECT count(ArboladoID) AS CONTEO FROM TAXONOMIA_Arbolado WHERE AlturaTotal>=" + rangoMenor
+		String query = "SELECT count(*) AS CONTEO FROM TAXONOMIA_Arbolado WHERE AlturaTotal>=" + rangoMenor
 				+ " and AlturaTotal<=" + rangoMayor + " and UPMID=" + upmid;
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
 		try {
@@ -98,20 +98,20 @@ public class FrmGraficasArbolado extends JInternalFrame {
 			int Resultado = 0;
 
 			final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-
-			dataset.addValue(setDiametrosTotales(ruta, upmid, "7.5", "10"), "7.5-10 cm", "Individuos");
-			dataset.addValue(setDiametrosTotales(ruta, upmid, "11", "15"), "11-15 cm", "Individuos");
-			dataset.addValue(setDiametrosTotales(ruta, upmid, "16", "20"), "16-20 cm", "Individuos");
-			dataset.addValue(setDiametrosTotales(ruta, upmid, "21", "25"), "21-25 cm", "Individuos");
-			dataset.addValue(setDiametrosTotales(ruta, upmid, "26", "30"), "26-30 cm", "Individuos");
-			dataset.addValue(setDiametrosTotales(ruta, upmid, "31", "40"), "31-40 cm", "Individuos");
-			dataset.addValue(setDiametrosTotales(ruta, upmid, "41", "50"), "41-50 cm", "Individuos");
-			dataset.addValue(setDiametrosTotales(ruta, upmid, "51", "70"), "51-70 cm", "Individuos");
-			dataset.addValue(setDiametrosTotales(ruta, upmid, "71", "90"), "71-90 cm", "Individuos");
-			dataset.addValue(setDiametrosTotales(ruta, upmid, "91", "120"), "91-120 cm", "Individuos");
-			dataset.addValue(setDiametrosTotales(ruta, upmid, "121", "150"), "121-150 cm", "Individuos");
-			dataset.addValue(setDiametrosTotales(ruta, upmid, "151", "250"), "151-250 cm", "Individuos");
-			dataset.addValue(setDiametrosTotales(ruta, upmid, "251", "500"), "251-n cm", "Individuos");
+			dataset.addValue(setDiametrosTotales(ruta, upmid, "0.1", "7.49"), "0.1-7.49 cm", "Individuos");
+			dataset.addValue(setDiametrosTotales(ruta, upmid, "7.5", "10.99"), "7.5-10 cm", "Individuos");
+			dataset.addValue(setDiametrosTotales(ruta, upmid, "11", "15.99"), "11-15 cm", "Individuos");
+			dataset.addValue(setDiametrosTotales(ruta, upmid, "16", "20.99"), "16-20 cm", "Individuos");
+			dataset.addValue(setDiametrosTotales(ruta, upmid, "21", "25.99"), "21-25 cm", "Individuos");
+			dataset.addValue(setDiametrosTotales(ruta, upmid, "26", "30.99"), "26-30 cm", "Individuos");
+			dataset.addValue(setDiametrosTotales(ruta, upmid, "31", "40.99"), "31-40 cm", "Individuos");
+			dataset.addValue(setDiametrosTotales(ruta, upmid, "41", "50.99"), "41-50 cm", "Individuos");
+			dataset.addValue(setDiametrosTotales(ruta, upmid, "51", "70.99"), "51-70 cm", "Individuos");
+			dataset.addValue(setDiametrosTotales(ruta, upmid, "71", "90.99"), "71-90 cm", "Individuos");
+			dataset.addValue(setDiametrosTotales(ruta, upmid, "91", "120.99"), "91-120 cm", "Individuos");
+			dataset.addValue(setDiametrosTotales(ruta, upmid, "121", "150.99"), "121-150 cm", "Individuos");
+			dataset.addValue(setDiametrosTotales(ruta, upmid, "151", "250.99"), "151-250 cm", "Individuos");
+			dataset.addValue(setDiametrosTotales(ruta, upmid, "251", "500.99"), "251-n cm", "Individuos");
 			JFreeChart barChart = ChartFactory.createBarChart3D("Diametros normales", "Rangos cm", "No.Registros",
 					dataset, PlotOrientation.VERTICAL, true, true, false);
 
@@ -139,17 +139,17 @@ public class FrmGraficasArbolado extends JInternalFrame {
 
 			final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
-			dataset.addValue(setALturasTotales(ruta, upmid, "0", "5"), "0-5 m", "Individuos");
-			dataset.addValue(setALturasTotales(ruta, upmid, "6", "10"), "6-10 m", "Individuos");
-			dataset.addValue(setALturasTotales(ruta, upmid, "11", "15"), "11-15 m", "Individuos");
-			dataset.addValue(setALturasTotales(ruta, upmid, "16", "20"), "16-20 m", "Individuos");
-			dataset.addValue(setALturasTotales(ruta, upmid, "21", "25"), "21-25 m", "Individuos");
-			dataset.addValue(setALturasTotales(ruta, upmid, "26", "30"), "26-30 m", "Individuos");
-			dataset.addValue(setALturasTotales(ruta, upmid, "31", "35"), "31-35 m", "Individuos");
-			dataset.addValue(setALturasTotales(ruta, upmid, "36", "40"), "36-40 m", "Individuos");
-			dataset.addValue(setALturasTotales(ruta, upmid, "41", "45"), "41-45 m", "Individuos");
-			dataset.addValue(setALturasTotales(ruta, upmid, "46", "50"), "46-50 m", "Individuos");
-			dataset.addValue(setALturasTotales(ruta, upmid, "50", "100"), "50-n m", "Individuos");
+			dataset.addValue(setALturasTotales(ruta, upmid, "0", "5.99"), "0-5 m", "Individuos");
+			dataset.addValue(setALturasTotales(ruta, upmid, "6", "10.99"), "6-10 m", "Individuos");
+			dataset.addValue(setALturasTotales(ruta, upmid, "11", "15.99"), "11-15 m", "Individuos");
+			dataset.addValue(setALturasTotales(ruta, upmid, "16", "20.99"), "16-20 m", "Individuos");
+			dataset.addValue(setALturasTotales(ruta, upmid, "21", "25.99"), "21-25 m", "Individuos");
+			dataset.addValue(setALturasTotales(ruta, upmid, "26", "30.99"), "26-30 m", "Individuos");
+			dataset.addValue(setALturasTotales(ruta, upmid, "31", "35.99"), "31-35 m", "Individuos");
+			dataset.addValue(setALturasTotales(ruta, upmid, "36", "40.99"), "36-40 m", "Individuos");
+			dataset.addValue(setALturasTotales(ruta, upmid, "41", "45.99"), "41-45 m", "Individuos");
+			dataset.addValue(setALturasTotales(ruta, upmid, "46", "50.99"), "46-50 m", "Individuos");
+			dataset.addValue(setALturasTotales(ruta, upmid, "50", "200"), "50-n m", "Individuos");
 			JFreeChart barChart = ChartFactory.createBarChart3D("Alturas Totales", "Alturas m", "No.Registros", dataset,
 					PlotOrientation.VERTICAL, true, true, false);
 

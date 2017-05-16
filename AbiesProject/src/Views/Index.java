@@ -9,35 +9,20 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JButton;
 import javax.swing.JMenu;
-import java.awt.FlowLayout;
 import java.awt.Component;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JMenuBar;
 import java.awt.GridLayout;
 import javax.swing.JCheckBoxMenuItem;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.FormSpecs;
-import com.jgoodies.forms.layout.RowSpec;
-
 import Database.ConfigUserConnection;
 import Database.ExternalConnection;
 
-import javax.swing.JInternalFrame;
-import javax.swing.JTabbedPane;
-import javax.swing.JLayeredPane;
 import javax.swing.Box;
-import javax.swing.JSeparator;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
 import javax.swing.JLabel;
-import javax.swing.SpringLayout;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.UIManager;
 import java.awt.event.ActionListener;
-import java.beans.Statement;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -47,9 +32,7 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.JDesktopPane;
 import javax.swing.JFileChooser;
 
-import java.awt.Rectangle;
 import java.awt.Color;
-import java.awt.SystemColor;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JTextField;
 import java.awt.Font;
@@ -64,6 +47,8 @@ public class Index extends JFrame {
 	FrmEstadisticas estadistica;
 	FrmExportar exportar;
 	FrmInformacionPorUPM informacionUpm;
+	FrmCalidad calidad;
+
 	private boolean temaClaro = false;
 	private JPanel contentPane;
 	private JTable table;
@@ -86,6 +71,8 @@ public class Index extends JFrame {
 	private JPanel panelIzquierdo;
 	private JCheckBoxMenuItem chckboxOcultarPanelIzquierdo;
 	private JButton btnInfPorUpm;
+	private JButton btnCalidad;
+	private JMenuItem mntmConcentrador;
 
 	/**
 	 * Launch the application.
@@ -97,6 +84,7 @@ public class Index extends JFrame {
 			e.printStackTrace();
 		}
 		EventQueue.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				try {
 					Index frame = new Index();
@@ -113,10 +101,10 @@ public class Index extends JFrame {
 	 * Create the frame.
 	 */
 	public Index() {
-		configUserConnection.getConnection(configUser);
+		ConfigUserConnection.getConnection(configUser);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Index.class.getResource("/Icons/g5296.png")));
 		setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
-		setTitle("Abies (V_1.2)");
+		setTitle("Abies (V_1.3)");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1023, 824);
 		contentPane = new JPanel();
@@ -131,6 +119,7 @@ public class Index extends JFrame {
 		btnEstadisticas = new JButton("Estadisticas");
 		btnEstadisticas.setEnabled(false);
 		btnEstadisticas.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				if (estadistica.isVisible() == false) {
 
@@ -153,6 +142,7 @@ public class Index extends JFrame {
 
 		btnExportar = new JButton("CSV");
 		btnExportar.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 
 				if (exportar.isVisible() == false) {
@@ -177,8 +167,9 @@ public class Index extends JFrame {
 		});
 		btnExportar.setEnabled(false);
 
-		btnInfPorUpm = new JButton("Inf. por UPM");
+		btnInfPorUpm = new JButton("Inf. Por UPM");
 		btnInfPorUpm.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				if (informacionUpm.isVisible() == false) {
 					informacionUpm.setVisible(true);
@@ -199,20 +190,51 @@ public class Index extends JFrame {
 			}
 		});
 		btnInfPorUpm.setEnabled(false);
+
+		btnCalidad = new JButton("Ctrl. Calidad");
+		btnCalidad.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				if (calidad.isVisible() == false) {
+					calidad.setVisible(true);
+					desktopPanelCentral.add(calidad);
+
+					// System.out.println("Arbir exportar");
+				}
+
+				if (calidad.isBackgroundSet()) {
+					calidad.moveToFront();
+				}
+
+				try {
+					calidad.setMaximum(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+					// TODO: handle exception
+				}
+			}
+		});
+		btnCalidad.setEnabled(false);
 		GroupLayout gl_panelIzquierdo = new GroupLayout(panelIzquierdo);
 		gl_panelIzquierdo.setHorizontalGroup(gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panelIzquierdo.createSequentialGroup().addGroup(gl_panelIzquierdo
-						.createParallelGroup(Alignment.TRAILING)
-						.addComponent(btnEstadisticas, GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
-						.addGroup(Alignment.LEADING, gl_panelIzquierdo.createSequentialGroup().addGap(1)
-								.addGroup(gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
-										.addComponent(btnInfPorUpm, GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
-										.addComponent(btnExportar, GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE))))
+				.addGroup(gl_panelIzquierdo.createSequentialGroup()
+						.addGroup(gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
+								.addComponent(btnEstadisticas, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 121,
+										Short.MAX_VALUE)
+								.addGroup(Alignment.TRAILING,
+										gl_panelIzquierdo.createSequentialGroup().addContainerGap().addComponent(
+												btnExportar, GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE))
+								.addGroup(gl_panelIzquierdo.createSequentialGroup().addGap(1).addComponent(btnInfPorUpm,
+										GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE))
+								.addGroup(Alignment.TRAILING, gl_panelIzquierdo.createSequentialGroup().addGap(1)
+										.addComponent(btnCalidad, GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)))
 						.addContainerGap()));
 		gl_panelIzquierdo.setVerticalGroup(gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panelIzquierdo.createSequentialGroup().addGap(30).addComponent(btnEstadisticas).addGap(18)
-						.addComponent(btnExportar).addGap(75).addComponent(btnInfPorUpm).addContainerGap(574,
-								Short.MAX_VALUE)));
+				.addGroup(gl_panelIzquierdo.createSequentialGroup().addGap(30).addComponent(btnEstadisticas)
+						.addPreferredGap(ComponentPlacement.UNRELATED).addComponent(btnInfPorUpm)
+						.addPreferredGap(ComponentPlacement.UNRELATED).addComponent(btnCalidad)
+						.addPreferredGap(ComponentPlacement.RELATED, 436, Short.MAX_VALUE).addComponent(btnExportar)
+						.addGap(185)));
 		panelIzquierdo.setLayout(gl_panelIzquierdo);
 
 		JPanel panelSuperior = new JPanel();
@@ -231,6 +253,8 @@ public class Index extends JFrame {
 
 		JMenuItem mntmCargar = new JMenuItem("Cargar");
 		mntmCargar.addActionListener(new ActionListener() {
+
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 
 				cargarBaseDatos();
@@ -247,6 +271,7 @@ public class Index extends JFrame {
 		chckboxOcultarPanelIzquierdo = new JCheckBoxMenuItem("Ocultar panel izquierdo");
 		chckboxOcultarPanelIzquierdo.setState(true);
 		chckboxOcultarPanelIzquierdo.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				if (chckboxOcultarPanelIzquierdo.getState() == true) {
 					panelIzquierdo.setVisible(true);
@@ -263,6 +288,7 @@ public class Index extends JFrame {
 
 		JMenuItem mntmCambiarFondo = new JMenuItem("Fondo conifera");
 		mntmCambiarFondo.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				setBackground(configUser, "AbiesProject_background2.png");
 				lblBackground.setIcon(new ImageIcon(Index.class.getResource("/Icons/AbiesProject_background2.png")));
@@ -272,6 +298,7 @@ public class Index extends JFrame {
 
 		JMenuItem mntmFondoHoja = new JMenuItem("Fondo hoja");
 		mntmFondoHoja.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				setBackground(configUser, "Abies_background.png");
 				lblBackground.setIcon(new ImageIcon(Index.class.getResource("/Icons/Abies_background.png")));
@@ -304,11 +331,11 @@ public class Index extends JFrame {
 		lblBackground.setHorizontalAlignment(SwingConstants.CENTER);
 		GroupLayout gl_desktopPanelCentral = new GroupLayout(desktopPanelCentral);
 		gl_desktopPanelCentral.setHorizontalGroup(gl_desktopPanelCentral.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_desktopPanelCentral.createSequentialGroup().addGap(61)
-						.addComponent(lblBackground, GroupLayout.DEFAULT_SIZE, 742, Short.MAX_VALUE).addGap(79)));
+				.addGroup(gl_desktopPanelCentral.createSequentialGroup().addGap(48)
+						.addComponent(lblBackground, GroupLayout.DEFAULT_SIZE, 741, Short.MAX_VALUE).addGap(92)));
 		gl_desktopPanelCentral.setVerticalGroup(gl_desktopPanelCentral.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_desktopPanelCentral.createSequentialGroup().addGap(29)
-						.addComponent(lblBackground, GroupLayout.DEFAULT_SIZE, 697, Short.MAX_VALUE).addGap(35)));
+				.addGroup(gl_desktopPanelCentral.createSequentialGroup().addContainerGap()
+						.addComponent(lblBackground, GroupLayout.DEFAULT_SIZE, 705, Short.MAX_VALUE).addGap(52)));
 		desktopPanelCentral.setLayout(gl_desktopPanelCentral);
 
 		getUserConfigs(configUser);
@@ -320,7 +347,7 @@ public class Index extends JFrame {
 		FileNameExtensionFilter filtro = new FileNameExtensionFilter("*.cons", "cons");
 		fcBaseDatos.setAcceptAllFileFilterUsed(false);
 		fcBaseDatos.setFileFilter(filtro);
-		int returnVal =fcBaseDatos.showOpenDialog(this);
+		int returnVal = fcBaseDatos.showOpenDialog(this);
 		// fcBaseDatos.showOpenDialog(Main.main);
 		try {
 			File baseDatos = fcBaseDatos.getSelectedFile();
@@ -336,13 +363,14 @@ public class Index extends JFrame {
 
 			} else {
 
-				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					externalConnection.getConnection(ruta);
-					enabledLeftPanelButtons();
+				if (returnVal == JFileChooser.APPROVE_OPTION) { /* OBJETOS */
+					ExternalConnection.getConnection(ruta);
+					calidad = new FrmCalidad(ruta);
 					informacionUpm = new FrmInformacionPorUPM(ruta, this.desktopPanelCentral);
 					estadistica = new FrmEstadisticas(ruta);
 					exportar = new FrmExportar(ruta);
 					textField.setText(ruta);
+					enabledLeftPanelButtons();
 					JOptionPane.showMessageDialog(null, "Se conectó satisfactoriamente");
 				}
 			}
@@ -353,6 +381,7 @@ public class Index extends JFrame {
 	public void enabledLeftPanelButtons() {
 		btnEstadisticas.setEnabled(true);
 		btnExportar.setEnabled(true);
+		btnCalidad.setEnabled(true);
 		btnInfPorUpm.setEnabled(true);
 	}
 
