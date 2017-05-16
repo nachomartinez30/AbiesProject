@@ -5,9 +5,12 @@ import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.ResultSet;
 
+import javax.management.modelmbean.ModelMBean;
 import javax.swing.JFrame;
 import javax.swing.JProgressBar;
+import javax.swing.JTable;
 import javax.swing.SwingWorker;
+import javax.swing.table.DefaultTableModel;
 
 import Views.FrmDistribucionEspecies;
 
@@ -18,11 +21,15 @@ public class ProgressDistribucion extends SwingWorker<Integer, String> {
 	JFrame calidad;
 	JProgressBar barraProgreso;
 	public String ruta;
+	public String[] columnNameDistribucionesMal = { "UPM", "Estado", "Entidad taxonomica", "Cantidad" };
+	public DefaultTableModel DistribucionesMalModel = new DefaultTableModel(null, columnNameDistribucionesMal);
+	JTable table;
 
-	public ProgressDistribucion(JProgressBar barraProgreso, String ruta) {
+	public ProgressDistribucion(JProgressBar barraProgreso, String ruta, JTable table) {
 		super();
 		this.barraProgreso = barraProgreso;
 		this.ruta = ruta;
+		this.table = table;
 	}
 
 	@Override
@@ -33,15 +40,17 @@ public class ProgressDistribucion extends SwingWorker<Integer, String> {
 	}
 
 	public void getEntidadesTaxonomicas(String ruta) {
-		String query = "SELECT  DISTINCT  arbolado.UPMID, upm.Estado, printf('%s %s %s', genero.Nombre, especie.Nombre, infraespecie.Nombre) as Entidad FROM TAXONOMIA_Arbolado arbolado  JOIN SITIOS_Sitio sitio ON sitio.SitioID=arbolado.SitioID  JOIN UPM_MallaPuntos upm on upm.UPMID= arbolado.UPMID LEFT JOIN CAT_ClaveSerieV claveSerieV ON claveSerieV.ClaveSerieVID = sitio.ClaveSerieV and sitio.UPMID=arbolado.UPMID  LEFT JOIN CAT_FaseSucecional faseSucecional on faseSucecional.FaseSucecionalID =sitio.FaseSucecional  LEFT JOIN CAT_FamiliaEspecie familia ON arbolado.FamiliaID = familia.FamiliaID  JOIN CAT_Genero genero ON arbolado.GeneroID = genero.GeneroID    JOIN CAT_Especie especie ON arbolado.EspecieID = especie.EspecieID   LEFT JOIN CAT_Infraespecie infraespecie ON arbolado.InfraespecieID = infraespecie.InfraespecieID   LEFT JOIN CAT_TipoFormaVidaArbolado formaVida ON arbolado.FormaVidaID = formaVida.FormaVidaID  GROUP BY arbolado.UPMID , arbolado.SitioID , arbolado.ArboladoID ORDER BY sitio.sitio ";
+		String query = "SELECT  DISTINCT  arbolado.UPMID, upm.Estado, printf('%s %s %s', genero.Nombre, especie.Nombre, infraespecie.Nombre) as Entidad COUNT(genero.Nombre) AS Cantidad FROM TAXONOMIA_Arbolado arbolado  JOIN SITIOS_Sitio sitio ON sitio.SitioID=arbolado.SitioID  JOIN UPM_MallaPuntos upm on upm.UPMID= arbolado.UPMID LEFT JOIN CAT_ClaveSerieV claveSerieV ON claveSerieV.ClaveSerieVID = sitio.ClaveSerieV and sitio.UPMID=arbolado.UPMID  LEFT JOIN CAT_FaseSucecional faseSucecional on faseSucecional.FaseSucecionalID =sitio.FaseSucecional  LEFT JOIN CAT_FamiliaEspecie familia ON arbolado.FamiliaID = familia.FamiliaID  JOIN CAT_Genero genero ON arbolado.GeneroID = genero.GeneroID    JOIN CAT_Especie especie ON arbolado.EspecieID = especie.EspecieID   LEFT JOIN CAT_Infraespecie infraespecie ON arbolado.InfraespecieID = infraespecie.InfraespecieID   LEFT JOIN CAT_TipoFormaVidaArbolado formaVida ON arbolado.FormaVidaID = formaVida.FormaVidaID  GROUP BY arbolado.UPMID , arbolado.SitioID , arbolado.ArboladoID,Cantidad ORDER BY sitio.sitio ";
 		String entidad = null, estado = null, estadoCase = null, upm = null;
 		String seDistribuye = null;
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
+		System.out.println(query);
 		try {
 			sqlExterno = baseDatosExterna.createStatement();
 			ResultSet rsExterno = sqlExterno.executeQuery(query);
 
 			while (rsExterno.next()) {
+
 				estadoCase = rsExterno.getString("Estado");
 				upm = rsExterno.getString("UPMID");
 				switch (estadoCase) {
@@ -84,14 +93,14 @@ public class ProgressDistribucion extends SwingWorker<Integer, String> {
 				case "Hidalgo":
 					estado = "Hidalgo";
 					break;
-				case "México":
+				case "Mï¿½xico":
 					estado = "Mexico";
 					break;
 				case "Jalisco":
 					estado = "Jalisco";
 					break;
-				case "Michoacán":
-					estado = "Michoacán";
+				case "Michoacï¿½n":
+					estado = "Michoacï¿½n";
 					break;
 				case "Morelos":
 					estado = "Morelos";
@@ -99,8 +108,8 @@ public class ProgressDistribucion extends SwingWorker<Integer, String> {
 				case "Nayarit":
 					estado = "Nayarit";
 					break;
-				case "Nuevo León":
-					estado = "Nuevo_León";
+				case "Nuevo Leï¿½n":
+					estado = "Nuevo_Leï¿½n";
 					break;
 				case "Oaxaca":
 					estado = "Oaxaca";
@@ -108,14 +117,14 @@ public class ProgressDistribucion extends SwingWorker<Integer, String> {
 				case "Puebla":
 					estado = "Puebla";
 					break;
-				case "Querétaro":
-					estado = "Querétaro";
+				case "Querï¿½taro":
+					estado = "Querï¿½taro";
 					break;
 				case "Quintana Roo":
 					estado = "Quintana_Roo";
 					break;
-				case "San Luis Potosí":
-					estado = "San_Luis_Potosí";
+				case "San Luis Potosï¿½":
+					estado = "San_Luis_Potosï¿½";
 					break;
 				case "Sinaloa":
 					estado = "Sinaloa";
@@ -135,8 +144,8 @@ public class ProgressDistribucion extends SwingWorker<Integer, String> {
 				case "Veracruz":
 					estado = "Veracruz";
 					break;
-				case "Yucatán":
-					estado = "Yucatán";
+				case "Yucatï¿½n":
+					estado = "Yucatï¿½n";
 					break;
 				case "Zacatecas":
 					estado = "Zacatecas";
@@ -146,14 +155,16 @@ public class ProgressDistribucion extends SwingWorker<Integer, String> {
 				entidad = rsExterno.getString("Entidad");
 				seDistribuye = isInDistribucion(entidad, estado);
 
-				// System.out.println(upm + "\t" + estado + "\t" + entidad);
 				if (seDistribuye != null) {
 					switch (seDistribuye) {
 					case "SI":
 						break;
 					case "NO":
 						/* Agregar al modelo */
-						System.out.println(entidad + "\t" + estadoCase);
+						// System.out.println(upm + "\t" + estado + "\t" +
+						// entidad);
+						DistribucionesMalModel
+								.addRow(new Object[] { upm, entidad, estadoCase, rsExterno.getString("Cantidad") });
 						break;
 					default:
 						break;
@@ -161,6 +172,7 @@ public class ProgressDistribucion extends SwingWorker<Integer, String> {
 				}
 			}
 			baseDatosExterna.close();
+			table.setModel(DistribucionesMalModel);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

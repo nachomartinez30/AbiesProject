@@ -15,6 +15,7 @@ import java.sql.ResultSet;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 
 import Database.ExternalConnection;
 
@@ -23,7 +24,7 @@ import javax.swing.JFrame;
 public class FrmDistribucionEspecies extends JInternalFrame {
 	private JScrollPane scrollPane;
 	private JScrollPane scrollPane_1;
-	private JTable tblDistribuciones;
+	public JTable tblDistribuciones;
 	private JTable tblExcepciones;
 	private JLabel label;
 	public FrmInformacionPorUPM infoUpm;

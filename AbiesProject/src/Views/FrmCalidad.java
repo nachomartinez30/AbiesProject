@@ -44,6 +44,7 @@ public class FrmCalidad extends JInternalFrame {
 		setTitle("Pruebas");
 		setFrameIcon(null);
 		setBounds(100, 100, 979, 673);
+		
 
 		JPanel panel = new JPanel();
 		getContentPane().add(panel, BorderLayout.WEST);
@@ -51,7 +52,7 @@ public class FrmCalidad extends JInternalFrame {
 		btnDistribucin = new JButton("Distribuci\u00F3n");
 		btnDistribucin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				progreso=new ProgressDistribucion(progressBar, ruta);
+				progreso=new ProgressDistribucion(progressBar, ruta,distribucion.tblDistribuciones);
 				progreso.execute();
 				if (distribucion.isVisible() == false) {
 					distribucion.setVisible(true);
