@@ -20,17 +20,18 @@ import javax.swing.table.DefaultTableModel;
 import Database.ExternalConnection;
 
 import javax.swing.JFrame;
+import javax.swing.JTextArea;
 
 public class FrmDistribucionEspecies extends JInternalFrame {
 	private JScrollPane scrollPane;
 	private JScrollPane scrollPane_1;
 	public JTable tblDistribuciones;
-	private JTable tblExcepciones;
 	private JLabel label;
 	public FrmInformacionPorUPM infoUpm;
 	public String ruta;
 	private Connection baseDatosExterna;
 	private java.sql.Statement sqlExterno;
+	public JTextArea textArea;
 
 	public FrmDistribucionEspecies(String ruta) {
 		setClosable(true);
@@ -47,9 +48,6 @@ public class FrmDistribucionEspecies extends JInternalFrame {
 		scrollPane.setViewportView(tblDistribuciones);
 
 		scrollPane_1 = new JScrollPane();
-
-		tblExcepciones = new JTable();
-		scrollPane_1.setViewportView(tblExcepciones);
 
 		JLabel lblNewLabel = new JLabel("Excepciones");
 		lblNewLabel.setFont(new Font("Dialog", Font.BOLD, 17));
@@ -77,6 +75,9 @@ public class FrmDistribucionEspecies extends JInternalFrame {
 										GroupLayout.DEFAULT_SIZE, 314, Short.MAX_VALUE)))
 						.addGap(12).addComponent(lblNewLabel, GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE).addGap(5)
 						.addComponent(scrollPane_1, GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE).addGap(29)));
+		
+		textArea = new JTextArea();
+		scrollPane_1.setViewportView(textArea);
 		panel.setLayout(gl_panel);
 
 	}

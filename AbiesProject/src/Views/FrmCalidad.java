@@ -52,7 +52,7 @@ public class FrmCalidad extends JInternalFrame {
 		btnDistribucin = new JButton("Distribuci\u00F3n");
 		btnDistribucin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				progreso=new ProgressDistribucion(progressBar, ruta,distribucion.tblDistribuciones);
+				progreso=new ProgressDistribucion(progressBar, ruta,distribucion.tblDistribuciones,distribucion.textArea);
 				progreso.execute();
 				if (distribucion.isVisible() == false) {
 					distribucion.setVisible(true);
