@@ -217,7 +217,7 @@ public class ProgressDistribucion extends SwingWorker<Integer, String> {
 		this.baseDatosExterna = ExternalConnection.getConnection(path + "/src/Database/Distribuciones.ab");
 
 		try {
-			System.out.print(query+"\t");
+			//System.out.print(query+"\t");
 			sqlExterno = baseDatosExterna.createStatement();
 			ResultSet rsExterno = sqlExterno.executeQuery(query);
 			while (rsExterno.next()) {
@@ -231,7 +231,7 @@ public class ProgressDistribucion extends SwingWorker<Integer, String> {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println(seDistribuye);
+		//System.out.println(seDistribuye);
 		return seDistribuye;
 	}
 
