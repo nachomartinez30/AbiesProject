@@ -40,7 +40,6 @@ public class ProgressDistribucion extends SwingWorker<Integer, String> {
 	@Override
 	public Integer doInBackground() throws Exception {
 		barraProgreso.setIndeterminate(true);
-		Thread.sleep(5000);
 		getEntidadesTaxonomicas(ruta);
 		barraProgreso.setIndeterminate(false);
 		return 0;
@@ -221,8 +220,7 @@ public class ProgressDistribucion extends SwingWorker<Integer, String> {
 				+ "= rtrim(ltrim('" + entidad + "')) Limit 1 ";
 
 		this.baseDatosExterna = ExternalConnection.getConnection(path + "/src/Database/Distribuciones.ab");
-		// this.baseDatosExterna = ExternalConnection.getConnection(path +
-		// "/Distribuciones.ab");
+//		 this.baseDatosExterna = ExternalConnection.getConnection(path +"/Distribuciones.ab");
 
 		try {
 			//System.out.print(query+"\t");
