@@ -24,21 +24,25 @@ public class ProgressDistribucion extends SwingWorker<Integer, String> {
 	public String ruta;
 	public String[] columnNameDistribucionesMal = { "UPM", "Entidad taxonomica", "Estado", "Cantidad" };
 	public DefaultTableModel DistribucionesMalModel = new DefaultTableModel(null, columnNameDistribucionesMal);
-	JTable table;
+	public String[] columnNameException = { "UPM", "Entidad taxonomica", "Estado", "Cantidad" };
+	public DefaultTableModel ExceptionModel = new DefaultTableModel(null, columnNameException);
+	JTable table, tableException;
 	JTextArea textArea;
 
-	public ProgressDistribucion(JProgressBar barraProgreso, String ruta, JTable table,JTextArea textArea) {
+	public ProgressDistribucion(JProgressBar barraProgreso, String ruta, JTable table, JTable tableException) {
 		super();
 		this.barraProgreso = barraProgreso;
 		this.ruta = ruta;
 		this.table = table;
-		this.textArea=textArea;
+		this.tableException = tableException;
 	}
 
 	@Override
 	public Integer doInBackground() throws Exception {
+		barraProgreso.setIndeterminate(true);
+		Thread.sleep(5000);
 		getEntidadesTaxonomicas(ruta);
-		getBarraProgreso().setIndeterminate(false);
+		barraProgreso.setIndeterminate(false);
 		return 0;
 	}
 
@@ -61,7 +65,7 @@ public class ProgressDistribucion extends SwingWorker<Integer, String> {
 					estado = "Aguascalientes";
 					break;
 				case "Baja California":
-					estado = "Baja_California";
+					estado = "Baja_California_Norte";
 					break;
 				case "Baja California Sur":
 					estado = "Baja_California_Sur";
@@ -75,14 +79,14 @@ public class ProgressDistribucion extends SwingWorker<Integer, String> {
 				case "Chihuahua":
 					estado = "Chihuahua";
 					break;
-				case "Coahuila de Zara":
-					estado = "Coahuila_de_Zara";
+				case "Coahuila de Zaragoza":
+					estado = "Coahuila";
 					break;
 				case "Colima":
 					estado = "Colima";
 					break;
 				case "Distrito Federal":
-					estado = "Distrito_Federal";
+					estado = "Ciudad_de_Mexico";
 					break;
 				case "Durango":
 					estado = "Durango";
@@ -96,14 +100,14 @@ public class ProgressDistribucion extends SwingWorker<Integer, String> {
 				case "Hidalgo":
 					estado = "Hidalgo";
 					break;
-				case "México":
-					estado = "Mexico";
-					break;
 				case "Jalisco":
 					estado = "Jalisco";
 					break;
-				case "Michoacán":
-					estado = "Michoacán";
+				case "México":
+					estado = "Estado_de_Mexico";
+					break;
+				case "Michoacan de Ocampo":
+					estado = "Michoacan";
 					break;
 				case "Morelos":
 					estado = "Morelos";
@@ -111,8 +115,8 @@ public class ProgressDistribucion extends SwingWorker<Integer, String> {
 				case "Nayarit":
 					estado = "Nayarit";
 					break;
-				case "Nuevo León":
-					estado = "Nuevo_León";
+				case "Nuevo Leon":
+					estado = "Nuevo_Leon";
 					break;
 				case "Oaxaca":
 					estado = "Oaxaca";
@@ -120,14 +124,14 @@ public class ProgressDistribucion extends SwingWorker<Integer, String> {
 				case "Puebla":
 					estado = "Puebla";
 					break;
-				case "Querétaro":
-					estado = "Querétaro";
+				case "Queretaro de Arteaga":
+					estado = "Queretaro";
 					break;
 				case "Quintana Roo":
 					estado = "Quintana_Roo";
 					break;
-				case "San Luis Potosí":
-					estado = "San_Luis_Potosí";
+				case "San Luis Potosi":
+					estado = "San_Luis_Potosi";
 					break;
 				case "Sinaloa":
 					estado = "Sinaloa";
@@ -144,10 +148,10 @@ public class ProgressDistribucion extends SwingWorker<Integer, String> {
 				case "Tlaxcala":
 					estado = "Tlaxcala";
 					break;
-				case "Veracruz":
+				case "Veracruz de Ignacio de la Llave":
 					estado = "Veracruz";
 					break;
-				case "Yucatán":
+				case "Yucatan":
 					estado = "Yucatán";
 					break;
 				case "Zacatecas":
@@ -156,7 +160,7 @@ public class ProgressDistribucion extends SwingWorker<Integer, String> {
 				}
 
 				entidad = rsExterno.getString("Entidad");
-				seDistribuye = isInDistribucion(entidad, estado,"Nombre_completo_apg");
+				seDistribuye = isInDistribucion(entidad, estado, "Nombre_completo_apg");
 				if (seDistribuye != null) {
 					switch (seDistribuye) {
 					case "SI":
@@ -167,8 +171,8 @@ public class ProgressDistribucion extends SwingWorker<Integer, String> {
 								.addRow(new Object[] { upm, entidad, estadoCase, rsExterno.getString("Cantidad") });
 						break;
 					}
-				}else{
-					seDistribuye = isInDistribucion(entidad, estado,"Nombre_completo_Cronquist");
+				} else {
+					seDistribuye = isInDistribucion(entidad, estado, "Nombre_completo_Cronquist");
 					if (seDistribuye != null) {
 						switch (seDistribuye) {
 						case "SI":
@@ -179,34 +183,36 @@ public class ProgressDistribucion extends SwingWorker<Integer, String> {
 									.addRow(new Object[] { upm, entidad, estadoCase, rsExterno.getString("Cantidad") });
 							break;
 						}
-					}else{
-						seDistribuye = isInDistribucion(entidad, estado,"Nombre_Original_Corregido");
+					} else {
+						seDistribuye = isInDistribucion(entidad, estado, "Nombre_Original_Corregido");
 						if (seDistribuye != null) {
 							switch (seDistribuye) {
 							case "SI":
 								break;
 							case "NO":
 								/* Agregar al modelo */
-								DistribucionesMalModel
-										.addRow(new Object[] { upm, entidad, estadoCase, rsExterno.getString("Cantidad") });
+								DistribucionesMalModel.addRow(
+										new Object[] { upm, entidad, estadoCase, rsExterno.getString("Cantidad") });
 								break;
 							}
-						}else{
-							
-							textArea.setText(upm+"\t"+ entidad+"\t"+estadoCase+"\t"+rsExterno.getString("Cantidad"));
+						} else {
+							ExceptionModel.addRow(
+									new Object[] { upm, entidad, estadoCase, rsExterno.getString("Cantidad") });
 						}
 					}
 				}
 			}
 			baseDatosExterna.close();
 			table.setModel(DistribucionesMalModel);
+			tableException.setModel(ExceptionModel);
 		} catch (Exception e) {
+			
 			e.printStackTrace();
 		}
 
 	}
 
-	public String isInDistribucion(String entidad, String estado,String catalogo) {
+	public String isInDistribucion(String entidad, String estado, String catalogo) {
 		Path currentPath = Paths.get("");
 		String path = currentPath.toAbsolutePath().toString();
 		String seDistribuye = null;
@@ -214,8 +220,9 @@ public class ProgressDistribucion extends SwingWorker<Integer, String> {
 				+ " WHEN 1 THEN 'SI' WHEN 0 THEN 'NO' END AS Se_ditribuye FROM Cat_Distribucion WHERE " + catalogo
 				+ "= rtrim(ltrim('" + entidad + "')) Limit 1 ";
 
-		//this.baseDatosExterna = ExternalConnection.getConnection(path + "/src/Database/Distribuciones.ab");
-		this.baseDatosExterna = ExternalConnection.getConnection(path + "/Distribuciones.ab");
+		this.baseDatosExterna = ExternalConnection.getConnection(path + "/src/Database/Distribuciones.ab");
+		// this.baseDatosExterna = ExternalConnection.getConnection(path +
+		// "/Distribuciones.ab");
 
 		try {
 			//System.out.print(query+"\t");
@@ -230,9 +237,10 @@ public class ProgressDistribucion extends SwingWorker<Integer, String> {
 				}
 			}
 		} catch (Exception e) {
+			System.out.println(entidad+"\t"+catalogo);
 			e.printStackTrace();
 		}
-		//System.out.println(seDistribuye);
+		// System.out.println(seDistribuye);
 		return seDistribuye;
 	}
 

@@ -33,7 +33,7 @@ public class FrmCalidad extends JInternalFrame {
 	public String ruta;
 	private Connection baseDatosExterna;
 	private java.sql.Statement sqlExterno;
-	private JProgressBar progressBar;
+	public JProgressBar progressBar;
 	private JButton btnDistribucin;
 
 	public FrmCalidad(String ruta) {
@@ -52,10 +52,11 @@ public class FrmCalidad extends JInternalFrame {
 		btnDistribucin = new JButton("Distribuci\u00F3n");
 		btnDistribucin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				progreso=new ProgressDistribucion(progressBar, ruta,distribucion.tblDistribuciones,distribucion.textArea);
+				progreso=new ProgressDistribucion(progressBar, ruta,distribucion.tblDistribuciones,distribucion.tblException);
 				progreso.execute();
 				if (distribucion.isVisible() == false) {
 					distribucion.setVisible(true);
+					
 					desktopPane.add(distribucion);
 
 				}

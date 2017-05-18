@@ -31,7 +31,7 @@ public class FrmDistribucionEspecies extends JInternalFrame {
 	public String ruta;
 	private Connection baseDatosExterna;
 	private java.sql.Statement sqlExterno;
-	public JTextArea textArea;
+	public JTable tblException;
 
 	public FrmDistribucionEspecies(String ruta) {
 		setClosable(true);
@@ -76,10 +76,9 @@ public class FrmDistribucionEspecies extends JInternalFrame {
 						.addGap(12).addComponent(lblNewLabel, GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE).addGap(5)
 						.addComponent(scrollPane_1, GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE).addGap(29)));
 		
-		textArea = new JTextArea();
-		scrollPane_1.setViewportView(textArea);
+		tblException = new JTable();
+		scrollPane_1.setViewportView(tblException);
 		panel.setLayout(gl_panel);
 
 	}
-
 }
