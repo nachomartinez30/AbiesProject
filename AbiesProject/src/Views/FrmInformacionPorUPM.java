@@ -142,9 +142,9 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		JTabbedPane tabbedPane = new JTabbedPane(SwingConstants.TOP);
 		tabbedPane.setAutoscrolls(true);
 
-		JLayeredPane layeredPane_1 = new JLayeredPane();
-		layeredPane_1.setAutoscrolls(true);
-		tabbedPane.addTab("Arbolado", null, layeredPane_1, null);
+		JLayeredPane layeredPaneArbolado = new JLayeredPane();
+		layeredPaneArbolado.setAutoscrolls(true);
+		tabbedPane.addTab("Arbolado", null, layeredPaneArbolado, null);
 
 		JLabel lblNewLabel_2 = new JLabel("No. Registros totales:");
 
@@ -193,47 +193,47 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 				}
 			}
 		});
-		GroupLayout gl_layeredPane_1 = new GroupLayout(layeredPane_1);
-		gl_layeredPane_1
-				.setHorizontalGroup(gl_layeredPane_1.createParallelGroup(Alignment.TRAILING)
-						.addGroup(gl_layeredPane_1.createSequentialGroup().addContainerGap().addGroup(gl_layeredPane_1
+		GroupLayout gl_layeredPaneArbolado = new GroupLayout(layeredPaneArbolado);
+		gl_layeredPaneArbolado
+				.setHorizontalGroup(gl_layeredPaneArbolado.createParallelGroup(Alignment.TRAILING)
+						.addGroup(gl_layeredPaneArbolado.createSequentialGroup().addContainerGap().addGroup(gl_layeredPaneArbolado
 								.createParallelGroup(Alignment.LEADING)
-								.addGroup(gl_layeredPane_1.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_layeredPaneArbolado.createParallelGroup(Alignment.LEADING)
 										.addGroup(Alignment.TRAILING,
-												gl_layeredPane_1
+												gl_layeredPaneArbolado
 														.createSequentialGroup()
 														.addComponent(btnGraficas, GroupLayout.PREFERRED_SIZE, 82,
 																GroupLayout.PREFERRED_SIZE)
 														.addContainerGap())
-										.addGroup(Alignment.TRAILING, gl_layeredPane_1.createSequentialGroup()
+										.addGroup(Alignment.TRAILING, gl_layeredPaneArbolado.createSequentialGroup()
 												.addComponent(scrollPaneEspeciesPorSitio, GroupLayout.DEFAULT_SIZE, 650,
 														Short.MAX_VALUE)
 												.addContainerGap())
-										.addGroup(gl_layeredPane_1.createSequentialGroup()
+										.addGroup(gl_layeredPaneArbolado.createSequentialGroup()
 												.addComponent(lblEspeciesPorSitio, GroupLayout.DEFAULT_SIZE, 650,
 														Short.MAX_VALUE)
 												.addContainerGap()))
-								.addGroup(Alignment.TRAILING, gl_layeredPane_1.createSequentialGroup()
-										.addGroup(gl_layeredPane_1.createParallelGroup(Alignment.LEADING)
+								.addGroup(Alignment.TRAILING, gl_layeredPaneArbolado.createSequentialGroup()
+										.addGroup(gl_layeredPaneArbolado.createParallelGroup(Alignment.LEADING)
 												.addComponent(lblNewLabel_2, GroupLayout.PREFERRED_SIZE, 132,
 														GroupLayout.PREFERRED_SIZE)
 												.addComponent(lblNoIndividuosTotales, GroupLayout.PREFERRED_SIZE, 132,
 														GroupLayout.PREFERRED_SIZE))
 										.addGap(6)
-										.addGroup(gl_layeredPane_1.createParallelGroup(Alignment.LEADING)
+										.addGroup(gl_layeredPaneArbolado.createParallelGroup(Alignment.LEADING)
 												.addComponent(txtRegistrosTotales, GroupLayout.PREFERRED_SIZE, 67,
 														GroupLayout.PREFERRED_SIZE)
 												.addComponent(txtIndividuosTotales, GroupLayout.PREFERRED_SIZE, 67,
 														GroupLayout.PREFERRED_SIZE))
 										.addContainerGap()))));
-		gl_layeredPane_1.setVerticalGroup(gl_layeredPane_1.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_layeredPane_1.createSequentialGroup().addContainerGap().addGroup(gl_layeredPane_1
+		gl_layeredPaneArbolado.setVerticalGroup(gl_layeredPaneArbolado.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_layeredPaneArbolado.createSequentialGroup().addContainerGap().addGroup(gl_layeredPaneArbolado
 						.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_layeredPane_1.createSequentialGroup()
+						.addGroup(gl_layeredPaneArbolado.createSequentialGroup()
 								.addComponent(lblNewLabel_2, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
 								.addGap(12).addComponent(lblNoIndividuosTotales, GroupLayout.PREFERRED_SIZE, 20,
 										GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_layeredPane_1.createSequentialGroup()
+						.addGroup(gl_layeredPaneArbolado.createSequentialGroup()
 								.addComponent(txtRegistrosTotales, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 										GroupLayout.PREFERRED_SIZE)
 								.addGap(12).addComponent(txtIndividuosTotales, GroupLayout.PREFERRED_SIZE,
@@ -243,7 +243,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 						.addPreferredGap(ComponentPlacement.RELATED)
 						.addComponent(scrollPaneEspeciesPorSitio, GroupLayout.DEFAULT_SIZE, 626, Short.MAX_VALUE)
 						.addGap(18).addComponent(btnGraficas).addContainerGap()));
-		layeredPane_1.setLayout(gl_layeredPane_1);
+		layeredPaneArbolado.setLayout(gl_layeredPaneArbolado);
 
 		JPanel panel = new JPanel();
 
@@ -386,8 +386,8 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 								.addComponent(scrollPane))
 						.addGap(0)));
 
-		JLayeredPane layeredPane = new JLayeredPane();
-		tabbedPane.addTab("Sotobosque", null, layeredPane, null);
+		JLayeredPane layeredPaneSotobosque = new JLayeredPane();
+		tabbedPane.addTab("Repoblado/Sotobosque", null, layeredPaneSotobosque, null);
 
 		JScrollPane scrollPane_1 = new JScrollPane();
 		scrollPane_1.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
@@ -395,37 +395,63 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 
 		JButton button = new JButton("Gr\u00E1ficas");
 
-		JLabel label_2 = new JLabel("Especies por sitio");
-		label_2.setHorizontalAlignment(SwingConstants.CENTER);
-		label_2.setFont(new Font("Dialog", Font.BOLD, 16));
-		GroupLayout gl_layeredPane = new GroupLayout(layeredPane);
-		gl_layeredPane.setHorizontalGroup(
-			gl_layeredPane.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_layeredPane.createSequentialGroup()
-					.addContainerGap()
-					.addGroup(gl_layeredPane.createParallelGroup(Alignment.TRAILING)
-						.addComponent(label_2, GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE)
-						.addComponent(scrollPane_1, GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE)
-						.addComponent(button, GroupLayout.PREFERRED_SIZE, 82, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap())
-		);
-		gl_layeredPane.setVerticalGroup(
-			gl_layeredPane.createParallelGroup(Alignment.TRAILING)
-				.addGroup(gl_layeredPane.createSequentialGroup()
-					.addGap(82)
-					.addComponent(label_2, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(scrollPane_1, GroupLayout.DEFAULT_SIZE, 625, Short.MAX_VALUE)
-					.addGap(18)
-					.addComponent(button)
-					.addContainerGap())
-		);
+		JLabel lblEspeciesPorSitio_1 = new JLabel("Especies por sitio Sotobosque");
+		lblEspeciesPorSitio_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblEspeciesPorSitio_1.setFont(new Font("Dialog", Font.BOLD, 16));
 
 		tblEspeciesPorSitioSotobosque = new JTable();
+		tblEspeciesPorSitioSotobosque.setFont(new Font("Dialog", Font.PLAIN, 14));
 		tblEspeciesPorSitioSotobosque.setBackground(Color.DARK_GRAY);
 		tblEspeciesPorSitioSotobosque.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
 		scrollPane_1.setViewportView(tblEspeciesPorSitioSotobosque);
-		layeredPane.setLayout(gl_layeredPane);
+		
+		JScrollPane scrollPane_2 = new JScrollPane();
+		scrollPane_2.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		scrollPane_2.setBackground(Color.WHITE);
+		
+		JLabel lblEspeciesPorSitio_2 = new JLabel("Especies por sitio Repoblado");
+		lblEspeciesPorSitio_2.setHorizontalAlignment(SwingConstants.CENTER);
+		lblEspeciesPorSitio_2.setFont(new Font("Dialog", Font.BOLD, 16));
+		GroupLayout gl_layeredPaneSotobosque = new GroupLayout(layeredPaneSotobosque);
+		gl_layeredPaneSotobosque.setHorizontalGroup(
+			gl_layeredPaneSotobosque.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_layeredPaneSotobosque.createSequentialGroup()
+					.addGap(12)
+					.addComponent(lblEspeciesPorSitio_1, GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE)
+					.addGap(12))
+				.addGroup(gl_layeredPaneSotobosque.createSequentialGroup()
+					.addGap(12)
+					.addComponent(scrollPane_1, GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE)
+					.addGap(12))
+				.addGroup(gl_layeredPaneSotobosque.createSequentialGroup()
+					.addGap(12)
+					.addComponent(lblEspeciesPorSitio_2, GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE)
+					.addGap(12))
+				.addGroup(gl_layeredPaneSotobosque.createSequentialGroup()
+					.addGap(12)
+					.addComponent(scrollPane_2, GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE)
+					.addGap(12))
+				.addGroup(Alignment.TRAILING, gl_layeredPaneSotobosque.createSequentialGroup()
+					.addGap(580)
+					.addComponent(button, GroupLayout.PREFERRED_SIZE, 82, GroupLayout.PREFERRED_SIZE)
+					.addGap(12))
+		);
+		gl_layeredPaneSotobosque.setVerticalGroup(
+			gl_layeredPaneSotobosque.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_layeredPaneSotobosque.createSequentialGroup()
+					.addGap(29)
+					.addComponent(lblEspeciesPorSitio_1, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
+					.addGap(6)
+					.addComponent(scrollPane_1, GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
+					.addGap(12)
+					.addComponent(lblEspeciesPorSitio_2, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
+					.addGap(12)
+					.addComponent(scrollPane_2, GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
+					.addGap(28)
+					.addComponent(button)
+					.addGap(11))
+		);
+		layeredPaneSotobosque.setLayout(gl_layeredPaneSotobosque);
 
 		scrollPaneInforSitio = new JScrollPane();
 		scrollPaneInforSitio.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
@@ -453,7 +479,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		tblVegetacionPorSitio.setModel(new DefaultTableModel(new Object[][] {}, new String[] {}));
 		scrollPaneTipoVegetacionPorSitio.setViewportView(tblVegetacionPorSitio);
 
-		JLabel lblTipoDeVetacion = new JLabel("Tipo de vetacion por sitio");
+		JLabel lblTipoDeVetacion = new JLabel("Tipo de vetacion por sitio en arbolado");
 		lblTipoDeVetacion.setFont(new Font("Dialog", Font.BOLD, 16));
 		lblTipoDeVetacion.setHorizontalAlignment(SwingConstants.CENTER);
 		GroupLayout gl_panel_2 = new GroupLayout(panel_2);
