@@ -86,6 +86,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 	private JButton btnGraficas;
 	private JTable tblEspeciesPorSitioSotobosque;
 	private JTable tblEspeciesPorSitioRepoblado;
+	private JButton btnGraficasSotobosqueRepoblado;
 
 	public FrmInformacionPorUPM(String ruta, JDesktopPane desktopPanelCentral) {
 		setFrameIcon(null);
@@ -399,7 +400,23 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		scrollPane_1.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		scrollPane_1.setBackground(Color.WHITE);
 
-		JButton button = new JButton("Gr\u00E1ficas");
+		btnGraficasSotobosqueRepoblado = new JButton("Gr\u00E1ficas");
+		btnGraficasSotobosqueRepoblado.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				FrmGraficasSotobosqueRepoblado graficasRepobladoSotobosque = new FrmGraficasSotobosqueRepoblado(ruta);
+				graficasRepobladoSotobosque.setUpmid(upmInt);
+				if (graficasRepobladoSotobosque.isVisible() == false) {
+					graficasRepobladoSotobosque.setVisible(true);
+					desktopPanelCentral.add(graficasRepobladoSotobosque);
+					graficasRepobladoSotobosque.generarBarChartFrecuenciasRepoblado(ruta, upmInt);
+					graficasRepobladoSotobosque.generarBarChartFrecuenciasSotbosque(ruta, upmInt);
+				}
+
+				if (graficasRepobladoSotobosque.isBackgroundSet()) {
+					graficasRepobladoSotobosque.moveToFront();
+				}
+			}
+		});
 
 		JLabel lblEspeciesPorSitio_1 = new JLabel("Especies por sitio Sotobosque");
 		lblEspeciesPorSitio_1.setHorizontalAlignment(SwingConstants.CENTER);
@@ -439,7 +456,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 					.addGap(12))
 				.addGroup(Alignment.TRAILING, gl_layeredPaneSotobosque.createSequentialGroup()
 					.addGap(580)
-					.addComponent(button, GroupLayout.PREFERRED_SIZE, 82, GroupLayout.PREFERRED_SIZE)
+					.addComponent(btnGraficasSotobosqueRepoblado, GroupLayout.PREFERRED_SIZE, 82, GroupLayout.PREFERRED_SIZE)
 					.addGap(12))
 		);
 		gl_layeredPaneSotobosque.setVerticalGroup(
@@ -454,7 +471,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 					.addGap(12)
 					.addComponent(scrollPane_2, GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
 					.addGap(28)
-					.addComponent(button)
+					.addComponent(btnGraficasSotobosqueRepoblado)
 					.addGap(11))
 		);
 		

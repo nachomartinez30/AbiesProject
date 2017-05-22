@@ -106,7 +106,7 @@ public class Index extends JFrame {
 		setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
 		setTitle("Abies (V_1.3)");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1023, 824);
+		setBounds(100, 100, 1366, 847);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -216,25 +216,35 @@ public class Index extends JFrame {
 		});
 		btnCalidad.setEnabled(false);
 		GroupLayout gl_panelIzquierdo = new GroupLayout(panelIzquierdo);
-		gl_panelIzquierdo.setHorizontalGroup(gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
+		gl_panelIzquierdo.setHorizontalGroup(
+			gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panelIzquierdo.createSequentialGroup()
-						.addGroup(gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
-								.addComponent(btnEstadisticas, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 121,
-										Short.MAX_VALUE)
-								.addGroup(Alignment.TRAILING,
-										gl_panelIzquierdo.createSequentialGroup().addContainerGap().addComponent(
-												btnExportar, GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE))
-								.addGroup(gl_panelIzquierdo.createSequentialGroup().addGap(1).addComponent(btnInfPorUpm,
-										GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE))
-								.addGroup(Alignment.TRAILING, gl_panelIzquierdo.createSequentialGroup().addGap(1)
-										.addComponent(btnCalidad, GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)))
-						.addContainerGap()));
-		gl_panelIzquierdo.setVerticalGroup(gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panelIzquierdo.createSequentialGroup().addGap(30).addComponent(btnEstadisticas)
-						.addPreferredGap(ComponentPlacement.UNRELATED).addComponent(btnInfPorUpm)
-						.addPreferredGap(ComponentPlacement.UNRELATED).addComponent(btnCalidad)
-						.addPreferredGap(ComponentPlacement.RELATED, 436, Short.MAX_VALUE).addComponent(btnExportar)
-						.addGap(185)));
+					.addGroup(gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
+						.addComponent(btnEstadisticas, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE)
+						.addGroup(Alignment.TRAILING, gl_panelIzquierdo.createSequentialGroup()
+							.addGap(1)
+							.addComponent(btnInfPorUpm, GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE))
+						.addGroup(Alignment.TRAILING, gl_panelIzquierdo.createSequentialGroup()
+							.addGap(1)
+							.addComponent(btnCalidad, GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE))
+						.addGroup(gl_panelIzquierdo.createSequentialGroup()
+							.addContainerGap()
+							.addComponent(btnExportar, GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)))
+					.addContainerGap())
+		);
+		gl_panelIzquierdo.setVerticalGroup(
+			gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panelIzquierdo.createSequentialGroup()
+					.addGap(30)
+					.addComponent(btnEstadisticas)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(btnInfPorUpm)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(btnCalidad)
+					.addPreferredGap(ComponentPlacement.RELATED, 605, Short.MAX_VALUE)
+					.addComponent(btnExportar)
+					.addGap(39))
+		);
 		panelIzquierdo.setLayout(gl_panelIzquierdo);
 
 		JPanel panelSuperior = new JPanel();
@@ -330,12 +340,19 @@ public class Index extends JFrame {
 		lblBackground = new JLabel("");
 		lblBackground.setHorizontalAlignment(SwingConstants.CENTER);
 		GroupLayout gl_desktopPanelCentral = new GroupLayout(desktopPanelCentral);
-		gl_desktopPanelCentral.setHorizontalGroup(gl_desktopPanelCentral.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_desktopPanelCentral.createSequentialGroup().addGap(48)
-						.addComponent(lblBackground, GroupLayout.DEFAULT_SIZE, 741, Short.MAX_VALUE).addGap(92)));
-		gl_desktopPanelCentral.setVerticalGroup(gl_desktopPanelCentral.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_desktopPanelCentral.createSequentialGroup().addContainerGap()
-						.addComponent(lblBackground, GroupLayout.DEFAULT_SIZE, 705, Short.MAX_VALUE).addGap(52)));
+		gl_desktopPanelCentral.setHorizontalGroup(
+			gl_desktopPanelCentral.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_desktopPanelCentral.createSequentialGroup()
+					.addGap(51)
+					.addComponent(lblBackground, GroupLayout.DEFAULT_SIZE, 741, Short.MAX_VALUE)
+					.addGap(89))
+		);
+		gl_desktopPanelCentral.setVerticalGroup(
+			gl_desktopPanelCentral.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_desktopPanelCentral.createSequentialGroup()
+					.addComponent(lblBackground, GroupLayout.DEFAULT_SIZE, 705, Short.MAX_VALUE)
+					.addGap(64))
+		);
 		desktopPanelCentral.setLayout(gl_desktopPanelCentral);
 
 		getUserConfigs(configUser);
