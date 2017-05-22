@@ -219,8 +219,8 @@ public class ProgressDistribucion extends SwingWorker<Integer, String> {
 				+ " WHEN 1 THEN 'SI' WHEN 0 THEN 'NO' END AS Se_ditribuye FROM Cat_Distribucion WHERE " + catalogo
 				+ "= rtrim(ltrim('" + entidad + "')) Limit 1 ";
 
-		this.baseDatosExterna = ExternalConnection.getConnection(path + "/src/Database/Distribuciones.ab");
-//		 this.baseDatosExterna = ExternalConnection.getConnection(path +"/Distribuciones.ab");
+//		this.baseDatosExterna = ExternalConnection.getConnection(path + "/src/Database/Distribuciones.ab");
+		 this.baseDatosExterna = ExternalConnection.getConnection(path +"/Distribuciones.ab");
 
 		try {
 			//System.out.print(query+"\t");
