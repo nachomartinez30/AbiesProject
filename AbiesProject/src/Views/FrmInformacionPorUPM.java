@@ -60,17 +60,21 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 	private JList<String> lsUPM;
 	Vector<String> upmTotal = new Vector<String>();
 	JDesktopPane desktopPanelCentral;
-	public String[] vegetacionPorSitioColumnName = { "Sitio", "Tipo vegetación", "Fase sucesional", "Conteo registros",
+	public String[] vegetacionPorSitioColumnName = { "Sitio", "Tipo vegetaciï¿½n", "Fase sucesional", "Conteo registros",
 			"Conteo individuos" };
 	public String[] especiesPorSitioColumnName = { "Sitio", "Entidad taxonomica", "Forma de vida" };
-	public String[] especiesPorSitioSotobosqueColumnName = { "Sitio", "Entidad taxonomica", "Forma de vida" };
+	public String[] especiesPorSitioSotobosqueColumnName = { "Sitio", "Entidad taxonomica", "Vigor" };
+	public String[] especiesPorSitioRepobladoColumnName = { "Sitio", "Entidad taxonomica", "Vigor" };
 	public String[] informacionSitioColumnName = { "Sitio", "Sitio accesible", "Tipo inaccesibilidad",
-			"Descripcion inaccesibilidad", "Tipo de vegetación", "Fase sucecional" };
+			"Descripcion inaccesibilidad", "Tipo de vegetaciï¿½n", "Fase sucecional" };
 
 	public DefaultTableModel vegetacionPorSitioModel = new DefaultTableModel(null, vegetacionPorSitioColumnName);
-	public DefaultTableModel especiesPorSitioArboladoModel = new DefaultTableModel(null, especiesPorSitioSotobosqueColumnName);
+	public DefaultTableModel especiesPorSitioArboladoModel = new DefaultTableModel(null, especiesPorSitioColumnName);
+	public DefaultTableModel especiesPorSitioSotobosqueModel = new DefaultTableModel(null, especiesPorSitioSotobosqueColumnName);
+	public DefaultTableModel especiesPorSitioRepobladoModel = new DefaultTableModel(null, especiesPorSitioRepobladoColumnName);
 	public DefaultTableModel especiesPorSitioModel = new DefaultTableModel(null, especiesPorSitioColumnName);
 	public DefaultTableModel informacionSitioModel = new DefaultTableModel(null, informacionSitioColumnName);
+
 	private JTable tblInformacionSItio;
 	private JLabel lblAccesible;
 	private JLabel lbl_25;
@@ -81,6 +85,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 	private JScrollPane scrollPaneEspeciesPorSitio;
 	private JButton btnGraficas;
 	private JTable tblEspeciesPorSitioSotobosque;
+	private JTable tblEspeciesPorSitioRepoblado;
 
 	public FrmInformacionPorUPM(String ruta, JDesktopPane desktopPanelCentral) {
 		setFrameIcon(null);
@@ -124,6 +129,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 					getEspeciesPorSitioArbolado(ruta, upmInt);
 					getInformacionSitio(ruta, upmInt);
 					getEspeciesPorSitioSotobosque(ruta, upmInt);
+					getEspeciesPorSitioRepoblado(ruta, upmInt);
 				}
 
 			}
@@ -451,6 +457,12 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 					.addComponent(button)
 					.addGap(11))
 		);
+		
+		tblEspeciesPorSitioRepoblado = new JTable();
+		tblEspeciesPorSitioRepoblado.setBackground(Color.DARK_GRAY);
+		tblEspeciesPorSitioRepoblado.setFont(new Font("Dialog", Font.PLAIN, 14));
+		tblEspeciesPorSitioRepoblado.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+		scrollPane_2.setViewportView(tblEspeciesPorSitioRepoblado);
 		layeredPaneSotobosque.setLayout(gl_layeredPaneSotobosque);
 
 		scrollPaneInforSitio = new JScrollPane();
@@ -599,7 +611,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 	public void getVegetacionPorSitio(String ruta, int upmid) {
 		String query = "SELECT DISTINCT sitio.SitioID, sitio.Sitio, claveSerieV.TipoVegetacion, faseSucecional.Clave  AS FaseSucecional, arbolado.Consecutivo as No_registros, arbolado.NoIndividuo AS Individuo FROM TAXONOMIA_Arbolado arbolado LEFT JOIN SITIOS_Sitio sitio ON sitio.SitioID=arbolado.SitioID and sitio.UPMID=arbolado.UPMID LEFT JOIN CAT_ClaveSerieV claveSerieV ON claveSerieV.ClaveSerieVID = sitio.ClaveSerieV LEFT JOIN CAT_FaseSucecional faseSucecional on faseSucecional.FaseSucecionalID =sitio.FaseSucecional WHERE arbolado.UPMID="
 				+ upmid + " GROUP BY arbolado.UPMID, arbolado.SitioID ORDER BY arbolado.UPMID  ";
-		System.out.println(query);
+		//System.out.println(query);
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
 		try {
 			sqlExterno = baseDatosExterna.createStatement();
@@ -688,6 +700,39 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		cellRenderedCenter.setHorizontalAlignment(SwingConstants.CENTER);
 		tblEspeciesPorSitioSotobosque.getColumnModel().getColumn(0).setCellRenderer(cellRenderedCenter);
 		tblEspeciesPorSitioSotobosque.getColumnModel().getColumn(2).setCellRenderer(cellRenderedCenter);
+	}
+	
+	public void getEspeciesPorSitioRepoblado(String ruta, int upmid) {
+		String query = "SELECT  DISTINCT  sitio.sitio, printf('%s %s %s',genero.Nombre, especie.Nombre, infraespecie.Nombre) as Entidad, vigorSotobosque.Descripcion AS Vigor  FROM TAXONOMIA_Repoblado repoblado   JOIN SITIOS_Sitio sitio ON sitio.SitioID=repoblado.SitioID   LEFT JOIN CAT_ClaveSerieV claveSerieV ON claveSerieV.ClaveSerieVID = sitio.ClaveSerieV and sitio.UPMID=repoblado.UPMID   LEFT JOIN CAT_FaseSucecional faseSucecional on faseSucecional.FaseSucecionalID =sitio.FaseSucecional   LEFT JOIN CAT_FamiliaEspecie familia ON repoblado.FamiliaID = familia.FamiliaID    LEFT JOIN CAT_Genero genero ON repoblado.GeneroID = genero.GeneroID    LEFT JOIN CAT_Especie especie ON repoblado.EspecieID = especie.EspecieID    LEFT JOIN CAT_Infraespecie infraespecie ON repoblado.InfraespecieID = infraespecie.InfraespecieID    LEFT JOIN CAT_TipoVigorSotobosqueRepoblado vigorSotobosque ON vigorSotobosque.VigorID=repoblado.VigorID  WHERE repoblado.UPMID= "
+				+ upmid
+				+ "  GROUP BY repoblado.UPMID,repoblado.SitioID,repoblado.RepobladoID ORDER BY sitio.sitio ";
+		//System.out.println(query);
+		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
+		// System.out.println(query);
+		try {
+			sqlExterno = baseDatosExterna.createStatement();
+			ResultSet rsExterno = sqlExterno.executeQuery(query);
+			if (especiesPorSitioRepobladoModel.getRowCount() > 0) {
+				for (int i = especiesPorSitioRepobladoModel.getRowCount() - 1; i > -1; i--) {
+					especiesPorSitioRepobladoModel.removeRow(i);
+				}
+			}
+			while (rsExterno.next()) {
+
+				especiesPorSitioRepobladoModel.addRow(new Object[] { rsExterno.getString("sitio"),
+						rsExterno.getString("Entidad"), rsExterno.getString("Vigor") });
+			}
+			baseDatosExterna.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		tblEspeciesPorSitioRepoblado.setModel(especiesPorSitioRepobladoModel);
+		DefaultTableCellRenderer cellRenderedCenter = new DefaultTableCellRenderer();
+
+		cellRenderedCenter.setHorizontalAlignment(SwingConstants.CENTER);
+		tblEspeciesPorSitioRepoblado.getColumnModel().getColumn(0).setCellRenderer(cellRenderedCenter);
+		tblEspeciesPorSitioRepoblado.getColumnModel().getColumn(2).setCellRenderer(cellRenderedCenter);
 	}
 
 	public void alignCellsTables(DefaultTableModel model, JTable tbl) {
