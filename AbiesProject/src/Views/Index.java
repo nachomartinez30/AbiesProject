@@ -106,7 +106,7 @@ public class Index extends JFrame {
 		ConfigUserConnection.getConnection(configUser);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Index.class.getResource("/Icons/g5296.png")));
 		setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
-		setTitle("Abies (V_1.4)");
+		setTitle("Abies (V_1.4.1)");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1366, 847);
 		contentPane = new JPanel();
@@ -354,11 +354,13 @@ public class Index extends JFrame {
 	}
 
 	public void cargarBaseDatos() {
-		JFileChooser fcBaseDatos = new JFileChooser();
+		JFileChooser fcBaseDatos = new JFileChooser(ruta);
+		
 		fcBaseDatos.setDialogTitle("Base de datos a importar");
 		FileNameExtensionFilter filtro = new FileNameExtensionFilter("*.cons", "cons");
 		fcBaseDatos.setAcceptAllFileFilterUsed(false);
 		fcBaseDatos.setFileFilter(filtro);
+		
 		int returnVal = fcBaseDatos.showOpenDialog(this);
 		// fcBaseDatos.showOpenDialog(Main.main);
 		try {
