@@ -33,6 +33,9 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.Cursor;
 
 public class FrmEstadisticas extends JInternalFrame {
 	public String ruta;
@@ -53,11 +56,13 @@ public class FrmEstadisticas extends JInternalFrame {
 	public String[] columnNameDiasMuestreados = { "Dias", "Conteo UPMs" };
 	public String[] columnNameColocacionTag = { "Colocacion TAG", "Conteo UPMs" };
 	public String[] columnNameTipoUpm = { "Tipo UPM", "Conteo UPMs" };
+	public String[] columnNameSitioPorClinometro_Hipsometro={"UPMID","Sitio"};
 	/************************************************** Sitios *****************************************************************************************/
 	public String[] columnNameSitiosAccesiblesPorConglomerados = { "Conteo UPMs", "Sitios accesibles" };
 	public String[] columnNameSitiosInaccesibles = { "Conteo sitios", "Inaccesibilidad" };
 	public String[] columnNameSitioPorCondicion = { "Conteo sitios", "Condición de vegetación" };
 	public String[] columnNameCoberturaPorUpm = { "Conteo UPMs", "Condición" };
+	
 
 	public DefaultTableModel UpmsPorEstadoModel = new DefaultTableModel(null, columnNameEstados);
 	public DefaultTableModel TipoUpmModel = new DefaultTableModel(null, columnNameTipoUpm);
@@ -296,9 +301,25 @@ public class FrmEstadisticas extends JInternalFrame {
 		scrollPaneSitiosInaccesibles.setViewportView(tblSitiosInaccesibles);
 
 		JLabel lblMedidosCon = new JLabel("Medidos con Clin\u00F3metro");
+		lblMedidosCon.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		lblMedidosCon.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				DlogSitiosPorClinometro sitiosPorUpm=new DlogSitiosPorClinometro(ruta,true);
+				sitiosPorUpm.setVisible(true);
+			}
+		});
 		lblMedidosCon.setFont(new Font("Dialog", Font.PLAIN, 12));
 
 		JLabel lblMedidosCon_1 = new JLabel("Medidos con Hips\u00F3metro");
+		lblMedidosCon_1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				DlogSitiosPorClinometro sitiosPorUpm=new DlogSitiosPorClinometro(ruta,false);
+				sitiosPorUpm.setVisible(true);
+			}
+		});
+		lblMedidosCon_1.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		lblMedidosCon_1.setFont(new Font("Dialog", Font.PLAIN, 12));
 
 		txtClinometro = new JTextField();
@@ -490,8 +511,8 @@ public class FrmEstadisticas extends JInternalFrame {
 		getSitiosAccesibles(ruta);
 		getSitiosInaccesibles(ruta);
 		getSitiosTotales(ruta);
-		getSitiosPorHipsometro(ruta);
-		getSitiosPorClinometro(ruta);
+		getConteoSitiosPorHipsometro(ruta);
+		getConteoSitiosPorClinometro(ruta);
 		getSitiosForestal(ruta);
 		getSitiosNoForestal(ruta);
 		getSitiosArbolFuera(ruta);
@@ -697,7 +718,7 @@ public class FrmEstadisticas extends JInternalFrame {
 		}
 	}
 
-	public void getSitiosPorClinometro(String ruta) {
+	public void getConteoSitiosPorClinometro(String ruta) {
 		String query = "Select  Count(sitio.CintaClinometroBrujula) as Cuenta_CintaClinometro FROM SITIOS_Sitio sitio where sitio.CintaClinometroBrujula=1";
 
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -714,7 +735,7 @@ public class FrmEstadisticas extends JInternalFrame {
 		}
 	}
 
-	public void getSitiosPorHipsometro(String ruta) {
+	public void getConteoSitiosPorHipsometro(String ruta) {
 		String query = "Select Count(HipsometroBrujula) as Cuenta_Hipsometro FROM SITIOS_Sitio sitio where HipsometroBrujula=1 ";
 
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -730,6 +751,7 @@ public class FrmEstadisticas extends JInternalFrame {
 			e.printStackTrace();
 		}
 	}
+	
 
 	public void getSitiosForestal(String ruta) {
 		String query = "Select  Count(sitio.SitioID) as Conteo_Sitios FROM SITIOS_Sitio sitio Left JOIN CAT_ClaveSerieV claveSerieV ON  claveSerieV.ClaveSerieVID=sitio.ClaveSerieV WHERE claveSerieV.EsForestal=1";
