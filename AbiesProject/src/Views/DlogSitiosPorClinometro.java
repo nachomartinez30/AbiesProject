@@ -105,11 +105,22 @@ public class DlogSitiosPorClinometro extends JFrame {
 			getSitiosPorHipsometro(ruta);
 			break;
 		case "sitios_accesibles":
+			getUpmPorSitiosAccesibles(ruta);
 			break;
 		case "sicios_inaccesibles":
 			getSitioInaccesibilidad(ruta);
 			break;
 		case "sitios_condicionVegetacion":
+			getSitioCondicionVegetacion(ruta);
+			break;
+		case "sitio_forestal":
+			getSitioForestalSiNo(ruta, "1");
+			break;
+		case "sitio_noForestal":
+			getSitioForestalSiNo(ruta, "0");
+			break;
+		case "sitio_arbolFuera":
+			getSitioArbolFuera(ruta);
 			break;
 		}
 	}
@@ -326,10 +337,39 @@ public class DlogSitiosPorClinometro extends JFrame {
 		lblSitiosPorClinometro.setText("UPMs por TAG");
 
 	}
-	
+
 	public void getSitioInaccesibilidad(String ruta) {
 		String query = "Select  sitio.UPMID,sitio.Sitio, tipoInaccesibilidad.Tipo as Tipo_inaccesibilidad FROM SITIOS_Sitio sitio  LEFT JOIN CAT_TipoInaccesibilidad tipoInaccesibilidad ON tipoInaccesibilidad.TipoInaccesibilidadID=sitio.TipoInaccesibilidad  WHERE SitioAccesible=0  GROUP BY sitio.UPMID,sitio.Sitio ,tipoInaccesibilidad.Tipo ";
+		String[] columnNameUpmPordias = { "UPMID", "Sitio", "Causa" };
+		ModelSitioPorClinometro.setColumnIdentifiers(columnNameUpmPordias);
+		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
+		try {
+			sqlExterno = baseDatosExterna.createStatement();
+			ResultSet rsExterno = sqlExterno.executeQuery(query);
+			if (ModelSitioPorClinometro.getRowCount() > 0) {
+				for (int i = ModelSitioPorClinometro.getRowCount() - 1; i > -1; i--) {
+					ModelSitioPorClinometro.removeRow(i);
+				}
+			}
+			while (rsExterno.next()) {
+				ModelSitioPorClinometro.addRow(new Object[] { rsExterno.getString("UPMID"),
+						rsExterno.getString("Sitio"), rsExterno.getString("Tipo_inaccesibilidad") });
+			}
+			baseDatosExterna.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
+		tblClinoHipso.setModel(ModelSitioPorClinometro);
+		lblSitiosPorClinometro.setText("Sitios inaccesibles por UPM");
+
+	}
+
+	public void getSitioForestalSiNo(String ruta, String forestal) {
+		String query = "Select  UPMID,sitio FROM SITIOS_Sitio sitio Left JOIN CAT_ClaveSerieV claveSerieV ON  claveSerieV.ClaveSerieVID=sitio.ClaveSerieV WHERE claveSerieV.EsForestal="
+				+ forestal + " Order by UPMID,sitio";
+		String[] columnNameUpmPordias = { "UPMID", "Sitio" };
+		ModelSitioPorClinometro.setColumnIdentifiers(columnNameUpmPordias);
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
 		try {
 			sqlExterno = baseDatosExterna.createStatement();
@@ -341,17 +381,109 @@ public class DlogSitiosPorClinometro extends JFrame {
 			}
 			while (rsExterno.next()) {
 				ModelSitioPorClinometro
-						.addRow(new Object[] { rsExterno.getString("UPMID"), rsExterno.getString("Sitio"), rsExterno.getString("Tipo_inaccesibilidad") });
+						.addRow(new Object[] { rsExterno.getString("UPMID"), rsExterno.getString("Sitio") });
 			}
 			baseDatosExterna.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		String[] columnNameUpmPordias = { "UPMID","Sitio" ,"Causa" };
-		ModelSitioPorClinometro.setColumnIdentifiers(columnNameUpmPordias);
+
 		tblClinoHipso.setModel(ModelSitioPorClinometro);
-		lblSitiosPorClinometro.setText("UPMs por Inaccesibilidad");
+		if (forestal.equals("1")) {
+			lblSitiosPorClinometro.setText("Sitios forestales");
+		}
+		if (forestal.equals("0")) {
+			lblSitiosPorClinometro.setText("Sitios no forestales");
+		}
 
 	}
 
+	public void getSitioArbolFuera(String ruta) {
+		String query = "Select  UPMID,Sitio FROM SITIOS_Sitio sitio where  sitio.ArbolFuera=1 order by UPMID,Sitio";
+		String[] columnNameUpmPordias = { "UPMID", "Sitio" };
+		ModelSitioPorClinometro.setColumnIdentifiers(columnNameUpmPordias);
+		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
+		try {
+			sqlExterno = baseDatosExterna.createStatement();
+			ResultSet rsExterno = sqlExterno.executeQuery(query);
+			if (ModelSitioPorClinometro.getRowCount() > 0) {
+				for (int i = ModelSitioPorClinometro.getRowCount() - 1; i > -1; i--) {
+					ModelSitioPorClinometro.removeRow(i);
+				}
+			}
+			while (rsExterno.next()) {
+				ModelSitioPorClinometro
+						.addRow(new Object[] { rsExterno.getString("UPMID"), rsExterno.getString("Sitio") });
+			}
+			baseDatosExterna.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		tblClinoHipso.setModel(ModelSitioPorClinometro);
+		lblSitiosPorClinometro.setText("Sitios Arbol fuera de bosque");
+
+	}
+
+	public void getSitioCondicionVegetacion(String ruta) {
+		String fasePrimaria = "",
+				query = "Select  sitio.UPMID,sitio.Sitio,faseSucecional.Clave as Condicion_Fase FROM SITIOS_Sitio sitio Left JOIN CAT_FaseSucecional faseSucecional ON  faseSucecional.FaseSucecionalID=sitio.FaseSucecional Left JOIN CAT_ClaveSerieV claveSerieV ON  claveSerieV.ClaveSerieVID=sitio.ClaveSerieV where  claveSerieV.EsForestal=1  Order by sitio.UPMID,sitio.Sitio ASC";
+		String[] columnNameUpmPordias = { "UPMID", "Sitio", "Fase sucecional" };
+		ModelSitioPorClinometro.setColumnIdentifiers(columnNameUpmPordias);
+		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
+		try {
+			sqlExterno = baseDatosExterna.createStatement();
+			ResultSet rsExterno = sqlExterno.executeQuery(query);
+			if (ModelSitioPorClinometro.getRowCount() > 0) {
+				for (int i = ModelSitioPorClinometro.getRowCount() - 1; i > -1; i--) {
+					ModelSitioPorClinometro.removeRow(i);
+				}
+			}
+			while (rsExterno.next()) {
+				fasePrimaria = rsExterno.getString("Condicion_Fase");
+				//System.out.println(fasePrimaria);
+				if (fasePrimaria==null) {
+					fasePrimaria = "Primaria";
+				}
+				ModelSitioPorClinometro.addRow(
+						new Object[] { rsExterno.getString("UPMID"), rsExterno.getString("Sitio"), fasePrimaria });
+			}
+			baseDatosExterna.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		tblClinoHipso.setModel(ModelSitioPorClinometro);
+		lblSitiosPorClinometro.setText("Sitios forestales");
+
+	}
+
+	//
+	public void getUpmPorSitiosAccesibles(String ruta) {
+		String query = "SELECT DISTINCT UPMID, COUNT(Sitio) as Conteo_sitios FROM SITIOS_Sitio WHERE  SitioAccesible=1 Group by UPMID order by Sitio,UPMID ASC";
+		String[] columnNameUpmPordias = { "UPMID","Sitios accesibles" };
+		ModelSitioPorClinometro.setColumnIdentifiers(columnNameUpmPordias);
+		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
+		try {
+			sqlExterno = baseDatosExterna.createStatement();
+			ResultSet rsExterno = sqlExterno.executeQuery(query);
+			if (ModelSitioPorClinometro.getRowCount() > 0) {
+				for (int i = ModelSitioPorClinometro.getRowCount() - 1; i > -1; i--) {
+					ModelSitioPorClinometro.removeRow(i);
+				}
+			}
+			while (rsExterno.next()) {
+				
+				ModelSitioPorClinometro.addRow(
+						new Object[] { rsExterno.getString("UPMID"),rsExterno.getString("Conteo_sitios")});
+			}
+			baseDatosExterna.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		tblClinoHipso.setModel(ModelSitioPorClinometro);
+		lblSitiosPorClinometro.setText("Conteo de Sitios por UPM");
+
+	}
 }

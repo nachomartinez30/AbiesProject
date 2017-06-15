@@ -334,6 +334,15 @@ public class FrmEstadisticas extends JInternalFrame {
 		txtSitioTotales.setColumns(10);
 
 		JLabel lblSitioAccesibles = new JLabel("Sitios accesibles:");
+		lblSitioAccesibles.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				if (arg0.getClickCount() == 2 && !arg0.isConsumed()) {
+					arg0.consume();
+					moreInformation(ruta, "sitios_accesibles");
+				}
+			}
+		});
 		lblSitioAccesibles.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		lblSitioAccesibles.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblSitioAccesibles.setFont(new Font("Dialog", Font.ITALIC, 12));
@@ -411,10 +420,28 @@ public class FrmEstadisticas extends JInternalFrame {
 		txtHipsometro.setColumns(10);
 
 		JLabel lblForestal = new JLabel("Forestal");
+		lblForestal.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				if (arg0.getClickCount() == 2 && !arg0.isConsumed()) {
+					arg0.consume();
+					moreInformation(ruta, "sitio_forestal");
+				}
+			}
+		});
 		lblForestal.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		lblForestal.setFont(new Font("Dialog", Font.PLAIN, 12));
 
 		JLabel lblNoForestal = new JLabel("No Forestal");
+		lblNoForestal.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				if (arg0.getClickCount() == 2 && !arg0.isConsumed()) {
+					arg0.consume();
+					moreInformation(ruta, "sitio_noForestal");
+				}
+			}
+		});
 		lblNoForestal.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		lblNoForestal.setFont(new Font("Dialog", Font.PLAIN, 12));
 
@@ -436,10 +463,28 @@ public class FrmEstadisticas extends JInternalFrame {
 		txtArbolFuera.setColumns(10);
 
 		JLabel lblArbolFueraDe = new JLabel("Arbol Fuera de Bosque");
+		lblArbolFueraDe.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				if (arg0.getClickCount() == 2 && !arg0.isConsumed()) {
+					arg0.consume();
+					moreInformation(ruta, "sitio_arbolFuera");
+				}
+			}
+		});
 		lblArbolFueraDe.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		lblArbolFueraDe.setFont(new Font("Dialog", Font.PLAIN, 12));
 
 		JLabel lblCondicion = new JLabel("Sitios por condici\u00F3n de la vetaci\u00F3n");
+		lblCondicion.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				if (arg0.getClickCount() == 2 && !arg0.isConsumed()) {
+					arg0.consume();
+					moreInformation(ruta, "sitios_condicionVegetacion");
+				}
+			}
+		});
 		lblCondicion.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
 		JScrollPane scrollPane = new JScrollPane();
