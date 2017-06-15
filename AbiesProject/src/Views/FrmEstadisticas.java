@@ -56,13 +56,12 @@ public class FrmEstadisticas extends JInternalFrame {
 	public String[] columnNameDiasMuestreados = { "Dias", "Conteo UPMs" };
 	public String[] columnNameColocacionTag = { "Colocacion TAG", "Conteo UPMs" };
 	public String[] columnNameTipoUpm = { "Tipo UPM", "Conteo UPMs" };
-	public String[] columnNameSitioPorClinometro_Hipsometro={"UPMID","Sitio"};
+	public String[] columnNameSitioPorClinometro_Hipsometro = { "UPMID", "Sitio" };
 	/************************************************** Sitios *****************************************************************************************/
 	public String[] columnNameSitiosAccesiblesPorConglomerados = { "Conteo UPMs", "Sitios accesibles" };
 	public String[] columnNameSitiosInaccesibles = { "Conteo sitios", "Inaccesibilidad" };
 	public String[] columnNameSitioPorCondicion = { "Conteo sitios", "Condición de vegetación" };
 	public String[] columnNameCoberturaPorUpm = { "Conteo UPMs", "Condición" };
-	
 
 	public DefaultTableModel UpmsPorEstadoModel = new DefaultTableModel(null, columnNameEstados);
 	public DefaultTableModel TipoUpmModel = new DefaultTableModel(null, columnNameTipoUpm);
@@ -103,6 +102,16 @@ public class FrmEstadisticas extends JInternalFrame {
 		tabbedPane.addTab("UPM", null, layPanUpm, null);
 
 		JLabel lblUpmsPorEstado = new JLabel("UPMs por estado");
+		lblUpmsPorEstado.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				if (arg0.getClickCount() == 2 && !arg0.isConsumed()) {
+					arg0.consume();
+					moreInformation(ruta, "upm_estado");
+				}
+			}
+		});
+		lblUpmsPorEstado.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		lblUpmsPorEstado.setFont(new Font("SansSerif", Font.BOLD | Font.ITALIC, 12));
 
 		JScrollPane scrollPanePorEstado = new JScrollPane();
@@ -113,6 +122,16 @@ public class FrmEstadisticas extends JInternalFrame {
 		scrollPanePorEstado.setPreferredSize(layPanUpm.getParent().getPreferredSize());
 
 		JLabel lblRelacionPorTipo = new JLabel("Relacion por tipo de conglomerado");
+		lblRelacionPorTipo.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				if (arg0.getClickCount() == 2 && !arg0.isConsumed()) {
+					arg0.consume();
+					moreInformation(ruta, "upm_tipo");
+				}
+			}
+		});
+		lblRelacionPorTipo.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		lblRelacionPorTipo.setFont(new Font("SansSerif", Font.BOLD | Font.ITALIC, 12));
 
 		JScrollPane scrollPaneTipoUPM = new JScrollPane();
@@ -127,8 +146,28 @@ public class FrmEstadisticas extends JInternalFrame {
 		lblEstadisticasDeUpm.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		JLabel lblFechaInicial = new JLabel("Fecha inicial");
+		lblFechaInicial.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				if (arg0.getClickCount() == 2 && !arg0.isConsumed()) {
+					arg0.consume();
+					moreInformation(ruta, "upm_fechaInicial");
+				}
+			}
+		});
+		lblFechaInicial.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
 		JLabel label = new JLabel("Fecha final");
+		label.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				if (arg0.getClickCount() == 2 && !arg0.isConsumed()) {
+					arg0.consume();
+					moreInformation(ruta, "upm_fechaFinal");
+				}
+			}
+		});
+		label.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
 		ftxtfechaInicial = new JFormattedTextField();
 		ftxtfechaInicial.setHorizontalAlignment(SwingConstants.CENTER);
@@ -152,6 +191,16 @@ public class FrmEstadisticas extends JInternalFrame {
 		JSeparator separator = new JSeparator();
 
 		JLabel lblDiasDeMuestro = new JLabel("Dias de muestro por UPM");
+		lblDiasDeMuestro.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		lblDiasDeMuestro.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				if (arg0.getClickCount() == 2 && !arg0.isConsumed()) {
+					arg0.consume();
+					moreInformation(ruta, "upm_dias");
+				}
+			}
+		});
 		lblDiasDeMuestro.setFont(new Font("SansSerif", Font.BOLD | Font.ITALIC, 12));
 
 		JScrollPane scrollPaneDiasDeMuestreo = new JScrollPane();
@@ -161,6 +210,17 @@ public class FrmEstadisticas extends JInternalFrame {
 		scrollPaneDiasDeMuestreo.setViewportView(tblDiasMuestreo);
 
 		JLabel lblColocacinDelTag = new JLabel("Colocaci\u00F3n del TAG");
+		lblColocacinDelTag.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+
+				if (arg0.getClickCount() == 2 && !arg0.isConsumed()) {
+					arg0.consume();
+					moreInformation(ruta, "upm_tag");
+				}
+			}
+		});
+		lblColocacinDelTag.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		lblColocacinDelTag.setFont(new Font("SansSerif", Font.BOLD | Font.ITALIC, 12));
 
 		JScrollPane scrollPane_1 = new JScrollPane();
@@ -171,19 +231,22 @@ public class FrmEstadisticas extends JInternalFrame {
 		gl_layPanUpm.setHorizontalGroup(gl_layPanUpm.createParallelGroup(Alignment.TRAILING)
 				.addGroup(gl_layPanUpm.createSequentialGroup().addGap(16)
 						.addComponent(lblEstadisticasDeUpm, GroupLayout.DEFAULT_SIZE, 722, Short.MAX_VALUE).addGap(21))
-				.addGroup(gl_layPanUpm.createSequentialGroup().addGap(154).addGroup(gl_layPanUpm
-						.createParallelGroup(Alignment.TRAILING)
-						.addGroup(gl_layPanUpm.createSequentialGroup()
-								.addComponent(lblUpmTotales, GroupLayout.PREFERRED_SIZE, 92, GroupLayout.PREFERRED_SIZE)
-								.addGap(12)
-								.addComponent(txtTotalUpms, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
-								.addGap(146)
-								.addComponent(lblFechaInicial, GroupLayout.PREFERRED_SIZE, 74,
-										GroupLayout.PREFERRED_SIZE)
-								.addGap(12))
-						.addGroup(gl_layPanUpm.createSequentialGroup()
-								.addComponent(label, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(ComponentPlacement.RELATED)))
+				.addGroup(gl_layPanUpm.createSequentialGroup().addGap(154)
+						.addComponent(lblUpmTotales, GroupLayout.PREFERRED_SIZE, 92, GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(txtTotalUpms, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(ComponentPlacement.RELATED, 146, Short.MAX_VALUE)
+						.addGroup(gl_layPanUpm.createParallelGroup(Alignment.LEADING)
+								.addGroup(Alignment.TRAILING,
+										gl_layPanUpm.createSequentialGroup()
+												.addComponent(lblFechaInicial, GroupLayout.PREFERRED_SIZE, 74,
+														GroupLayout.PREFERRED_SIZE)
+												.addGap(12))
+								.addGroup(Alignment.TRAILING,
+										gl_layPanUpm.createSequentialGroup()
+												.addComponent(label, GroupLayout.PREFERRED_SIZE, 74,
+														GroupLayout.PREFERRED_SIZE)
+												.addPreferredGap(ComponentPlacement.RELATED)))
 						.addGroup(gl_layPanUpm.createParallelGroup(Alignment.LEADING)
 								.addComponent(ftxtfechaInicial, GroupLayout.PREFERRED_SIZE, 112,
 										GroupLayout.PREFERRED_SIZE)
@@ -227,10 +290,8 @@ public class FrmEstadisticas extends JInternalFrame {
 								.addComponent(ftxtfechafinal, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 										GroupLayout.PREFERRED_SIZE)
 								.addComponent(label)))
-						.addGroup(gl_layPanUpm.createSequentialGroup().addGap(6)
-								.addGroup(gl_layPanUpm.createParallelGroup(Alignment.LEADING)
-										.addGroup(gl_layPanUpm.createSequentialGroup().addGap(6)
-												.addComponent(lblUpmTotales))
+						.addGroup(gl_layPanUpm.createSequentialGroup().addGap(12).addGroup(
+								gl_layPanUpm.createParallelGroup(Alignment.BASELINE).addComponent(lblUpmTotales)
 										.addComponent(txtTotalUpms, GroupLayout.PREFERRED_SIZE,
 												GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))))
 				.addPreferredGap(ComponentPlacement.RELATED)
@@ -273,6 +334,7 @@ public class FrmEstadisticas extends JInternalFrame {
 		txtSitioTotales.setColumns(10);
 
 		JLabel lblSitioAccesibles = new JLabel("Sitios accesibles:");
+		lblSitioAccesibles.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		lblSitioAccesibles.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblSitioAccesibles.setFont(new Font("Dialog", Font.ITALIC, 12));
 
@@ -282,6 +344,16 @@ public class FrmEstadisticas extends JInternalFrame {
 		txtSitioAccesibles.setColumns(10);
 
 		JLabel lblSitioInaccesibles = new JLabel("Sitios inaccesibles:");
+		lblSitioInaccesibles.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				if (arg0.getClickCount() == 2 && !arg0.isConsumed()) {
+					arg0.consume();
+					moreInformation(ruta, "sicios_inaccesibles");
+				}
+			}
+		});
+		lblSitioInaccesibles.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		lblSitioInaccesibles.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblSitioInaccesibles.setFont(new Font("Dialog", Font.ITALIC, 12));
 
@@ -305,8 +377,11 @@ public class FrmEstadisticas extends JInternalFrame {
 		lblMedidosCon.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				DlogSitiosPorClinometro sitiosPorUpm=new DlogSitiosPorClinometro(ruta,true);
-				sitiosPorUpm.setVisible(true);
+				if (arg0.getClickCount() == 2 && !arg0.isConsumed()) {
+					arg0.consume();
+					moreInformation(ruta, "sitios_clinometro");
+					/* "sitios_clinometro" */
+				}
 			}
 		});
 		lblMedidosCon.setFont(new Font("Dialog", Font.PLAIN, 12));
@@ -315,8 +390,11 @@ public class FrmEstadisticas extends JInternalFrame {
 		lblMedidosCon_1.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				DlogSitiosPorClinometro sitiosPorUpm=new DlogSitiosPorClinometro(ruta,false);
-				sitiosPorUpm.setVisible(true);
+				if (arg0.getClickCount() == 2 && !arg0.isConsumed()) {
+					arg0.consume();
+					moreInformation(ruta, "sitios_hipsometro");
+					/* "sitios_hipsometro" */
+				}
 			}
 		});
 		lblMedidosCon_1.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -333,9 +411,11 @@ public class FrmEstadisticas extends JInternalFrame {
 		txtHipsometro.setColumns(10);
 
 		JLabel lblForestal = new JLabel("Forestal");
+		lblForestal.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		lblForestal.setFont(new Font("Dialog", Font.PLAIN, 12));
 
 		JLabel lblNoForestal = new JLabel("No Forestal");
+		lblNoForestal.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		lblNoForestal.setFont(new Font("Dialog", Font.PLAIN, 12));
 
 		txtNoForestal = new JTextField();
@@ -356,9 +436,11 @@ public class FrmEstadisticas extends JInternalFrame {
 		txtArbolFuera.setColumns(10);
 
 		JLabel lblArbolFueraDe = new JLabel("Arbol Fuera de Bosque");
+		lblArbolFueraDe.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		lblArbolFueraDe.setFont(new Font("Dialog", Font.PLAIN, 12));
 
 		JLabel lblCondicion = new JLabel("Sitios por condici\u00F3n de la vetaci\u00F3n");
+		lblCondicion.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
 		JScrollPane scrollPane = new JScrollPane();
 
@@ -751,7 +833,6 @@ public class FrmEstadisticas extends JInternalFrame {
 			e.printStackTrace();
 		}
 	}
-	
 
 	public void getSitiosForestal(String ruta) {
 		String query = "Select  Count(sitio.SitioID) as Conteo_Sitios FROM SITIOS_Sitio sitio Left JOIN CAT_ClaveSerieV claveSerieV ON  claveSerieV.ClaveSerieVID=sitio.ClaveSerieV WHERE claveSerieV.EsForestal=1";
@@ -906,5 +987,11 @@ public class FrmEstadisticas extends JInternalFrame {
 		}
 
 		tblSitioPorCondicion.setModel(sitioPorCondicionModel);
+	}
+
+	public void moreInformation(String ruta, String opcion) {
+		DlogSitiosPorClinometro dialog = new DlogSitiosPorClinometro(ruta, opcion);
+		dialog.setVisible(true);
+
 	}
 }
