@@ -49,6 +49,7 @@ public class Index extends JFrame {
 	FrmExportar exportar;
 	FrmInformacionPorUPM informacionUpm;
 	FrmCalidad calidad;
+	
 
 	private boolean temaClaro = false;
 	private JPanel contentPane;

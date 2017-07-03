@@ -15,23 +15,36 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-public class Concentrar extends javax.swing.JFrame {
+import Database.ConfigUserConnection;
+import Database.ExternalConnection;
+import Views.Index;
 
-	private String ruta;
+public class Concentrar extends javax.swing.JFrame {
+	
+	public String ruta;
+	private String configUser = "/AbiesProject/src/Database/ConfigUser.db";
+	private ExternalConnection externalConnection = new ExternalConnection();
+	private ConfigUserConnection configUserConnection = new ConfigUserConnection();
+	private Connection baseDatosConfig;
+	private java.sql.Statement sqlConfig;
 
 	public Concentrar() {
 		initComponents();
 		Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension ventana = this.getSize();
+		getPathConcentrador(configUser);
 		this.setLocation((pantalla.width - ventana.width) / 2, (pantalla.height - ventana.height) / 2);
 	}
 
@@ -140,13 +153,14 @@ public class Concentrar extends javax.swing.JFrame {
 	}// </editor-fold>//GEN-END:initComponents
 
 	private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btnBuscarActionPerformed
-
-		JFileChooser fcBaseDatos = new JFileChooser();
+		JFileChooser fcBaseDatos = new JFileChooser(ruta);
+		fcBaseDatos.setMultiSelectionEnabled(true);
 		fcBaseDatos.setDialogTitle("Base de datos a importar");
 		FileNameExtensionFilter filtro = new FileNameExtensionFilter("*.oct", "oct");
 		fcBaseDatos.setAcceptAllFileFilterUsed(false);
 		fcBaseDatos.setFileFilter(filtro);
 		fcBaseDatos.showOpenDialog(this);
+
 		// fcBaseDatos.showOpenDialog(Main.main);
 		try {
 			File baseDatos = fcBaseDatos.getSelectedFile();
@@ -161,6 +175,7 @@ public class Concentrar extends javax.swing.JFrame {
 			} else {
 				txtUbicacion.setText(ruta);
 				this.ruta = ruta;
+				setPathConcentrador(ruta);
 				btnEjecutar.setEnabled(true);
 
 			}
@@ -198,12 +213,46 @@ public class Concentrar extends javax.swing.JFrame {
 
 	}// GEN-LAST:event_btnEjecutarActionPerformed
 
+	public void setPathConcentrador(String ruta) {
+		String query = "UPDATE configUserAbies SET pathConcentrador='" + ruta + "'";
+		System.out.println(query);
+		Connection configConnection = ConfigUserConnection.getConnection(ruta);
+		try {
+			java.sql.Statement st = configConnection.createStatement();
+			st.executeUpdate(query);
+			configConnection.commit();
+			st.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public void getPathConcentrador(String bdConfig) {
+		
+			String query = "SELECT pathConcentrador FROM configUserAbies";
+
+			this.baseDatosConfig = ConfigUserConnection.getConnection(ruta);
+			try {
+				sqlConfig = baseDatosConfig.createStatement();
+				ResultSet rsConfig = sqlConfig.executeQuery(query);
+
+				while (rsConfig.next()) {
+
+					ruta=rsConfig.getString("pathConcentrador");
+				}
+				baseDatosConfig.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		
+	}
+
 	private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btnSalirActionPerformed
 		this.dispose();
 		this.txtUbicacion.setText("");
 		this.btnEjecutar.setEnabled(false);
 	}// GEN-LAST:event_btnSalirActionPerformed
-
 
 	// Variables declaration - do not modify//GEN-BEGIN:variables
 	private javax.swing.JButton btnBuscar;
