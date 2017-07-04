@@ -187,8 +187,7 @@ public class Concentrar extends javax.swing.JFrame {
 
 	private void btnEjecutarActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btnEjecutarActionPerformed
 		// System.out.println(this.ruta);
-		HiloImportacion hiloImportacion = new HiloImportacion(this.lblEstatus, this.pbExportacion, this.btnEjecutar,
-				this.btnSalir, this.ruta);
+		HiloImportacion hiloImportacion = new HiloImportacion(this.lblEstatus, this.pbExportacion, this.btnEjecutar, this.ruta);
 		hiloImportacion.addPropertyChangeListener(new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {

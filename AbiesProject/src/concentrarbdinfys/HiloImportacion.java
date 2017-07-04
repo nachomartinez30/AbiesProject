@@ -14,24 +14,26 @@ public class HiloImportacion extends SwingWorker<Integer, String> {
     private JLabel etiqueta;
     private JProgressBar barraProgreso;
     private JButton btnEjecutar;
-    private JButton btnSalir;
     private String ruta;
+    public boolean termino;
 
-    public HiloImportacion(JLabel etiqueta, JProgressBar barraProgreso, JButton btnEjecutar, JButton btnSalir, String ruta) {
+   
+
+	public HiloImportacion(JLabel etiqueta, JProgressBar barraProgreso, JButton btnEjecutar,String ruta) {
         this.etiqueta = etiqueta;
         this.barraProgreso = barraProgreso;
         this.btnEjecutar = btnEjecutar;
-        this.btnSalir = btnSalir;
         this.ruta = ruta;
     }
 
     @Override
     protected Integer doInBackground() {
       
-        getEtiqueta().setText("Iniciando importaci贸n...");
+        getEtiqueta().setText("Iniciando importaci髇...");
         getBarraProgreso().setValue(0);
         getBtnEjecutar().setEnabled(false);
-        getBtnSalir().setEnabled(false);
+        
+        
         try {
             Thread.sleep(1000);
         } catch (Exception e) {
@@ -50,17 +52,17 @@ public class HiloImportacion extends SwingWorker<Integer, String> {
         getEtiqueta().setText("Importando PC..."); 
         bdImportar.importarPC(this.ruta); //3
         
-        getEtiqueta().setText("Importando Informaci贸n de accesibilidad del PC..."); 
+        getEtiqueta().setText("Importando Informaci髇 de accesibilidad del PC..."); 
         bdImportar.importarAccesibilidadPC(this.ruta); //4
         getBarraProgreso().setValue(10);
         getBarraProgreso().repaint();
        
-        getEtiqueta().setText("Importando Ep铆fitas..."); 
+        getEtiqueta().setText("Importando Ep韋itas..."); 
         bdImportar.importarUPMEpifitas(this.ruta); //5
         getBarraProgreso().setValue(15);
         getBarraProgreso().repaint();
         
-        getEtiqueta().setText("Importando Informaci贸n de sitios..."); 
+        getEtiqueta().setText("Importando Informaci髇 de sitios..."); 
         bdImportar.importarSitios(this.ruta); //6
         
         getEtiqueta().setText("Importando Cobertura de suelo de sitio..."); 
@@ -69,24 +71,24 @@ public class HiloImportacion extends SwingWorker<Integer, String> {
         getBarraProgreso().setValue(20);
         getBarraProgreso().repaint();
         
-        getEtiqueta().setText("Importando Fotograf铆a hemisferica..."); 
+        getEtiqueta().setText("Importando Fotograf韆 hemisferica..."); 
         bdImportar.importarFotografiaHemisferica(this.ruta); //8
         getBarraProgreso().setValue(25);
         getBarraProgreso().repaint();
         
-        getEtiqueta().setText("Importando Informaci贸n de transponder..."); 
+        getEtiqueta().setText("Importando Informaci髇 de transponder..."); 
         bdImportar.importarTransponder(this.ruta); //9
         getBarraProgreso().setValue(30);
         getBarraProgreso().repaint();
         
-        getEtiqueta().setText("Importando Par谩metros f铆sico qu铆micos..."); 
+        getEtiqueta().setText("Importando Par醡etros f韘ico qu韒icos..."); 
         bdImportar.importarParametrosFisicoQuimicos(this.ruta); //10
         getBarraProgreso().setValue(35);
         getBarraProgreso().repaint();
         
-        getEtiqueta().setText("Importando Informaci贸n de suelo..."); 
+        getEtiqueta().setText("Importando Informaci髇 de suelo..."); 
         bdImportar.importarSueloInformacion(this.ruta); //11
-        getEtiqueta().setText("Importando varillas de erosi贸n..."); 
+        getEtiqueta().setText("Importando varillas de erosi髇..."); 
         bdImportar.importarSueloVarillasErosion(this.ruta); //12
         getEtiqueta().setText("Importando cobertura del suelo..."); 
         bdImportar.importarSueloCobertura(this.ruta); //13
@@ -94,39 +96,39 @@ public class HiloImportacion extends SwingWorker<Integer, String> {
         getBarraProgreso().setValue(40);
         getBarraProgreso().repaint();
         
-        getEtiqueta().setText("Importando evidencia de erosi贸n del suelo..."); 
+        getEtiqueta().setText("Importando evidencia de erosi髇 del suelo..."); 
         bdImportar.importarSueloEvidenciaErosion(this.ruta); //14
         getEtiqueta().setText("Importando Pedestal..."); 
         bdImportar.importarSueloPedestal(this.ruta); //15
-        getEtiqueta().setText("Importando Erosi贸n laminar..."); 
+        getEtiqueta().setText("Importando Erosi髇 laminar..."); 
         bdImportar.importarSueloErosionLaminar(this.ruta); //16
         getEtiqueta().setText("Importando Costras..."); 
         bdImportar.importarSueloCostras(this.ruta); //17
         getEtiqueta().setText("Importando Canalillo..."); 
         bdImportar.importarSueloCanalillo(this.ruta); //18
-        getEtiqueta().setText("Importando C谩rcava..."); 
+        getEtiqueta().setText("Importando C醨cava..."); 
         bdImportar.importarSueloCarcava(this.ruta); //19
         getEtiqueta().setText("Importando Pavimentos..."); 
         bdImportar.importarSueloPavimentos(this.ruta); //20
-        getEtiqueta().setText("Importando Medici贸n canalillos...");
+        getEtiqueta().setText("Importando Medici髇 canalillos...");
         bdImportar.importarSueloMedicionCanalillos(this.ruta); //21
-        getEtiqueta().setText("Importando Medici贸n carcavas..."); 
+        getEtiqueta().setText("Importando Medici髇 carcavas..."); 
         bdImportar.importarSueloMedicionCarcavas(this.ruta); //22
-        getEtiqueta().setText("Importando Medici贸n dunas..."); 
+        getEtiqueta().setText("Importando Medici髇 dunas..."); 
         bdImportar.importarSueloMedicionDunas(this.ruta); //23
         getBarraProgreso().setValue(45);
         getBarraProgreso().repaint();
-        getEtiqueta().setText("Importando Erosi贸n h铆drica canalillo..."); 
+        getEtiqueta().setText("Importando Erosi髇 h韉rica canalillo..."); 
         bdImportar.importarSueloErosionHidricaCanalillo(this.ruta); //24
         getEtiqueta().setText("Importando Longitud canalillo..."); 
         bdImportar.importarSueloLongitudCanalillo(this.ruta); //25
-        getEtiqueta().setText("Importando Erosi贸n hidrica carcava...");
+        getEtiqueta().setText("Importando Erosi髇 hidrica carcava...");
         bdImportar.importarSueloErosionHidricaCarcava(this.ruta); //26
         getEtiqueta().setText("Importando longitud de carcava..."); 
         bdImportar.importarSueloLongitudCarcava(this.ruta); //27
-        getEtiqueta().setText("Importando deformaci贸n por viento..."); 
+        getEtiqueta().setText("Importando deformaci髇 por viento..."); 
         bdImportar.importarSueloDeformacionViento(this.ruta); //28
-        getEtiqueta().setText("Importando longitud mont铆culo..."); 
+        getEtiqueta().setText("Importando longitud mont韈ulo..."); 
         bdImportar.importarSueloLongitudMonticulo(this.ruta); //29
         getEtiqueta().setText("Importando hojarasca...");
         bdImportar.importarSueloHojarasca(this.ruta); //30
@@ -139,11 +141,11 @@ public class HiloImportacion extends SwingWorker<Integer, String> {
         getBarraProgreso().setValue(50);
         getBarraProgreso().repaint();
         
-        getEtiqueta().setText("Importando Informaci贸n de carbono e incendios...");
+        getEtiqueta().setText("Importando Informaci髇 de carbono e incendios...");
         
-        getEtiqueta().setText("Importando Material le帽oso ca铆do de 100..."); 
+        getEtiqueta().setText("Importando Material le駉so ca韉o de 100..."); 
         bdImportar.importarCarbonoMaterialLenioso100(this.ruta); //34
-        getEtiqueta().setText("Importando Material le帽oso ca铆do de 1000...");
+        getEtiqueta().setText("Importando Material le駉so ca韉o de 1000...");
         bdImportar.importarCarbonoMaterialLenioso1000(this.ruta); //35
         getEtiqueta().setText("Importando cubierta vegetal..."); 
         bdImportar.importarCarbonoCubiertaVegetal(this.ruta); //36
@@ -170,7 +172,7 @@ public class HiloImportacion extends SwingWorker<Integer, String> {
         getBarraProgreso().setValue(65);
         getBarraProgreso().repaint();
         
-        getEtiqueta().setText("Importando Repoblado vegetaci贸n menor..."); 
+        getEtiqueta().setText("Importando Repoblado vegetaci髇 menor..."); 
         bdImportar.importarTaxonomiaRepobladoVM(this.ruta); //44
         getBarraProgreso().setValue(70);
         getBarraProgreso().repaint();
@@ -180,25 +182,25 @@ public class HiloImportacion extends SwingWorker<Integer, String> {
         getBarraProgreso().setValue(75);
         getBarraProgreso().repaint();
         
-        getEtiqueta().setText("Importando Vegetaci贸n mayor gregarios..."); 
+        getEtiqueta().setText("Importando Vegetaci髇 mayor gregarios..."); 
         bdImportar.importarTaxonomiaVegetacionMayorGregarios(this.ruta); //46
         bdImportar.importarVegetacionMayorGDanioSeveridad(this.ruta); //47
         getBarraProgreso().setValue(80);
         getBarraProgreso().repaint();
         
-        getEtiqueta().setText("Importando Vegetaci贸n mayor individual..."); 
+        getEtiqueta().setText("Importando Vegetaci髇 mayor individual..."); 
         bdImportar.importarTaxonomiaVegetacionMayorIndividual(this.ruta); //48
         bdImportar.importarVegetacionMayorIDanioSeveridad(this.ruta); //49
         getBarraProgreso().setValue(85);
         getBarraProgreso().repaint();
         
-        getEtiqueta().setText("Importando Vegetaci贸n menor...");
+        getEtiqueta().setText("Importando Vegetaci髇 menor...");
         bdImportar.importarTaxonomiaVegetacionMenor(this.ruta); //50
         bdImportar.importarVegetacionMenorDanioSeveridad(this.ruta); //51
         getBarraProgreso().setValue(90);
         getBarraProgreso().repaint();
         
-        getEtiqueta().setText("Importando Colecta bot谩nica...");
+        getEtiqueta().setText("Importando Colecta bot醤ica...");
         bdImportar.importarTaxonomiaColectaBotanica(this.ruta); //52
         getBarraProgreso().setValue(95);
         getBarraProgreso().repaint();
@@ -222,7 +224,7 @@ public class HiloImportacion extends SwingWorker<Integer, String> {
         getBarraProgreso().setValue(0);
         getBarraProgreso().repaint();
         getBtnEjecutar().setEnabled(false);
-        getBtnSalir().setEnabled(true);
+        termino=true;
     }
 
     public JLabel getEtiqueta() {
@@ -248,13 +250,13 @@ public class HiloImportacion extends SwingWorker<Integer, String> {
     public void setBtnEjecutar(JButton btnEjecutar) {
         this.btnEjecutar = btnEjecutar;
     }
+    
+    public boolean isTermino() {
+		return termino;
+	}
 
-    public JButton getBtnSalir() {
-        return btnSalir;
-    }
-
-    public void setBtnSalir(JButton btnSalir) {
-        this.btnSalir = btnSalir;
-    }
+	public void setTermino(boolean termino) {
+		this.termino = termino;
+	}
 
 }
