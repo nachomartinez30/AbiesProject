@@ -47,6 +47,7 @@ public class ConcentradorAbies extends JFrame {
 	private Connection baseDatosConfig;
 	private java.sql.Statement sqlConfig;
 
+	private CDImportacionBD bdImportar = new CDImportacionBD();
 	private JPanel contentPane;
 	public JProgressBar pbExportacion;
 	public JTextField txtUbicacion;
@@ -55,7 +56,6 @@ public class ConcentradorAbies extends JFrame {
 	public JButton btnEjecutar;
 	public JLabel lblEstatus;
 	public File[] baseDatos;
-	  
 
 	/**
 	 * Create the frame.
@@ -132,17 +132,14 @@ public class ConcentradorAbies extends JFrame {
 		btnEjecutar = new JButton("Ejecutar");
 		btnEjecutar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				// excecuteConcentrar();
-				int  i = 0;
-				HiloImportacion hiloImportacion = new HiloImportacion(lblEstatus, pbExportacion, btnEjecutar, ruta);
-
-				while (i < baseDatos.length) {
-					ruta = baseDatos[i].getPath();
-					System.out.println(ruta);
-					hiloImportacion.execute();
+				int i = 0;
+				while (i != baseDatos.length) {
+					System.out.println(baseDatos[i].getPath().toString());
+					txtUbicacion.setText(baseDatos[i].getPath().toString());
+					migrar(baseDatos[i].getPath().toString());
+					
 					i++;
 				}
-
 			}
 		});
 		btnEjecutar.setEnabled(false);
@@ -165,6 +162,196 @@ public class ConcentradorAbies extends JFrame {
 
 	}
 
+	public void migrar(String pathUbicacion){
+		lblEstatus.setText("Iniciando importación...");
+		pbExportacion.setValue(0);
+		btnEjecutar.setEnabled(false);
+		btnBuscar.setEnabled(false);
+		
+		try {
+			Thread.sleep(1000);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		lblEstatus.setText("Importando UPM...");
+		bdImportar.validarRepetidos(pathUbicacion);
+		bdImportar.importarUPM_UPM(pathUbicacion); // 1
+
+		lblEstatus.setText("Importando Contacto...");
+		bdImportar.importarUPMContacto(pathUbicacion); // 2
+		pbExportacion.setValue(5);
+		pbExportacion.repaint();
+
+		lblEstatus.setText("Importando PC...");
+		bdImportar.importarPC(pathUbicacion); // 3
+
+		lblEstatus.setText("Importando Información de accesibilidad del PC...");
+		bdImportar.importarAccesibilidadPC(pathUbicacion); // 4
+		pbExportacion.setValue(10);
+		pbExportacion.repaint();
+
+		lblEstatus.setText("Importando Epífitas...");
+		bdImportar.importarUPMEpifitas(pathUbicacion); // 5
+		pbExportacion.setValue(15);
+		pbExportacion.repaint();
+
+		lblEstatus.setText("Importando Información de sitios...");
+		bdImportar.importarSitios(pathUbicacion); // 6
+
+		lblEstatus.setText("Importando Cobertura de suelo de sitio...");
+		bdImportar.importarSitiosCoberturaSuelo(pathUbicacion); // 7
+		// System.err.println("Entro a Cobertura Suelo");
+		pbExportacion.setValue(20);
+		pbExportacion.repaint();
+
+		lblEstatus.setText("Importando Fotografía hemisferica...");
+		bdImportar.importarFotografiaHemisferica(pathUbicacion); // 8
+		pbExportacion.setValue(25);
+		pbExportacion.repaint();
+
+		lblEstatus.setText("Importando Información de transponder...");
+		bdImportar.importarTransponder(pathUbicacion); // 9
+		pbExportacion.setValue(30);
+		pbExportacion.repaint();
+
+		lblEstatus.setText("Importando Parámetros físico químicos...");
+		bdImportar.importarParametrosFisicoQuimicos(pathUbicacion); // 10
+		pbExportacion.setValue(35);
+		pbExportacion.repaint();
+
+		lblEstatus.setText("Importando Información de suelo...");
+		bdImportar.importarSueloInformacion(pathUbicacion); // 11
+		lblEstatus.setText("Importando varillas de erosión...");
+		bdImportar.importarSueloVarillasErosion(pathUbicacion); // 12
+		lblEstatus.setText("Importando cobertura del suelo...");
+		bdImportar.importarSueloCobertura(pathUbicacion); // 13
+
+		pbExportacion.setValue(40);
+		pbExportacion.repaint();
+
+		lblEstatus.setText("Importando evidencia de erosión del suelo...");
+		bdImportar.importarSueloEvidenciaErosion(pathUbicacion); // 14
+		lblEstatus.setText("Importando Pedestal...");
+		bdImportar.importarSueloPedestal(pathUbicacion); // 15
+		lblEstatus.setText("Importando Erosión laminar...");
+		bdImportar.importarSueloErosionLaminar(pathUbicacion); // 16
+		lblEstatus.setText("Importando Costras...");
+		bdImportar.importarSueloCostras(pathUbicacion); // 17
+		lblEstatus.setText("Importando Canalillo...");
+		bdImportar.importarSueloCanalillo(pathUbicacion); // 18
+		lblEstatus.setText("Importando Cárcava...");
+		bdImportar.importarSueloCarcava(pathUbicacion); // 19
+		lblEstatus.setText("Importando Pavimentos...");
+		bdImportar.importarSueloPavimentos(pathUbicacion); // 20
+		lblEstatus.setText("Importando Medición canalillos...");
+		bdImportar.importarSueloMedicionCanalillos(pathUbicacion); // 21
+		lblEstatus.setText("Importando Medición carcavas...");
+		bdImportar.importarSueloMedicionCarcavas(pathUbicacion); // 22
+		lblEstatus.setText("Importando Medición dunas...");
+		bdImportar.importarSueloMedicionDunas(pathUbicacion); // 23
+		pbExportacion.setValue(45);
+		pbExportacion.repaint();
+		lblEstatus.setText("Importando Erosión hídrica canalillo...");
+		bdImportar.importarSueloErosionHidricaCanalillo(pathUbicacion); // 24
+		lblEstatus.setText("Importando Longitud canalillo...");
+		bdImportar.importarSueloLongitudCanalillo(pathUbicacion); // 25
+		lblEstatus.setText("Importando Erosión hidrica carcava...");
+		bdImportar.importarSueloErosionHidricaCarcava(pathUbicacion); // 26
+		lblEstatus.setText("Importando longitud de carcava...");
+		bdImportar.importarSueloLongitudCarcava(pathUbicacion); // 27
+		lblEstatus.setText("Importando deformación por viento...");
+		bdImportar.importarSueloDeformacionViento(pathUbicacion); // 28
+		lblEstatus.setText("Importando longitud montículo...");
+		bdImportar.importarSueloLongitudMonticulo(pathUbicacion); // 29
+		lblEstatus.setText("Importando hojarasca...");
+		bdImportar.importarSueloHojarasca(pathUbicacion); // 30
+		lblEstatus.setText("Importando profundidad de suelo...");
+		bdImportar.importarSueloProfundidad(pathUbicacion); // 31
+		lblEstatus.setText("Importando perfil...");
+		bdImportar.importarSueloMuestrasPerfil(pathUbicacion); // 32
+		lblEstatus.setText("Importando muestras del perfil...");
+		bdImportar.importarSueloMuestras(pathUbicacion); // 33
+		pbExportacion.setValue(50);
+		pbExportacion.repaint();
+
+		lblEstatus.setText("Importando Información de carbono e incendios...");
+
+		lblEstatus.setText("Importando Material leñoso caído de 100...");
+		bdImportar.importarCarbonoMaterialLenioso100(pathUbicacion); // 34
+		lblEstatus.setText("Importando Material leñoso caído de 1000...");
+		bdImportar.importarCarbonoMaterialLenioso1000(pathUbicacion); // 35
+		lblEstatus.setText("Importando cubierta vegetal...");
+		bdImportar.importarCarbonoCubiertaVegetal(pathUbicacion); // 36
+		lblEstatus.setText("Importando cobertura dosel...");
+		bdImportar.importarCarbonoCoberturaDosel(pathUbicacion); // 37
+		lblEstatus.setText("Importando longitud por componente...");
+		bdImportar.importarCarbonoLongitudComponente(pathUbicacion); // 38
+
+		pbExportacion.setValue(55);
+		pbExportacion.repaint();
+
+		lblEstatus.setText("Importando Arbolado...");
+		bdImportar.importarTaxonomiaArbolado(pathUbicacion); // 39
+		bdImportar.importarArboladoDanioSeveridad(pathUbicacion); // 40
+		lblEstatus.setText("Importando Submuestra...");
+		bdImportar.importarSubmuestra(pathUbicacion); // 41
+		bdImportar.importarSubmuestraTroza(pathUbicacion); // 42
+		bdImportar.importarSubmuestraObservaciones(pathUbicacion);
+		pbExportacion.setValue(60);
+		pbExportacion.repaint();
+
+		lblEstatus.setText("Importando Repoblado...");
+		bdImportar.importarTaxonomiaRepoblado(pathUbicacion); // 43
+		pbExportacion.setValue(65);
+		pbExportacion.repaint();
+
+		lblEstatus.setText("Importando Repoblado vegetación menor...");
+		bdImportar.importarTaxonomiaRepobladoVM(pathUbicacion); // 44
+		pbExportacion.setValue(70);
+		pbExportacion.repaint();
+
+		lblEstatus.setText("Importando Sotobosque...");
+		bdImportar.importarTaxonomiaSotoBosque(pathUbicacion); // 45
+		pbExportacion.setValue(75);
+		pbExportacion.repaint();
+
+		lblEstatus.setText("Importando Vegetación mayor gregarios...");
+		bdImportar.importarTaxonomiaVegetacionMayorGregarios(pathUbicacion); // 46
+		bdImportar.importarVegetacionMayorGDanioSeveridad(pathUbicacion); // 47
+		pbExportacion.setValue(80);
+		pbExportacion.repaint();
+
+		lblEstatus.setText("Importando Vegetación mayor individual...");
+		bdImportar.importarTaxonomiaVegetacionMayorIndividual(pathUbicacion); // 48
+		bdImportar.importarVegetacionMayorIDanioSeveridad(pathUbicacion); // 49
+		pbExportacion.setValue(85);
+		pbExportacion.repaint();
+
+		lblEstatus.setText("Importando Vegetación menor...");
+		bdImportar.importarTaxonomiaVegetacionMenor(pathUbicacion); // 50
+		bdImportar.importarVegetacionMenorDanioSeveridad(pathUbicacion); // 51
+		pbExportacion.setValue(90);
+		pbExportacion.repaint();
+
+		lblEstatus.setText("Importando Colecta botánica...");
+		bdImportar.importarTaxonomiaColectaBotanica(pathUbicacion); // 52
+		pbExportacion.setValue(95);
+		pbExportacion.repaint();
+
+		lblEstatus.setText("Importando datos de Brigada");
+		bdImportar.importarBrigadas(pathUbicacion); // 53
+		pbExportacion.setValue(97);
+		pbExportacion.repaint();
+
+		lblEstatus.setText("Finalizando importacion...");
+		// bdImportar.importarSecuencias(pathUbicacion); //54
+		// bdImportar.importarUPMRevision(pathUbicacion);
+		pbExportacion.setValue(100);
+		pbExportacion.repaint();
+	
+	}
+	
 	public void cargarBaseDatos() {
 		JFileChooser fcBaseDatos = new JFileChooser(ruta);
 		fcBaseDatos.setMultiSelectionEnabled(true);
