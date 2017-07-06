@@ -37,6 +37,8 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.awt.event.ActionEvent;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 public class ConcentradorAbies extends JFrame {
 
@@ -95,13 +97,18 @@ public class ConcentradorAbies extends JFrame {
 
 		pbExportacion = new JProgressBar();
 		pbExportacion.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		pbExportacion.setStringPainted(true);
 		pbExportacion.setForeground(new Color(184, 134, 11));
 		pbExportacion.setBackground(Color.DARK_GRAY);
 		pbExportacion.setBounds(12, 360, 752, 23);
 		panel.add(pbExportacion);
 
 		txtUbicacion = new JTextField();
+		txtUbicacion.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent arg0) {
+				txtUbicacion.selectAll();
+			}
+		});
 		txtUbicacion.setBounds(135, 215, 595, 20);
 		panel.add(txtUbicacion);
 		txtUbicacion.setColumns(10);
@@ -121,6 +128,12 @@ public class ConcentradorAbies extends JFrame {
 		panel.add(btnBuscar);
 
 		txtRutaSalida = new JTextField();
+		txtRutaSalida.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent arg0) {
+				txtRutaSalida.selectAll();
+			}
+		});
 		txtRutaSalida.setBounds(401, 247, 329, 20);
 		panel.add(txtRutaSalida);
 		txtRutaSalida.setColumns(10);
@@ -132,14 +145,8 @@ public class ConcentradorAbies extends JFrame {
 		btnEjecutar = new JButton("Ejecutar");
 		btnEjecutar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				int i = 0;
-				while (i != baseDatos.length) {
-					System.out.println(baseDatos[i].getPath().toString());
-					txtUbicacion.setText(baseDatos[i].getPath().toString());
-					migrar(baseDatos[i].getPath().toString());
-					
-					i++;
-				}
+				HiloImportacion importacion =new HiloImportacion(lblEstatus, pbExportacion, btnEjecutar, baseDatos, btnBuscar, txtUbicacion);
+				importacion.execute();
 			}
 		});
 		btnEjecutar.setEnabled(false);
@@ -149,7 +156,7 @@ public class ConcentradorAbies extends JFrame {
 
 	public void setPathConcentrador(String ruta) {
 		String query = "UPDATE configUserAbies SET pathConcentrador='" + ruta + "'";
-		System.out.println(query);
+		//System.out.println(query);
 		Connection configConnection = ConfigUserConnection.getConnection(ruta);
 		try {
 			java.sql.Statement st = configConnection.createStatement();
