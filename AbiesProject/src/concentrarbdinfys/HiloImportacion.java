@@ -1,260 +1,216 @@
 package concentrarbdinfys;
 
+import java.awt.BasicStroke;
+import java.io.File;
+
 //import gob.conafor.sys.mod.CDImportacionBD;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
+import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 
 public class HiloImportacion extends SwingWorker<Integer, String> {
 
-    private CDImportacionBD bdImportar = new CDImportacionBD();
-    //private CDConentrarBD bdConcentrar =new CDConentrarBD();
-    private JLabel etiqueta;
-    private JProgressBar barraProgreso;
-    private JButton btnEjecutar;
-    private JButton btnSalir;
-    private String ruta;
+	private CDImportacionBD bdImportar = new CDImportacionBD();
+	// private CDConentrarBD bdConcentrar =new CDConentrarBD();
+	private JLabel lblEstatus;
+	public JTextField txtUbicacion;
+	private JProgressBar pbExportacion;
+	private JButton btnEjecutar,btnBuscar;
+	
+	public boolean termino;
+	public File[] baseDatos;
+	public int contadorBD = 0;
 
-    public HiloImportacion(JLabel etiqueta, JProgressBar barraProgreso, JButton btnEjecutar, JButton btnSalir, String ruta) {
-        this.etiqueta = etiqueta;
-        this.barraProgreso = barraProgreso;
-        this.btnEjecutar = btnEjecutar;
-        this.btnSalir = btnSalir;
-        this.ruta = ruta;
-    }
+	public HiloImportacion(JLabel lblEstatus, JProgressBar pbExportacion, JButton btnEjecutar,File[] baseDatos, JButton btnBuscar, JTextField txtUbicacion) {
+		this.lblEstatus = lblEstatus;
+		this.baseDatos = baseDatos;
+		this.pbExportacion = pbExportacion;
+		this.btnEjecutar = btnEjecutar;
+		this.btnBuscar = btnBuscar;
+		this.txtUbicacion = txtUbicacion;
+		this.baseDatos=baseDatos;
+		
+	}
 
-    @Override
-    protected Integer doInBackground() {
-      
-        getEtiqueta().setText("Iniciando importaci贸n...");
-        getBarraProgreso().setValue(0);
-        getBtnEjecutar().setEnabled(false);
-        getBtnSalir().setEnabled(false);
-        try {
-            Thread.sleep(1000);
-        } catch (Exception e) {
-             e.printStackTrace();
-        }
+	
+	
+	@Override
+	protected Integer doInBackground() {
+		int i = 0;
+		pbExportacion.setIndeterminate(true);
+		while (i != baseDatos.length) {
+			System.out.println(baseDatos[i].getPath().toString());
+			txtUbicacion.setText(baseDatos[i].getPath().toString());
+			migrar(baseDatos[i].getPath().toString());
+			
+			i++;
+		}
+		pbExportacion.setIndeterminate(false);
+		return 0;
+		
+	}
 
-        getEtiqueta().setText("Importando UPM..."); 
-        bdImportar.validarRepetidos(this.ruta);
-        bdImportar.importarUPM_UPM(this.ruta); //1
-        
-        getEtiqueta().setText("Importando Contacto..."); 
-        bdImportar.importarUPMContacto(this.ruta); //2
-        getBarraProgreso().setValue(5);
-        getBarraProgreso().repaint();
-        
-        getEtiqueta().setText("Importando PC..."); 
-        bdImportar.importarPC(this.ruta); //3
-        
-        getEtiqueta().setText("Importando Informaci贸n de accesibilidad del PC..."); 
-        bdImportar.importarAccesibilidadPC(this.ruta); //4
-        getBarraProgreso().setValue(10);
-        getBarraProgreso().repaint();
-       
-        getEtiqueta().setText("Importando Ep铆fitas..."); 
-        bdImportar.importarUPMEpifitas(this.ruta); //5
-        getBarraProgreso().setValue(15);
-        getBarraProgreso().repaint();
-        
-        getEtiqueta().setText("Importando Informaci贸n de sitios..."); 
-        bdImportar.importarSitios(this.ruta); //6
-        
-        getEtiqueta().setText("Importando Cobertura de suelo de sitio..."); 
-        bdImportar.importarSitiosCoberturaSuelo(this.ruta); //7
-        //System.err.println("Entro a Cobertura Suelo");
-        getBarraProgreso().setValue(20);
-        getBarraProgreso().repaint();
-        
-        getEtiqueta().setText("Importando Fotograf铆a hemisferica..."); 
-        bdImportar.importarFotografiaHemisferica(this.ruta); //8
-        getBarraProgreso().setValue(25);
-        getBarraProgreso().repaint();
-        
-        getEtiqueta().setText("Importando Informaci贸n de transponder..."); 
-        bdImportar.importarTransponder(this.ruta); //9
-        getBarraProgreso().setValue(30);
-        getBarraProgreso().repaint();
-        
-        getEtiqueta().setText("Importando Par谩metros f铆sico qu铆micos..."); 
-        bdImportar.importarParametrosFisicoQuimicos(this.ruta); //10
-        getBarraProgreso().setValue(35);
-        getBarraProgreso().repaint();
-        
-        getEtiqueta().setText("Importando Informaci贸n de suelo..."); 
-        bdImportar.importarSueloInformacion(this.ruta); //11
-        getEtiqueta().setText("Importando varillas de erosi贸n..."); 
-        bdImportar.importarSueloVarillasErosion(this.ruta); //12
-        getEtiqueta().setText("Importando cobertura del suelo..."); 
-        bdImportar.importarSueloCobertura(this.ruta); //13
-        
-        getBarraProgreso().setValue(40);
-        getBarraProgreso().repaint();
-        
-        getEtiqueta().setText("Importando evidencia de erosi贸n del suelo..."); 
-        bdImportar.importarSueloEvidenciaErosion(this.ruta); //14
-        getEtiqueta().setText("Importando Pedestal..."); 
-        bdImportar.importarSueloPedestal(this.ruta); //15
-        getEtiqueta().setText("Importando Erosi贸n laminar..."); 
-        bdImportar.importarSueloErosionLaminar(this.ruta); //16
-        getEtiqueta().setText("Importando Costras..."); 
-        bdImportar.importarSueloCostras(this.ruta); //17
-        getEtiqueta().setText("Importando Canalillo..."); 
-        bdImportar.importarSueloCanalillo(this.ruta); //18
-        getEtiqueta().setText("Importando C谩rcava..."); 
-        bdImportar.importarSueloCarcava(this.ruta); //19
-        getEtiqueta().setText("Importando Pavimentos..."); 
-        bdImportar.importarSueloPavimentos(this.ruta); //20
-        getEtiqueta().setText("Importando Medici贸n canalillos...");
-        bdImportar.importarSueloMedicionCanalillos(this.ruta); //21
-        getEtiqueta().setText("Importando Medici贸n carcavas..."); 
-        bdImportar.importarSueloMedicionCarcavas(this.ruta); //22
-        getEtiqueta().setText("Importando Medici贸n dunas..."); 
-        bdImportar.importarSueloMedicionDunas(this.ruta); //23
-        getBarraProgreso().setValue(45);
-        getBarraProgreso().repaint();
-        getEtiqueta().setText("Importando Erosi贸n h铆drica canalillo..."); 
-        bdImportar.importarSueloErosionHidricaCanalillo(this.ruta); //24
-        getEtiqueta().setText("Importando Longitud canalillo..."); 
-        bdImportar.importarSueloLongitudCanalillo(this.ruta); //25
-        getEtiqueta().setText("Importando Erosi贸n hidrica carcava...");
-        bdImportar.importarSueloErosionHidricaCarcava(this.ruta); //26
-        getEtiqueta().setText("Importando longitud de carcava..."); 
-        bdImportar.importarSueloLongitudCarcava(this.ruta); //27
-        getEtiqueta().setText("Importando deformaci贸n por viento..."); 
-        bdImportar.importarSueloDeformacionViento(this.ruta); //28
-        getEtiqueta().setText("Importando longitud mont铆culo..."); 
-        bdImportar.importarSueloLongitudMonticulo(this.ruta); //29
-        getEtiqueta().setText("Importando hojarasca...");
-        bdImportar.importarSueloHojarasca(this.ruta); //30
-         getEtiqueta().setText("Importando profundidad de suelo...");
-        bdImportar.importarSueloProfundidad(this.ruta); //31
-        getEtiqueta().setText("Importando perfil...");
-        bdImportar.importarSueloMuestrasPerfil(this.ruta); //32
-        getEtiqueta().setText("Importando muestras del perfil...");
-        bdImportar.importarSueloMuestras(this.ruta); //33
-        getBarraProgreso().setValue(50);
-        getBarraProgreso().repaint();
-        
-        getEtiqueta().setText("Importando Informaci贸n de carbono e incendios...");
-        
-        getEtiqueta().setText("Importando Material le帽oso ca铆do de 100..."); 
-        bdImportar.importarCarbonoMaterialLenioso100(this.ruta); //34
-        getEtiqueta().setText("Importando Material le帽oso ca铆do de 1000...");
-        bdImportar.importarCarbonoMaterialLenioso1000(this.ruta); //35
-        getEtiqueta().setText("Importando cubierta vegetal..."); 
-        bdImportar.importarCarbonoCubiertaVegetal(this.ruta); //36
-        getEtiqueta().setText("Importando cobertura dosel..."); 
-        bdImportar.importarCarbonoCoberturaDosel(this.ruta); //37
-        getEtiqueta().setText("Importando longitud por componente..."); 
-        bdImportar.importarCarbonoLongitudComponente(this.ruta); //38
-        
-        getBarraProgreso().setValue(55);
-        getBarraProgreso().repaint();
-        
-        getEtiqueta().setText("Importando Arbolado..."); 
-        bdImportar.importarTaxonomiaArbolado(this.ruta); //39
-        bdImportar.importarArboladoDanioSeveridad(this.ruta); //40
-        getEtiqueta().setText("Importando Submuestra..."); 
-        bdImportar.importarSubmuestra(this.ruta); //41
-        bdImportar.importarSubmuestraTroza(this.ruta); //42
-        bdImportar.importarSubmuestraObservaciones(this.ruta);
-        getBarraProgreso().setValue(60);
-        getBarraProgreso().repaint();
-        
-        getEtiqueta().setText("Importando Repoblado..."); 
-        bdImportar.importarTaxonomiaRepoblado(this.ruta); //43
-        getBarraProgreso().setValue(65);
-        getBarraProgreso().repaint();
-        
-        getEtiqueta().setText("Importando Repoblado vegetaci贸n menor..."); 
-        bdImportar.importarTaxonomiaRepobladoVM(this.ruta); //44
-        getBarraProgreso().setValue(70);
-        getBarraProgreso().repaint();
-        
-        getEtiqueta().setText("Importando Sotobosque..."); 
-        bdImportar.importarTaxonomiaSotoBosque(this.ruta); //45
-        getBarraProgreso().setValue(75);
-        getBarraProgreso().repaint();
-        
-        getEtiqueta().setText("Importando Vegetaci贸n mayor gregarios..."); 
-        bdImportar.importarTaxonomiaVegetacionMayorGregarios(this.ruta); //46
-        bdImportar.importarVegetacionMayorGDanioSeveridad(this.ruta); //47
-        getBarraProgreso().setValue(80);
-        getBarraProgreso().repaint();
-        
-        getEtiqueta().setText("Importando Vegetaci贸n mayor individual..."); 
-        bdImportar.importarTaxonomiaVegetacionMayorIndividual(this.ruta); //48
-        bdImportar.importarVegetacionMayorIDanioSeveridad(this.ruta); //49
-        getBarraProgreso().setValue(85);
-        getBarraProgreso().repaint();
-        
-        getEtiqueta().setText("Importando Vegetaci贸n menor...");
-        bdImportar.importarTaxonomiaVegetacionMenor(this.ruta); //50
-        bdImportar.importarVegetacionMenorDanioSeveridad(this.ruta); //51
-        getBarraProgreso().setValue(90);
-        getBarraProgreso().repaint();
-        
-        getEtiqueta().setText("Importando Colecta bot谩nica...");
-        bdImportar.importarTaxonomiaColectaBotanica(this.ruta); //52
-        getBarraProgreso().setValue(95);
-        getBarraProgreso().repaint();
-        
-        getEtiqueta().setText("Importando datos de Brigada");
-        bdImportar.importarBrigadas(this.ruta); //53
-        getBarraProgreso().setValue(97);
-        getBarraProgreso().repaint();
-        
-        getEtiqueta().setText("Finalizando importacion...");
-        //bdImportar.importarSecuencias(this.ruta); //54
-        //bdImportar.importarUPMRevision(this.ruta);
-        getBarraProgreso().setValue(100);
-        getBarraProgreso().repaint();
-        return null;
-    }
-    
-    @Override
-    protected void done(){
-        JOptionPane.showMessageDialog(null, "Importacion terminada");
-        getBarraProgreso().setValue(0);
-        getBarraProgreso().repaint();
-        getBtnEjecutar().setEnabled(false);
-        getBtnSalir().setEnabled(true);
-    }
+	
+	
 
-    public JLabel getEtiqueta() {
-        return etiqueta;
-    }
+	public JButton getBtnEjecutar() {
+		return btnEjecutar;
+	}
 
-    public void setEtiqueta(JLabel etiqueta) {
-        this.etiqueta = etiqueta;
-    }
+	public void setBtnEjecutar(JButton btnEjecutar) {
+		this.btnEjecutar = btnEjecutar;
+	}
 
-    public JProgressBar getBarraProgreso() {
-        return barraProgreso;
-    }
+	public void migrar(String pathUbicacion){
+		lblEstatus.setText("Iniciando importaci髇...");
+		btnEjecutar.setEnabled(false);
+		btnBuscar.setEnabled(false);
+		
+		try {
+			Thread.sleep(1000);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-    public void setBarraProgreso(JProgressBar barraProgreso) {
-        this.barraProgreso = barraProgreso;
-    }
+		lblEstatus.setText("Importando UPM...");
+		bdImportar.validarRepetidos(pathUbicacion);
+		bdImportar.importarUPM_UPM(pathUbicacion); // 1
 
-    public JButton getBtnEjecutar() {
-        return btnEjecutar;
-    }
+		lblEstatus.setText("Importando Contacto...");
+		bdImportar.importarUPMContacto(pathUbicacion); // 2
 
-    public void setBtnEjecutar(JButton btnEjecutar) {
-        this.btnEjecutar = btnEjecutar;
-    }
+		lblEstatus.setText("Importando PC...");
+		bdImportar.importarPC(pathUbicacion); // 3
 
-    public JButton getBtnSalir() {
-        return btnSalir;
-    }
+		lblEstatus.setText("Importando Informaci髇 de accesibilidad del PC...");
+		bdImportar.importarAccesibilidadPC(pathUbicacion); // 4
 
-    public void setBtnSalir(JButton btnSalir) {
-        this.btnSalir = btnSalir;
-    }
+		lblEstatus.setText("Importando Ep韋itas...");
+		bdImportar.importarUPMEpifitas(pathUbicacion); // 5
+
+		lblEstatus.setText("Importando Informaci髇 de sitios...");
+		bdImportar.importarSitios(pathUbicacion); // 6
+
+		lblEstatus.setText("Importando Cobertura de suelo de sitio...");
+		bdImportar.importarSitiosCoberturaSuelo(pathUbicacion); // 7
+		// System.err.println("Entro a Cobertura Suelo");
+
+		lblEstatus.setText("Importando Fotograf韆 hemisferica...");
+		bdImportar.importarFotografiaHemisferica(pathUbicacion); // 8
+
+		lblEstatus.setText("Importando Informaci髇 de transponder...");
+		bdImportar.importarTransponder(pathUbicacion); // 9
+
+		lblEstatus.setText("Importando Par醡etros f韘ico qu韒icos...");
+		bdImportar.importarParametrosFisicoQuimicos(pathUbicacion); // 10
+
+		lblEstatus.setText("Importando Informaci髇 de suelo...");
+		bdImportar.importarSueloInformacion(pathUbicacion); // 11
+		lblEstatus.setText("Importando varillas de erosi髇...");
+		bdImportar.importarSueloVarillasErosion(pathUbicacion); // 12
+		lblEstatus.setText("Importando cobertura del suelo...");
+		bdImportar.importarSueloCobertura(pathUbicacion); // 13
+
+
+		lblEstatus.setText("Importando evidencia de erosi髇 del suelo...");
+		bdImportar.importarSueloEvidenciaErosion(pathUbicacion); // 14
+		lblEstatus.setText("Importando Pedestal...");
+		bdImportar.importarSueloPedestal(pathUbicacion); // 15
+		lblEstatus.setText("Importando Erosi髇 laminar...");
+		bdImportar.importarSueloErosionLaminar(pathUbicacion); // 16
+		lblEstatus.setText("Importando Costras...");
+		bdImportar.importarSueloCostras(pathUbicacion); // 17
+		lblEstatus.setText("Importando Canalillo...");
+		bdImportar.importarSueloCanalillo(pathUbicacion); // 18
+		lblEstatus.setText("Importando C醨cava...");
+		bdImportar.importarSueloCarcava(pathUbicacion); // 19
+		lblEstatus.setText("Importando Pavimentos...");
+		bdImportar.importarSueloPavimentos(pathUbicacion); // 20
+		lblEstatus.setText("Importando Medici髇 canalillos...");
+		bdImportar.importarSueloMedicionCanalillos(pathUbicacion); // 21
+		lblEstatus.setText("Importando Medici髇 carcavas...");
+		bdImportar.importarSueloMedicionCarcavas(pathUbicacion); // 22
+		lblEstatus.setText("Importando Medici髇 dunas...");
+		bdImportar.importarSueloMedicionDunas(pathUbicacion); // 23
+		lblEstatus.setText("Importando Erosi髇 h韉rica canalillo...");
+		bdImportar.importarSueloErosionHidricaCanalillo(pathUbicacion); // 24
+		lblEstatus.setText("Importando Longitud canalillo...");
+		bdImportar.importarSueloLongitudCanalillo(pathUbicacion); // 25
+		lblEstatus.setText("Importando Erosi髇 hidrica carcava...");
+		bdImportar.importarSueloErosionHidricaCarcava(pathUbicacion); // 26
+		lblEstatus.setText("Importando longitud de carcava...");
+		bdImportar.importarSueloLongitudCarcava(pathUbicacion); // 27
+		lblEstatus.setText("Importando deformaci髇 por viento...");
+		bdImportar.importarSueloDeformacionViento(pathUbicacion); // 28
+		lblEstatus.setText("Importando longitud mont韈ulo...");
+		bdImportar.importarSueloLongitudMonticulo(pathUbicacion); // 29
+		lblEstatus.setText("Importando hojarasca...");
+		bdImportar.importarSueloHojarasca(pathUbicacion); // 30
+		lblEstatus.setText("Importando profundidad de suelo...");
+		bdImportar.importarSueloProfundidad(pathUbicacion); // 31
+		lblEstatus.setText("Importando perfil...");
+		bdImportar.importarSueloMuestrasPerfil(pathUbicacion); // 32
+		lblEstatus.setText("Importando muestras del perfil...");
+		bdImportar.importarSueloMuestras(pathUbicacion); // 33
+
+		lblEstatus.setText("Importando Informaci髇 de carbono e incendios...");
+
+		lblEstatus.setText("Importando Material le駉so ca韉o de 100...");
+		bdImportar.importarCarbonoMaterialLenioso100(pathUbicacion); // 34
+		lblEstatus.setText("Importando Material le駉so ca韉o de 1000...");
+		bdImportar.importarCarbonoMaterialLenioso1000(pathUbicacion); // 35
+		lblEstatus.setText("Importando cubierta vegetal...");
+		bdImportar.importarCarbonoCubiertaVegetal(pathUbicacion); // 36
+		lblEstatus.setText("Importando cobertura dosel...");
+		bdImportar.importarCarbonoCoberturaDosel(pathUbicacion); // 37
+		lblEstatus.setText("Importando longitud por componente...");
+		bdImportar.importarCarbonoLongitudComponente(pathUbicacion); // 38
+
+
+		lblEstatus.setText("Importando Arbolado...");
+		bdImportar.importarTaxonomiaArbolado(pathUbicacion); // 39
+		bdImportar.importarArboladoDanioSeveridad(pathUbicacion); // 40
+		lblEstatus.setText("Importando Submuestra...");
+		bdImportar.importarSubmuestra(pathUbicacion); // 41
+		bdImportar.importarSubmuestraTroza(pathUbicacion); // 42
+		bdImportar.importarSubmuestraObservaciones(pathUbicacion);
+
+		lblEstatus.setText("Importando Repoblado...");
+		bdImportar.importarTaxonomiaRepoblado(pathUbicacion); // 43
+
+		lblEstatus.setText("Importando Repoblado vegetaci髇 menor...");
+		bdImportar.importarTaxonomiaRepobladoVM(pathUbicacion); // 44
+
+		lblEstatus.setText("Importando Sotobosque...");
+		bdImportar.importarTaxonomiaSotoBosque(pathUbicacion); // 45
+
+		lblEstatus.setText("Importando Vegetaci髇 mayor gregarios...");
+		bdImportar.importarTaxonomiaVegetacionMayorGregarios(pathUbicacion); // 46
+		bdImportar.importarVegetacionMayorGDanioSeveridad(pathUbicacion); // 47
+
+		lblEstatus.setText("Importando Vegetaci髇 mayor individual...");
+		bdImportar.importarTaxonomiaVegetacionMayorIndividual(pathUbicacion); // 48
+		bdImportar.importarVegetacionMayorIDanioSeveridad(pathUbicacion); // 49
+
+		lblEstatus.setText("Importando Vegetaci髇 menor...");
+		bdImportar.importarTaxonomiaVegetacionMenor(pathUbicacion); // 50
+		bdImportar.importarVegetacionMenorDanioSeveridad(pathUbicacion); // 51
+
+		lblEstatus.setText("Importando Colecta bot醤ica...");
+		bdImportar.importarTaxonomiaColectaBotanica(pathUbicacion); // 52
+
+		lblEstatus.setText("Importando datos de Brigada");
+		bdImportar.importarBrigadas(pathUbicacion); // 53
+
+		lblEstatus.setText("Finalizando importacion...");
+		// bdImportar.importarSecuencias(pathUbicacion); //54
+		// bdImportar.importarUPMRevision(pathUbicacion);
+	
+	}
+	
+
 
 }

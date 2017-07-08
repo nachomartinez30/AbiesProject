@@ -21,7 +21,8 @@ public class CDImportacionBD {
 	private int upmIDLocal;
 
 	public void validarRepetidos(String ruta) {
-		System.out.println("validando repetidos...");
+		System.out.println(" validarRepetidos");
+		
 		this.querySelect = "SELECT UPMID FROM UPM_UPM";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -101,6 +102,7 @@ public class CDImportacionBD {
 	}
 
 	public void eliminarRepetido(int upmID) {
+		System.out.println(" eliminarRepetido");
 		this.queryDelete = "DELETE FROM UPM_UPM WHERE UPMID = " + upmID;
 		Connection conn = LocalConnection.getConnection();
 		try {
@@ -125,6 +127,7 @@ public class CDImportacionBD {
 
 	// 1
 	public void importarUPM_UPM(String ruta) {
+		System.out.println(" importarUPM_UPM");
 		this.querySelect = "SELECT UPMID, FechaInicio, FechaFin, TipoUPMID, Altitud, PendienteRepresentativa, "
 				+ "FisiografiaID, ExposicionID, Predio, Paraje, TipoTenenciaID, Accesible, GradosLatitud, MinutosLatitud, "
 				+ "SegundosLatitud, GradosLongitud, MinutosLongitud, SegundosLongitud, Datum, ErrorPresicion, "
@@ -204,6 +207,7 @@ public class CDImportacionBD {
 
 	// 2
 	public void importarPC(String ruta) {
+		System.out.println(" importarPC");
 		this.querySelect = "SELECT PuntoControlID, UPMID, Descripcion, Paraje, GradosLatitud, MinutosLatitud, SegundosLatitud, GradosLongitud, "
 				+ "MinutosLongitud, SegundosLongitud, ErrorPresicion, Datum, Azimut, Distancia FROM PC_PuntoControl";
 		this.baseDatosLocal = LocalConnection.getConnection();
@@ -258,6 +262,7 @@ public class CDImportacionBD {
 
 	// 3
 	public void importarAccesibilidadPC(String ruta) {
+		System.out.println(" importarAccesibilidadPC");
 		this.querySelect = "SELECT AccesibilidadID ,UPMID, MedioTransporteID, ViaAccesibilidadID, Distancia, CondicionAccesibilidadID FROM PC_Accesibilidad";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -301,6 +306,7 @@ public class CDImportacionBD {
 
 	// 4
 	public void importarSitios(String ruta) {
+		System.out.println(" importarSitios");
 		this.querySelect = "SELECT UPMID, SitioID, Sitio, SenialGPS, GradosLatitud, MinutosLatitud, SegundosLatitud, GradosLongitud, MinutosLongitud, "
 				+ "SegundosLongitud, ErrorPresicion, EvidenciaMuestreo, Datum, Azimut, Distancia, SitioAccesible, TipoInaccesibilidad, ExplicacionInaccesibilidad, CoberturaForestal, "
 				+ "Condicion, ClaveSerieV, FaseSucecional, ArbolFuera, Ecotono, CondicionPresenteCampo, CondicionEcotono, RepobladoFuera, PorcentajeRepoblado, "
@@ -408,6 +414,7 @@ public class CDImportacionBD {
 
 	// 5
 	public void importarSitiosCoberturaSuelo(String ruta) {
+		System.out.println(" importarSitiosCoberturaSuelo");
 		this.querySelect = "SELECT CoberturaID, SitioID, Gramineas, Helechos, Musgos, Liquenes, Hierbas, Roca, SueloDesnudo, Hojarasca, Grava, Otros FROM SITIOS_CoberturaSuelo";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -459,6 +466,7 @@ public class CDImportacionBD {
 
 	// 5
 	public void importarFotografiaHemisferica(String ruta) {
+		System.out.println(" importarFotografiaHemisferica");
 		this.querySelect = "SELECT FotografiaHemisfericaID, SitioID, CoberturaArborea, TomaFotografia, Hora, DeclinacionMagnetica FROM SITIOS_FotografiaHemisferica";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -507,6 +515,7 @@ public class CDImportacionBD {
 
 	// 6
 	public void importarTransponder(String ruta) {
+		System.out.println(" importarTransponder");
 		this.querySelect = "SELECT TransponderID, SitioID, TipoColocacionID, Especifique, Observaciones FROM SITIOS_Transponder";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -551,6 +560,7 @@ public class CDImportacionBD {
 
 	// 7
 	public void importarParametrosFisicoQuimicos(String ruta) {
+		System.out.println(" importarParametrosFisicoQuimicos");
 		this.querySelect = "SELECT ParametrosFQID, SitioID, TipoAgua, Salinidad, Temperatura, ConductividadElectrica, Ph, PotencialRedox, Profundidad, Observaciones FROM "
 				+ "SITIOS_ParametrosFisicoQuimicos";
 		this.baseDatosLocal = LocalConnection.getConnection();
@@ -602,6 +612,7 @@ public class CDImportacionBD {
 
 	// 8
 	public void importarSueloCanalillo(String ruta) {
+		System.out.println(" importarSueloCanalillo");
 		this.querySelect = "SELECT CanalilloID, SitioID, Numero, Ancho, Profundidad FROM SUELO_Canalillo";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -644,6 +655,7 @@ public class CDImportacionBD {
 
 	// 9
 	public void importarSueloCarcava(String ruta) {
+		System.out.println(" importarSueloCarcava");
 		this.querySelect = "SELECT CarcavaID, SitioID, Numero, Ancho, Profundidad FROM SUELO_Carcava";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -686,6 +698,7 @@ public class CDImportacionBD {
 
 	// 10
 	public void importarSueloCobertura(String ruta) {
+		System.out.println(" importarSueloCobertura");
 		this.querySelect = "SELECT CoberturaSueloID, SitioID, Transecto, Pendiente FROM SUELO_CoberturaSuelo";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -728,6 +741,7 @@ public class CDImportacionBD {
 
 	// 11
 	public void importarSueloCostras(String ruta) {
+		System.out.println(" importarSueloCostras");
 		this.querySelect = "SELECT CostrasID, SitioID, Numero, Diametro FROM SUELO_Costras";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -767,6 +781,7 @@ public class CDImportacionBD {
 
 	// 12
 	public void importarSueloDeformacionViento(String ruta) {
+		System.out.println(" importarSueloDeformacionViento");
 		this.querySelect = "SELECT DeformacionVientoID, SitioID, Medicion, Altura, Diametro, Longitud, Distancia, Azimut FROM SUELO_DeformacionViento";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -813,6 +828,7 @@ public class CDImportacionBD {
 
 	// 13
 	public void importarSueloErosionHidricaCanalillo(String ruta) {
+		System.out.println(" importarSueloErosionHidricaCanalillo");
 		this.querySelect = "SELECT ErosionCanalilloID, SitioID, Medicion, Profundidad, Ancho, Distancia, Azimut FROM SUELO_ErosionHidricaCanalillo";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -858,6 +874,7 @@ public class CDImportacionBD {
 
 	// 14
 	public void importarSueloErosionHidricaCarcava(String ruta) {
+		System.out.println(" importarSueloErosionHidricaCarcava");
 		this.querySelect = "SELECT ErosionCarcavaID,SitioID, Medicion, Profundidad, Ancho, Distancia, Azimut FROM SUELO_ErosionHidricaCarcava";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -903,6 +920,7 @@ public class CDImportacionBD {
 
 	// 15
 	public void importarSueloErosionLaminar(String ruta) {
+		System.out.println(" importarSueloErosionLaminar");
 		this.querySelect = "SELECT ErosionLaminarID, SitioID, Numero, Ancho, Largo FROM SUELO_ErosionLaminar";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -966,6 +984,7 @@ public class CDImportacionBD {
 
 	// 16
 	public void importarSueloEvidenciaErosion(String ruta) {
+		System.out.println(" importarSueloEvidenciaErosion");
 
 		this.querySelect = "SELECT EvidenciaErosionID, CoberturaSueloID, Punto, Dosel, LecturaTierraID FROM SUELO_EvidenciaErosion";
 		this.baseDatosLocal = LocalConnection.getConnection();
@@ -1014,6 +1033,7 @@ public class CDImportacionBD {
 
 	// 17
 	public void importarSueloHojarasca(String ruta) {
+		System.out.println(" importarSueloHojarasca");
 		this.querySelect = "SELECT HojarascaID, SitioID, Punto, TipoHojarascaID, EspesorHO, EspesorF, PesoTotalHO, PesoTotalF, PesoMuestraHO, PesoMuestraF, "
 				+ "Observaciones FROM SUELO_Hojarasca";
 		Float espesorF = null;
@@ -1079,6 +1099,7 @@ public class CDImportacionBD {
 
 	// 18
 	public void importarSueloLongitudCanalillo(String ruta) {
+		System.out.println(" importarSueloLongitudCanalillo");
 		this.querySelect = "SELECT LongitudCanalilloID, SitioID, CampoLongitud, Longitud FROM SUELO_LongitudCanalillo";
 		this.queryInsert = "INSERT INTO SUELO_LongitudCanalillo(LongitudCanalilloID, SitioID, CampoLongitud, Longitud)VALUES(?,?, ?, ?)";
 		this.baseDatosLocal = LocalConnection.getConnection();
@@ -1122,6 +1143,7 @@ public class CDImportacionBD {
 
 	// 19
 	public void importarSueloLongitudCarcava(String ruta) {
+		System.out.println(" importarSueloLongitudCarcava");
 		this.querySelect = "SELECT LongitudCarcavaID, SitioID, CampoLongitud, Longitud FROM SUELO_LongitudCarcava";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -1164,6 +1186,7 @@ public class CDImportacionBD {
 
 	// 20
 	public void importarSueloLongitudMonticulo(String ruta) {
+		System.out.println(" importarSueloLongitudMonticulo");
 		this.querySelect = "SELECT LongitudMonticuloID, SitioID, CampoLongitud, Longitud FROM SUELO_LongitudMonticulo";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -1206,6 +1229,7 @@ public class CDImportacionBD {
 
 	// 21
 	public void importarSueloMedicionCanalillos(String ruta) {
+		System.out.println(" importarSueloMedicionCanalillos");
 		this.querySelect = "SELECT MedicionCanalillosID, SitioID, NumeroCanalillos, ProfundidadPromedio, Longitud, Volumen FROM SUELO_MedicionCanalillos";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -1251,6 +1275,7 @@ public class CDImportacionBD {
 
 	// 22
 	public void importarSueloMedicionCarcavas(String ruta) {
+		System.out.println(" importarSueloMedicionCarcavas");
 		this.querySelect = "SELECT MedicionCarcavasID, SitioID, NumeroCarcavas, ProfundidadPromedio, AnchoPromedio, Longitud, Volumen FROM SUELO_MedicionCarcavas";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -1297,6 +1322,7 @@ public class CDImportacionBD {
 
 	// 23
 	public void importarSueloMedicionDunas(String ruta) {
+		System.out.println(" importarSueloMedicionDunas");
 		this.querySelect = "SELECT MedicionDunas, SitioID, NumeroDunas, AlturaPromedio, AnchoPromedio, Longitud, Volumen FROM SUELO_MedicionDunas";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -1342,6 +1368,7 @@ public class CDImportacionBD {
 
 	// 24
 	public void importarSueloMuestras(String ruta) {
+		System.out.println(" importarSueloMuestras");
 		this.querySelect = "SELECT MuestrasID, SitioID, ProfundidadID, PesoMuestra, Lectura1, Lectura2, Lectura3, Lectura4, "
 				+ "Promedio, ClaveColecta FROM SUELO_Muestras";
 		Float lectura1 = null;
@@ -1407,6 +1434,7 @@ public class CDImportacionBD {
 
 	// 25
 	public void importarSueloMuestrasPerfil(String ruta) {
+		System.out.println(" importarSueloMuestrasPerfil");
 		this.querySelect = "SELECT MuestrasPerfilID, SitioID, GradosLatitud, MinutosLatitud, SegundosLatitud, GradosLongitud, MinutosLongitud, SegundosLongitud, Elevacion, "
 				+ "DiametroInterno, DiametroExterno, Altura, Observaciones FROM SUELO_MuestrasPerfil";
 		this.baseDatosLocal = LocalConnection.getConnection();
@@ -1462,6 +1490,7 @@ public class CDImportacionBD {
 
 	// 26
 	public void importarSueloPavimentos(String ruta) {
+		System.out.println(" importarSueloPavimentos");
 		this.querySelect = "SELECT PavimentoErosionID, SitioID, Numero, Diametro FROM SUELO_PavimentoErosion";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -1505,6 +1534,7 @@ public class CDImportacionBD {
 
 	// 27
 	public void importarSueloPedestal(String ruta) {
+		System.out.println(" importarSueloPedestal");
 		this.querySelect = "SELECT PedestalID, SitioID, Numero, Altura FROM SUELO_Pedestal";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -1544,6 +1574,7 @@ public class CDImportacionBD {
 
 	// 28
 	public void importarSueloProfundidad(String ruta) {
+		System.out.println(" importarSueloProfundidad");
 		this.querySelect = "SELECT ProfundidadSueloID, SitioID, Punto, Profundidad030, Profundidad3060, PesoTotal030, PesoTotal3060, Equipo030, Equipo3060, "
 				+ "Observaciones FROM SUELO_Profundidad";
 		Float profundidad3060 = null;
@@ -1603,6 +1634,7 @@ public class CDImportacionBD {
 
 	// 29
 	public void importarSueloInformacion(String ruta) {
+		System.out.println(" importarSueloInformacion");
 		this.querySelect = "SELECT SueloID, SitioID, UsoSueloID, OtroUsoSuelo, Espesor, PendienteDominante, Observaciones, NumeroCanalillos, ProfundidadPromedioCanalillos, "
 				+ "AnchoPromedioCanalillos, LongitudCanalillos, VolumenCanalillos, NumeroCarcavas, ProfundidadPromedioCarcavas, AnchoPromedioCarcavas, LongitudCarcavas, VolumenCarcavas, "
 				+ "NumeroMonticulos, AlturaPromedioMonticulos, AnchoPromedioMonticulos, LongitudPromedioMonticulos, VolumenMonticulos FROM SUELO_Suelo";
@@ -1732,6 +1764,7 @@ public class CDImportacionBD {
 
 	// 30
 	public void importarSueloVarillasErosion(String ruta) {
+		System.out.println(" importarSueloVarillasErosion");
 		this.querySelect = "SELECT VarillaID, SitioID, NoVarilla, Azimut, Distancia, Profundidad FROM SUELO_VarillaErosion";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -1776,6 +1809,7 @@ public class CDImportacionBD {
 
 	// 31
 	public void importarCarbonoCoberturaDosel(String ruta) {
+		System.out.println(" importarCarbonoCoberturaDosel");
 		this.querySelect = "SELECT CoberturaDoselID, SitioID, Transecto, Punto1, Punto2, Punto3, Punto4, Punto5, Punto6, Punto7, "
 				+ "Punto8, Punto9, Punto10 FROM CARBONO_CoberturaDosel";
 		this.baseDatosLocal = LocalConnection.getConnection();
@@ -1830,6 +1864,7 @@ public class CDImportacionBD {
 
 	// 32
 	public void importarCarbonoCubiertaVegetal(String ruta) {
+		System.out.println(" importarCarbonoCubiertaVegetal");
 		this.querySelect = "SELECT CubiertaVegetalID, SitioID, Transecto, ComponenteID, Altura5, Altura10 FROM CARBONO_CubiertaVegetal";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -1874,6 +1909,7 @@ public class CDImportacionBD {
 
 	// 33
 	public void importarCarbonoLongitudComponente(String ruta) {
+		System.out.println(" importarCarbonoLongitudComponente");
 		this.querySelect = "SELECT LongitudComponenteID, SitioID, Consecutivo, Transecto, ComponenteID, FamiliaID, GeneroID, EspecieID, InfraespecieID, NombreComun, Segmento1, Segmento2, Segmento3, Segmento4, "
 				+ "Segmento5, Segmento6, Segmento7, Segmento8, Segmento9, Segmento10, Total, ClaveColecta FROM CARBONO_LongitudComponente";
 		Integer segmento1 = null;
@@ -1981,6 +2017,7 @@ public class CDImportacionBD {
 
 	// 34
 	public void importarCarbonoMaterialLenioso100(String ruta) {
+		System.out.println(" importarCarbonoMaterialLenioso100");
 		this.querySelect = "SELECT MaterialLenioso100ID, SitioID, Transecto, Pendiente, UnaHora, DiezHoras, CienHoras FROM CARBONO_MaterialLenioso100";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -2026,6 +2063,7 @@ public class CDImportacionBD {
 
 	// 35
 	public void importarCarbonoMaterialLenioso1000(String ruta) {
+		System.out.println(" importarCarbonoMaterialLenioso1000");
 		this.querySelect = "SELECT MaterialLenioso1000ID, SitioID, Transecto, Diametro, Grado FROM CARBONO_MaterialLenioso1000";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -2069,6 +2107,7 @@ public class CDImportacionBD {
 
 	// 36
 	public void importarTaxonomiaArbolado(String ruta) {
+		System.out.println(" importarTaxonomiaArbolado");
 		this.querySelect = "SELECT ArboladoID, SitioID, Consecutivo, NoIndividuo, NoRama, Azimut, Distancia, FamiliaID, GeneroID, EspecieID, InfraespecieID, "
 				+ "NombreComun, EsSubmuestra, FormaVidaID, FormaFusteID, CondicionID, MuertoPieID, GradoPutrefaccionID, TipoToconID, DiametroNormal, "
 				+ "DiametroBasal, AlturaTotal, AnguloInclinacion, AlturaFusteLimpio, AlturaComercial, DiametroCopaNS, DiametroCopaEO, ProporcionCopaVivaID, ExposicionCopaID, "
@@ -2140,7 +2179,6 @@ public class CDImportacionBD {
 				Integer transparenciaFollajeID = rs.getInt("TransparenciaFollajeID");
 				Integer vigorID = rs.getInt("VigorID");
 				Integer nivelVigorID = rs.getInt("NivelVigorID");
-				System.out.println("\t\t\tNivelVigorID====" + nivelVigorID);
 				String claveColecta = rs.getString("ClaveColecta");
 				ps.executeUpdate(
 						"INSERT INTO TAXONOMIA_Arbolado(SitioID,UPMID,ArboladoID, Consecutivo, NoIndividuo, NoRama, Azimut, Distancia, FamiliaID, GeneroID, EspecieID, InfraespecieID, "
@@ -2191,6 +2229,7 @@ public class CDImportacionBD {
 
 	// 37
 	public void importarSubmuestra(String ruta) {
+		System.out.println(" importarSubmuestra");
 		this.querySelect = "SELECT SubmuestraID, SitioID, ArboladoID, DiametroBasal, Edad, NumeroAnillos25, LongitudAnillos10, GrozorCorteza FROM ARBOLADO_Submuestra";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -2239,6 +2278,7 @@ public class CDImportacionBD {
 
 	// 38
 	public void importarSubmuestraTroza(String ruta) {
+		System.out.println(" importarSubmuestraTroza");
 		this.querySelect = "SELECT TrozaID, SubmuestraID, NoTroza, TipoTrozaID FROM ARBOLADO_Troza";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -2280,6 +2320,7 @@ public class CDImportacionBD {
 	}
 
 	public void importarSubmuestraObservaciones(String ruta) {
+		System.out.println(" importarSubmuestraObservaciones");
 		this.querySelect = "SELECT SubmuestraObservacionesID, SitioID, Observaciones FROM SUBMUESTRA_Observaciones";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -2321,6 +2362,7 @@ public class CDImportacionBD {
 
 	// 39
 	public void importarArboladoDanioSeveridad(String ruta) {
+		System.out.println(" importarArboladoDanioSeveridad");
 		this.querySelect = "SELECT DanioSeveridadID, ArboladoID, NumeroDanio, AgenteDanioID, SeveridadID FROM ARBOLADO_DanioSeveridad";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -2365,6 +2407,7 @@ public class CDImportacionBD {
 
 	// 40
 	public void importarTaxonomiaColectaBotanica(String ruta) {
+		System.out.println(" importarTaxonomiaColectaBotanica");
 		this.querySelect = "SELECT ColectaBotanicaID, UPMID, FamiliaID, GeneroID, EspecieID, InfraespecieID, NombreComun, Sitio, SeccionID, Consecutivo, ClaveColecta, ContraFuertes, Exudado, IndicarExudado, Color, IndicarColor, CambioColor, AceitesVolatiles, ColorFlor, IndicarColorFlor, HojasTejidoVivo, FotoFlor, FotoFruto, FotoHojasArriba, FotoHojasAbajo, FotoArbolCompleto, FotoCorteza, VirutaIncluida, "
 				+ "CortezaIncluida, MaderaIncluida, Observaciones FROM TAXONOMIA_ColectaBotanica";
 		this.baseDatosLocal = LocalConnection.getConnection();
@@ -2442,6 +2485,7 @@ public class CDImportacionBD {
 
 	// 41
 	public void importarTaxonomiaRepoblado(String ruta) {
+		System.out.println(" importarTaxonomiaRepoblado");
 		this.querySelect = "SELECT RepobladoID, SitioID, Consecutivo, FamiliaID, GeneroID, EspecieID, InfraespecieID, NombreComun, Frecuencia025150, Edad025150, Frecuencia151275, Edad151275, "
 				+ "Frecuencia275, Edad275, VigorID, DanioID, PorcentajeDanio, ClaveColecta FROM TAXONOMIA_Repoblado";
 		Integer frecuencia025150 = null;
@@ -2531,6 +2575,7 @@ public class CDImportacionBD {
 
 	// 42
 	public void importarTaxonomiaRepobladoVM(String ruta) {
+		System.out.println(" importarTaxonomiaRepobladoVM");
 		this.querySelect = "SELECT RepobladoVMID, SitioID, Consecutivo, FormaVidaID, FamiliaID, GeneroID, EspecieID, InfraespecieID, NombreComun, Frecuencia50, PorcentajeCobertura50, Frecuencia51200, PorcentajeCobertura51200,"
 				+ "Frecuencia200, PorcentajeCobertura200, VigorID, ClaveColecta FROM TAXONOMIA_RepobladoVM";
 		Integer frecuencia50 = null;
@@ -2615,6 +2660,7 @@ public class CDImportacionBD {
 
 	// 43
 	public void importarTaxonomiaSotoBosque(String ruta) {
+		System.out.println(" importarTaxonomiaSotoBosque");
 		this.querySelect = "SELECT SotoBosqueID, SitioID, Consecutivo, FamiliaID, GeneroID, EspecieID, InfraespecieID, NombreComun, Frecuencia025150, Cobertura025150, Frecuencia151275, Cobertura151275, Frecuencia275, Cobertura275, VigorID, DanioID, "
 				+ "PorcentajeDanio, ClaveColecta FROM TAXONOMIA_SotoBosque";
 		Integer frecuencia025150 = null;
@@ -2704,6 +2750,7 @@ public class CDImportacionBD {
 
 	// 44
 	public void importarTaxonomiaVegetacionMayorGregarios(String ruta) {
+		System.out.println(" importarTaxonomiaVegetacionMayorGregarios");
 		Integer formaVidaID = null;
 		Integer condicionID = null;
 		Integer familiaID = null;
@@ -2820,6 +2867,7 @@ public class CDImportacionBD {
 
 	// 45
 	public void importarVegetacionMayorGDanioSeveridad(String ruta) {
+		System.out.println(" importarVegetacionMayorGDanioSeveridad");
 		Integer numeroDanio = null;
 		Integer agenteDanioID = null;
 		Integer severidadID = null;
@@ -2878,6 +2926,7 @@ public class CDImportacionBD {
 
 	// 46
 	public void importarTaxonomiaVegetacionMayorIndividual(String ruta) {
+		System.out.println(" importarTaxonomiaVegetacionMayorIndividual");
 		Integer formaVidaID = null;
 		Integer condicionID = null;
 		Integer familiaID = null;
@@ -2984,6 +3033,7 @@ public class CDImportacionBD {
 
 	// 47
 	public void importarVegetacionMayorIDanioSeveridad(String ruta) {
+		System.out.println(" importarVegetacionMayorIDanioSeveridad");
 		Integer numeroDanio = null;
 		Integer agenteDanio = null;
 		Integer severidadID = null;
@@ -3040,6 +3090,7 @@ public class CDImportacionBD {
 
 	// 48
 	public void importarTaxonomiaVegetacionMenor(String ruta) {
+		System.out.println(" importarTaxonomiaVegetacionMenor");
 		this.querySelect = "SELECT VegetacionMenorID, SitioID, Consecutivo, FamiliaID, GeneroID, EspecieID, InfraespecieID, NombreComun, FormaVidaID, CondicionID, Numero0110, Numero1125, Numero5175, Numero76100, Numero101125, Numero126150, Numero150, PorcentajeCobertura, VigorID, ClaveColecta FROM TAXONOMIA_VegetacionMenor";
 		Integer familiaID = null;
 		Integer generoID = null;
@@ -3158,6 +3209,7 @@ public class CDImportacionBD {
 
 	// 49
 	public void importarVegetacionMenorDanioSeveridad(String ruta) {
+		System.out.println(" importarVegetacionMenorDanioSeveridad");
 		Integer numeroDanio = null;
 		Integer agenteDanioID = null;
 		Integer severidadID = null;
@@ -3214,6 +3266,7 @@ public class CDImportacionBD {
 	}
 
 	public void importarRepobladoDanioSeveridad(String ruta) {
+		System.out.println(" importarRepobladoDanioSeveridad");
 		this.querySelect = "SELECT RepobladoDanioID, RepobladoVMID, NumeroDanio, AgenteDanioID, SeveridadID FROM REPOBLADO_AgenteDanio";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -3256,6 +3309,7 @@ public class CDImportacionBD {
 
 	// 50
 	public void importarUPMContacto(String ruta) {
+		System.out.println(" importarUPMContacto");
 		this.querySelect = "SELECT ContactoID, UPMID, TipoContacto, Nombre, Direccion, TipoTelefono, NumeroTelefono, TieneCorreo, DireccionCorreo, "
 				+ "TieneRadio, Canal, Frecuencia FROM UPM_Contacto";
 		this.baseDatosLocal = LocalConnection.getConnection();
@@ -3308,6 +3362,7 @@ public class CDImportacionBD {
 
 	// 51
 	public void importarUPMEpifitas(String ruta) {
+		System.out.println(" importarUPMEpifitas");
 		this.querySelect = "SELECT EpifitaID, UPMID, ClaseTipoID, PresenciaTroncosID, PresenciaRamasID FROM UPM_Epifita";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -3349,6 +3404,7 @@ public class CDImportacionBD {
 
 	// 53
 	public void importarSecuencias(String ruta) {
+		System.out.println(" importarSecuencias");
 		this.querySelect = "SELECT SecuenciaCapturaID, SecuenciaID, UPMID, Sitio, FormatoID, Estatus FROM SYS_SecuenciaCaptura";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -3389,6 +3445,7 @@ public class CDImportacionBD {
 	}
 
 	public void importarUPMRevision(String ruta) {
+		System.out.println(" importarUPMRevision");
 		this.querySelect = "SELECT RevisionID, UPMID, SitioID, Sitio, SecuenciaID FROM SYS_UPM_Revision";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -3552,6 +3609,7 @@ public class CDImportacionBD {
 
 	// 54
 	public void importarBrigadas(String ruta) {
+		System.out.println(" importarBrigadas");
 		this.querySelect = "SELECT BrigadaID, UPMID, BrigadistaID, PuestoID, EmpresaID FROM UPM_Brigada";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -3589,6 +3647,7 @@ public class CDImportacionBD {
 	}
 
 	public void eliminarPorUPM(int upm) {
+		System.out.println(" eliminarPorUPM");
 		String query = "DELETE FROM UPM_UPM WHERE UPMID =" + upm;
 		Connection conn = LocalConnection.getConnection();
 		try {

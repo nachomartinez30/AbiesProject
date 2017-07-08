@@ -49,8 +49,7 @@ public class Index extends JFrame {
 	FrmExportar exportar;
 	FrmInformacionPorUPM informacionUpm;
 	FrmCalidad calidad;
-
-	private boolean temaClaro = false;
+	
 	private JPanel contentPane;
 	private JTable table;
 	public String ruta = "";
@@ -218,26 +217,35 @@ public class Index extends JFrame {
 		});
 		btnCalidad.setEnabled(false);
 		GroupLayout gl_panelIzquierdo = new GroupLayout(panelIzquierdo);
-		gl_panelIzquierdo.setHorizontalGroup(gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
+		gl_panelIzquierdo.setHorizontalGroup(
+			gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panelIzquierdo.createSequentialGroup()
-						.addGroup(gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
-								.addComponent(btnEstadisticas, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 121,
-										Short.MAX_VALUE)
-								.addGroup(Alignment.TRAILING,
-										gl_panelIzquierdo.createSequentialGroup().addGap(1).addComponent(btnInfPorUpm,
-												GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE))
-								.addGroup(Alignment.TRAILING,
-										gl_panelIzquierdo.createSequentialGroup().addGap(1).addComponent(btnCalidad,
-												GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE))
-								.addGroup(gl_panelIzquierdo.createSequentialGroup().addContainerGap()
-										.addComponent(btnExportar, GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)))
-						.addContainerGap()));
-		gl_panelIzquierdo.setVerticalGroup(gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panelIzquierdo.createSequentialGroup().addGap(30).addComponent(btnEstadisticas)
-						.addPreferredGap(ComponentPlacement.UNRELATED).addComponent(btnInfPorUpm)
-						.addPreferredGap(ComponentPlacement.UNRELATED).addComponent(btnCalidad)
-						.addPreferredGap(ComponentPlacement.RELATED, 605, Short.MAX_VALUE).addComponent(btnExportar)
-						.addGap(39)));
+					.addGroup(gl_panelIzquierdo.createParallelGroup(Alignment.TRAILING)
+						.addComponent(btnEstadisticas, GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE)
+						.addGroup(gl_panelIzquierdo.createSequentialGroup()
+							.addGap(1)
+							.addComponent(btnInfPorUpm, GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE))
+						.addGroup(gl_panelIzquierdo.createSequentialGroup()
+							.addGap(1)
+							.addComponent(btnCalidad, GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE))
+						.addGroup(gl_panelIzquierdo.createSequentialGroup()
+							.addContainerGap()
+							.addComponent(btnExportar, GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)))
+					.addContainerGap())
+		);
+		gl_panelIzquierdo.setVerticalGroup(
+			gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panelIzquierdo.createSequentialGroup()
+					.addGap(30)
+					.addComponent(btnEstadisticas)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(btnInfPorUpm)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(btnCalidad)
+					.addPreferredGap(ComponentPlacement.RELATED, 605, Short.MAX_VALUE)
+					.addComponent(btnExportar)
+					.addGap(39))
+		);
 		panelIzquierdo.setLayout(gl_panelIzquierdo);
 
 		JPanel panelSuperior = new JPanel();
@@ -268,7 +276,8 @@ public class Index extends JFrame {
 		mntmConcentrador_1 = new JMenuItem("Concentrador");
 		mntmConcentrador_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Concentrar concentrador = new Concentrar();
+//				Concentrar concentrador = new Concentrar();
+				ConcentradorAbies concentrador = new ConcentradorAbies();
 				concentrador.setVisible(true);
 			}
 		});
