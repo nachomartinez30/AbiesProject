@@ -2,10 +2,16 @@ package concentrarbdinfys;
 
 import concentrarbdinfys.ExternalConnection;
 import concentrarbdinfys.LocalConnection;
+
+import java.awt.List;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Vector;
+
 import javax.swing.JOptionPane;
 
 public class CDImportacionBD {
@@ -19,38 +25,65 @@ public class CDImportacionBD {
 	private Statement sqlLocal;
 	private int upmIDExterno;
 	private int upmIDLocal;
+	public Integer upmID;
+	public String state="";
+	
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	ArrayList<Integer> arregloExterno = new ArrayList<Integer>();
+	ArrayList<Integer> arregloInterno = new ArrayList<Integer>();
+	ArrayList<Integer> arregloRepetidos = new ArrayList<Integer>();
+	
+	PreparedStatement preparedStatement = null;
 
 	public void validarRepetidos(String ruta) {
-		System.out.println(" validarRepetidos");
-		
+		state=" validarRepetidos";
+
 		this.querySelect = "SELECT UPMID FROM UPM_UPM";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
 		try {
-			this.sqlExterno = this.baseDatosExterna.createStatement();
-			this.sqlLocal = this.baseDatosLocal.createStatement();
-			ResultSet rsExterno = sqlExterno.executeQuery(this.querySelect);
-			ResultSet rsLocal = sqlLocal.executeQuery(this.querySelect);
+			this.sqlExterno = this.baseDatosExterna
+					.createStatement();/* CONEXION A BD EXTERNA */
+			this.sqlLocal = this.baseDatosLocal
+					.createStatement(); /* CONEXION A BD INTERNA */
+
+			ResultSet rsExterno = sqlExterno.executeQuery(this.querySelect); /* CONSULTA LOS UPMs EN LA BD EXTERNA */
+			ResultSet rsLocal = sqlLocal.executeQuery(this.querySelect); /* CONSULTA LOS UPMs EN LA BD LOCAL */
+
+			
+			// state="UPMsRepetidos="+UPMsRepetidos[i];
+
 			while (rsExterno.next()) {
-				this.upmIDExterno = rsExterno.getInt("UPMID");
-				while (rsLocal.next()) {
-					this.upmIDLocal = rsLocal.getInt("UPMID");
-					if (this.upmIDExterno == this.upmIDLocal) {
-						Object[] opciones = { "Si", "No" };
-						int respuesta = JOptionPane.showOptionDialog(null,
-								"El UPMID: " + this.upmIDExterno
-										+ " ya se encuentra en la base de datos local, Â¿desea reeplazarlo?",
-								"Importación", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, opciones,
-								opciones[1]);
-						if (respuesta == JOptionPane.YES_OPTION) {
-							eliminarRepetido(upmIDLocal);
-						}
-						if (respuesta == JOptionPane.NO_OPTION) {
-							System.out.println("opcion no");
-						}
+				upmIDExterno = rsExterno.getInt("UPMID");
+				arregloExterno.add(upmIDExterno);
+			}
+
+			while (rsLocal.next()) {
+				upmIDLocal = rsLocal.getInt("UPMID");
+				arregloInterno.add(upmIDLocal);
+			}
+
+			for (int j = 0; j < arregloExterno.size(); j++) {
+				for (int i = 0; i < arregloInterno.size(); i++) {
+					if (arregloExterno.get(j).toString().equals(arregloInterno.get(i).toString())) {
+						arregloRepetidos.add(arregloInterno.get(i));
 					}
 				}
 			}
+			
+				arregloExterno.clear();
+				
+				 arregloInterno.clear();
+			
+
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, "Error! no se pudo revisar la importacion de la tabla UPM_UPM",
@@ -59,6 +92,19 @@ public class CDImportacionBD {
 			try {
 				baseDatosLocal.close();
 				baseDatosExterna.close();
+				for (int i = 0; i < arregloRepetidos.size(); i++) {
+					Object[] opciones = { "Si", "No" };
+					int respuesta = JOptionPane.showOptionDialog(null,"El UPMID: " + arregloRepetidos.get(i) + " ya se encuentra en la base de datos local, ¿desea reeplazarlo?","Importación", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, opciones,opciones[1]);
+					if (respuesta == JOptionPane.YES_OPTION) {
+						
+						eliminarRepetido(arregloRepetidos.get(i));
+						JOptionPane.showMessageDialog(null, "Se elimino el UPM " + arregloRepetidos.get(i).toString());
+					}
+					if (respuesta == JOptionPane.NO_OPTION) {
+						
+					}
+				}
+				arregloRepetidos.clear();
 			} catch (SQLException e) {
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(null,
@@ -70,6 +116,7 @@ public class CDImportacionBD {
 
 	public boolean continuarSinRepetidos(String ruta, int upmID) {
 		this.querySelect = "SELECT UPMID FROM UPM_UPM";
+		state="continuar Sin Repetidos";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		boolean hayRepetidos = false;
 		try {
@@ -102,32 +149,33 @@ public class CDImportacionBD {
 	}
 
 	public void eliminarRepetido(int upmID) {
-		System.out.println(" eliminarRepetido");
-		this.queryDelete = "DELETE FROM UPM_UPM WHERE UPMID = " + upmID;
-		Connection conn = LocalConnection.getConnection();
-		try {
-			Statement st = conn.createStatement();
-			st.executeUpdate(this.queryDelete);
-			conn.commit();
-			st.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Error! no se pudo eliminar la información del UPMID repetido ",
-					"Conexion BD", JOptionPane.ERROR_MESSAGE);
-		} finally {
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-				JOptionPane.showMessageDialog(null, "Error! al cerrar la base de datos  al eliminar el UPMID repetido",
-						"Conexion BD", JOptionPane.ERROR_MESSAGE);
-			}
-		}
+		state=" eliminarRepetido";
+		String queryDelete = "DELETE FROM UPM_UPM WHERE UPMID = " + upmID;
+		String hi=LocalConnection.getURL();
+		//state="conexion="+hi;
+        Connection conn = LocalConnection.getConnection();
+        try {
+            Statement st = conn.createStatement();
+            st.executeUpdate(queryDelete);
+            conn.commit();
+            JOptionPane.showMessageDialog(null, "Se elimino el UPM " +upmID);
+            st.close();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error! no se pudo eliminar la información de inaccesibilidad del upm" , "Conexion BD", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        } finally {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null, "Error! al cerrar la base de datos al eliminar la información de inaccesibilidad del upm"
+                , "Conexion BD", JOptionPane.ERROR_MESSAGE);
+            }
+        }
 	}
 
 	// 1
 	public void importarUPM_UPM(String ruta) {
-		System.out.println(" importarUPM_UPM");
+		state=" importarUPM_UPM";
 		this.querySelect = "SELECT UPMID, FechaInicio, FechaFin, TipoUPMID, Altitud, PendienteRepresentativa, "
 				+ "FisiografiaID, ExposicionID, Predio, Paraje, TipoTenenciaID, Accesible, GradosLatitud, MinutosLatitud, "
 				+ "SegundosLatitud, GradosLongitud, MinutosLongitud, SegundosLongitud, Datum, ErrorPresicion, "
@@ -189,9 +237,7 @@ public class CDImportacionBD {
 			this.sqlExterno.close();
 			rs.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Error! no se pudo importar la información de la tabla UPM_UPM",
-					"Conexion BD", JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -207,7 +253,7 @@ public class CDImportacionBD {
 
 	// 2
 	public void importarPC(String ruta) {
-		System.out.println(" importarPC");
+		state=" importarPC";
 		this.querySelect = "SELECT PuntoControlID, UPMID, Descripcion, Paraje, GradosLatitud, MinutosLatitud, SegundosLatitud, GradosLongitud, "
 				+ "MinutosLongitud, SegundosLongitud, ErrorPresicion, Datum, Azimut, Distancia FROM PC_PuntoControl";
 		this.baseDatosLocal = LocalConnection.getConnection();
@@ -218,7 +264,7 @@ public class CDImportacionBD {
 			ResultSet rs = sqlExterno.executeQuery(this.querySelect);
 			while (rs.next()) {
 				Integer puntoControlID = rs.getInt("PuntoControlID");
-				Integer upmID = rs.getInt("UPMID");
+				upmID = rs.getInt("UPMID");
 				String descripcion = rs.getString("Descripcion");
 				String paraje = rs.getString("Paraje");
 				Integer gradosLatitud = rs.getInt("GradosLatitud");
@@ -244,9 +290,7 @@ public class CDImportacionBD {
 			this.sqlExterno.close();
 			rs.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Error! no se pudo importar la información de la tabla PC_PuntoControl",
-					"Conexion BD", JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -262,7 +306,7 @@ public class CDImportacionBD {
 
 	// 3
 	public void importarAccesibilidadPC(String ruta) {
-		System.out.println(" importarAccesibilidadPC");
+		state=" importarAccesibilidadPC";
 		this.querySelect = "SELECT AccesibilidadID ,UPMID, MedioTransporteID, ViaAccesibilidadID, Distancia, CondicionAccesibilidadID FROM PC_Accesibilidad";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -272,7 +316,7 @@ public class CDImportacionBD {
 			ResultSet rs = sqlExterno.executeQuery(this.querySelect);
 			while (rs.next()) {
 				Integer accesibilidadID = rs.getInt("AccesibilidadID");
-				Integer upmID = rs.getInt("UPMID");
+				upmID = rs.getInt("UPMID");
 				Integer medioTransporteID = rs.getInt("MedioTransporteID");
 				Integer viaAccesibilidadID = rs.getInt("ViaAccesibilidadID");
 				Float distancia = rs.getFloat("Distancia");
@@ -288,9 +332,7 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla PC_Accesibilidad", "Conexion BD",
-					JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -306,7 +348,7 @@ public class CDImportacionBD {
 
 	// 4
 	public void importarSitios(String ruta) {
-		System.out.println(" importarSitios");
+		state=" importarSitios";
 		this.querySelect = "SELECT UPMID, SitioID, Sitio, SenialGPS, GradosLatitud, MinutosLatitud, SegundosLatitud, GradosLongitud, MinutosLongitud, "
 				+ "SegundosLongitud, ErrorPresicion, EvidenciaMuestreo, Datum, Azimut, Distancia, SitioAccesible, TipoInaccesibilidad, ExplicacionInaccesibilidad, CoberturaForestal, "
 				+ "Condicion, ClaveSerieV, FaseSucecional, ArbolFuera, Ecotono, CondicionPresenteCampo, CondicionEcotono, RepobladoFuera, PorcentajeRepoblado, "
@@ -322,7 +364,7 @@ public class CDImportacionBD {
 			Statement ps = this.baseDatosLocal.createStatement();
 			ResultSet rs = sqlExterno.executeQuery(this.querySelect);
 			while (rs.next()) {
-				Integer upmID = rs.getInt("UPMID");
+				upmID = rs.getInt("UPMID");
 				Integer sitioID = rs.getInt("SitioID");
 				Integer sitio = rs.getInt("Sitio");
 				Integer senialGPS = rs.getInt("SenialGPS");
@@ -396,9 +438,7 @@ public class CDImportacionBD {
 			this.sqlExterno.close();
 			rs.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Error! no se pudo importar la información de la tabla SITIOS_Sitio",
-					"Conexion BD", JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -414,7 +454,7 @@ public class CDImportacionBD {
 
 	// 5
 	public void importarSitiosCoberturaSuelo(String ruta) {
-		System.out.println(" importarSitiosCoberturaSuelo");
+		state=" importarSitiosCoberturaSuelo";
 		this.querySelect = "SELECT CoberturaID, SitioID, Gramineas, Helechos, Musgos, Liquenes, Hierbas, Roca, SueloDesnudo, Hojarasca, Grava, Otros FROM SITIOS_CoberturaSuelo";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -448,9 +488,7 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla SITIOS_CoberturaSuelo", "Conexion BD",
-					JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -466,7 +504,7 @@ public class CDImportacionBD {
 
 	// 5
 	public void importarFotografiaHemisferica(String ruta) {
-		System.out.println(" importarFotografiaHemisferica");
+		state=" importarFotografiaHemisferica";
 		this.querySelect = "SELECT FotografiaHemisfericaID, SitioID, CoberturaArborea, TomaFotografia, Hora, DeclinacionMagnetica FROM SITIOS_FotografiaHemisferica";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -497,9 +535,7 @@ public class CDImportacionBD {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla SITIOS_FotografiaHemisferica", "Conexion BD",
-					JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -515,7 +551,7 @@ public class CDImportacionBD {
 
 	// 6
 	public void importarTransponder(String ruta) {
-		System.out.println(" importarTransponder");
+		state=" importarTransponder";
 		this.querySelect = "SELECT TransponderID, SitioID, TipoColocacionID, Especifique, Observaciones FROM SITIOS_Transponder";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -542,9 +578,7 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla SITIOS_Transponder", "Conexion BD",
-					JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -560,7 +594,7 @@ public class CDImportacionBD {
 
 	// 7
 	public void importarParametrosFisicoQuimicos(String ruta) {
-		System.out.println(" importarParametrosFisicoQuimicos");
+		state=" importarParametrosFisicoQuimicos";
 		this.querySelect = "SELECT ParametrosFQID, SitioID, TipoAgua, Salinidad, Temperatura, ConductividadElectrica, Ph, PotencialRedox, Profundidad, Observaciones FROM "
 				+ "SITIOS_ParametrosFisicoQuimicos";
 		this.baseDatosLocal = LocalConnection.getConnection();
@@ -594,9 +628,7 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla SITIOS_ParametrosFisicoQuimicos",
-					"Conexion BD", JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -612,7 +644,7 @@ public class CDImportacionBD {
 
 	// 8
 	public void importarSueloCanalillo(String ruta) {
-		System.out.println(" importarSueloCanalillo");
+		state=" importarSueloCanalillo";
 		this.querySelect = "SELECT CanalilloID, SitioID, Numero, Ancho, Profundidad FROM SUELO_Canalillo";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -637,9 +669,7 @@ public class CDImportacionBD {
 			this.sqlExterno.close();
 			rs.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Error! no se pudo importar la información de la tabla SUELO_Canalillo",
-					"Conexion BD", JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -655,7 +685,7 @@ public class CDImportacionBD {
 
 	// 9
 	public void importarSueloCarcava(String ruta) {
-		System.out.println(" importarSueloCarcava");
+		state=" importarSueloCarcava";
 		this.querySelect = "SELECT CarcavaID, SitioID, Numero, Ancho, Profundidad FROM SUELO_Carcava";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -680,9 +710,7 @@ public class CDImportacionBD {
 			this.sqlExterno.close();
 			rs.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Error! no se pudo importar la información de la tabla SUELO_Carcava",
-					"Conexion BD", JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -698,7 +726,7 @@ public class CDImportacionBD {
 
 	// 10
 	public void importarSueloCobertura(String ruta) {
-		System.out.println(" importarSueloCobertura");
+		state=" importarSueloCobertura";
 		this.querySelect = "SELECT CoberturaSueloID, SitioID, Transecto, Pendiente FROM SUELO_CoberturaSuelo";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -723,9 +751,7 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla SUELO_CoberturaSuelo", "Conexion BD",
-					JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -741,7 +767,7 @@ public class CDImportacionBD {
 
 	// 11
 	public void importarSueloCostras(String ruta) {
-		System.out.println(" importarSueloCostras");
+		state=" importarSueloCostras";
 		this.querySelect = "SELECT CostrasID, SitioID, Numero, Diametro FROM SUELO_Costras";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -763,9 +789,7 @@ public class CDImportacionBD {
 			this.sqlExterno.close();
 			rs.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Error! no se pudo importar la información de la tabla SUELO_Costras",
-					"Conexion BD", JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -781,7 +805,7 @@ public class CDImportacionBD {
 
 	// 12
 	public void importarSueloDeformacionViento(String ruta) {
-		System.out.println(" importarSueloDeformacionViento");
+		state=" importarSueloDeformacionViento";
 		this.querySelect = "SELECT DeformacionVientoID, SitioID, Medicion, Altura, Diametro, Longitud, Distancia, Azimut FROM SUELO_DeformacionViento";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -810,9 +834,7 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla SUELO_DeformacionViento", "Conexion BD",
-					JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -828,7 +850,7 @@ public class CDImportacionBD {
 
 	// 13
 	public void importarSueloErosionHidricaCanalillo(String ruta) {
-		System.out.println(" importarSueloErosionHidricaCanalillo");
+		state=" importarSueloErosionHidricaCanalillo";
 		this.querySelect = "SELECT ErosionCanalilloID, SitioID, Medicion, Profundidad, Ancho, Distancia, Azimut FROM SUELO_ErosionHidricaCanalillo";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -856,9 +878,7 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla SUELO_ErosionHidricaCanalillo",
-					"Conexion BD", JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -874,7 +894,7 @@ public class CDImportacionBD {
 
 	// 14
 	public void importarSueloErosionHidricaCarcava(String ruta) {
-		System.out.println(" importarSueloErosionHidricaCarcava");
+		state=" importarSueloErosionHidricaCarcava";
 		this.querySelect = "SELECT ErosionCarcavaID,SitioID, Medicion, Profundidad, Ancho, Distancia, Azimut FROM SUELO_ErosionHidricaCarcava";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -902,9 +922,7 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla SUELO_ErosionHidricaCarcava", "Conexion BD",
-					JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -920,7 +938,7 @@ public class CDImportacionBD {
 
 	// 15
 	public void importarSueloErosionLaminar(String ruta) {
-		System.out.println(" importarSueloErosionLaminar");
+		state=" importarSueloErosionLaminar";
 		this.querySelect = "SELECT ErosionLaminarID, SitioID, Numero, Ancho, Largo FROM SUELO_ErosionLaminar";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -946,9 +964,7 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla SUELO_ErosionLaminar", "Conexion BD",
-					JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -984,7 +1000,7 @@ public class CDImportacionBD {
 
 	// 16
 	public void importarSueloEvidenciaErosion(String ruta) {
-		System.out.println(" importarSueloEvidenciaErosion");
+		state=" importarSueloEvidenciaErosion";
 
 		this.querySelect = "SELECT EvidenciaErosionID, CoberturaSueloID, Punto, Dosel, LecturaTierraID FROM SUELO_EvidenciaErosion";
 		this.baseDatosLocal = LocalConnection.getConnection();
@@ -1015,9 +1031,7 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla SUELO_EvidenciaErosion", "Conexion BD",
-					JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -1033,7 +1047,7 @@ public class CDImportacionBD {
 
 	// 17
 	public void importarSueloHojarasca(String ruta) {
-		System.out.println(" importarSueloHojarasca");
+		state=" importarSueloHojarasca";
 		this.querySelect = "SELECT HojarascaID, SitioID, Punto, TipoHojarascaID, EspesorHO, EspesorF, PesoTotalHO, PesoTotalF, PesoMuestraHO, PesoMuestraF, "
 				+ "Observaciones FROM SUELO_Hojarasca";
 		Float espesorF = null;
@@ -1080,10 +1094,8 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(
-					null, "Error! no se pudo importar la información de la tabla SUELO_Hojarasca"
-							+ e.getClass().getName() + " : " + e.getMessage(),
-					"Conexion BD", JOptionPane.ERROR_MESSAGE);
+			
+
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -1099,7 +1111,7 @@ public class CDImportacionBD {
 
 	// 18
 	public void importarSueloLongitudCanalillo(String ruta) {
-		System.out.println(" importarSueloLongitudCanalillo");
+		state=" importarSueloLongitudCanalillo";
 		this.querySelect = "SELECT LongitudCanalilloID, SitioID, CampoLongitud, Longitud FROM SUELO_LongitudCanalillo";
 		this.queryInsert = "INSERT INTO SUELO_LongitudCanalillo(LongitudCanalilloID, SitioID, CampoLongitud, Longitud)VALUES(?,?, ?, ?)";
 		this.baseDatosLocal = LocalConnection.getConnection();
@@ -1125,9 +1137,7 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla SUELO_LongitudCanalillo", "Conexion BD",
-					JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -1143,7 +1153,7 @@ public class CDImportacionBD {
 
 	// 19
 	public void importarSueloLongitudCarcava(String ruta) {
-		System.out.println(" importarSueloLongitudCarcava");
+		state=" importarSueloLongitudCarcava";
 		this.querySelect = "SELECT LongitudCarcavaID, SitioID, CampoLongitud, Longitud FROM SUELO_LongitudCarcava";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -1168,9 +1178,7 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla SUELO_LongitudCarcava", "Conexion BD",
-					JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -1186,7 +1194,7 @@ public class CDImportacionBD {
 
 	// 20
 	public void importarSueloLongitudMonticulo(String ruta) {
-		System.out.println(" importarSueloLongitudMonticulo");
+		state=" importarSueloLongitudMonticulo";
 		this.querySelect = "SELECT LongitudMonticuloID, SitioID, CampoLongitud, Longitud FROM SUELO_LongitudMonticulo";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -1211,9 +1219,7 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla SUELO_LongitudMonticulo", "Conexion BD",
-					JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -1229,7 +1235,7 @@ public class CDImportacionBD {
 
 	// 21
 	public void importarSueloMedicionCanalillos(String ruta) {
-		System.out.println(" importarSueloMedicionCanalillos");
+		state=" importarSueloMedicionCanalillos";
 		this.querySelect = "SELECT MedicionCanalillosID, SitioID, NumeroCanalillos, ProfundidadPromedio, Longitud, Volumen FROM SUELO_MedicionCanalillos";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -1257,9 +1263,7 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla SUELO_MedicionCanalillos", "Conexion BD",
-					JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -1275,7 +1279,7 @@ public class CDImportacionBD {
 
 	// 22
 	public void importarSueloMedicionCarcavas(String ruta) {
-		System.out.println(" importarSueloMedicionCarcavas");
+		state=" importarSueloMedicionCarcavas";
 		this.querySelect = "SELECT MedicionCarcavasID, SitioID, NumeroCarcavas, ProfundidadPromedio, AnchoPromedio, Longitud, Volumen FROM SUELO_MedicionCarcavas";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -1304,9 +1308,7 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla SUELO_MedicionCarcavas ", "Conexion BD",
-					JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -1322,7 +1324,7 @@ public class CDImportacionBD {
 
 	// 23
 	public void importarSueloMedicionDunas(String ruta) {
-		System.out.println(" importarSueloMedicionDunas");
+		state=" importarSueloMedicionDunas";
 		this.querySelect = "SELECT MedicionDunas, SitioID, NumeroDunas, AlturaPromedio, AnchoPromedio, Longitud, Volumen FROM SUELO_MedicionDunas";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -1350,9 +1352,7 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla SUELO_MedicionCarcavas ", "Conexion BD",
-					JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -1368,7 +1368,7 @@ public class CDImportacionBD {
 
 	// 24
 	public void importarSueloMuestras(String ruta) {
-		System.out.println(" importarSueloMuestras");
+		state=" importarSueloMuestras";
 		this.querySelect = "SELECT MuestrasID, SitioID, ProfundidadID, PesoMuestra, Lectura1, Lectura2, Lectura3, Lectura4, "
 				+ "Promedio, ClaveColecta FROM SUELO_Muestras";
 		Float lectura1 = null;
@@ -1416,9 +1416,7 @@ public class CDImportacionBD {
 			this.sqlExterno.close();
 			rs.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Error! no se pudo importar la información de la tabla SUELO_Muestras ",
-					"Conexion BD", JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -1434,7 +1432,7 @@ public class CDImportacionBD {
 
 	// 25
 	public void importarSueloMuestrasPerfil(String ruta) {
-		System.out.println(" importarSueloMuestrasPerfil");
+		state=" importarSueloMuestrasPerfil";
 		this.querySelect = "SELECT MuestrasPerfilID, SitioID, GradosLatitud, MinutosLatitud, SegundosLatitud, GradosLongitud, MinutosLongitud, SegundosLongitud, Elevacion, "
 				+ "DiametroInterno, DiametroExterno, Altura, Observaciones FROM SUELO_MuestrasPerfil";
 		this.baseDatosLocal = LocalConnection.getConnection();
@@ -1472,9 +1470,7 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla SUELO_MuestrasPerfil ", "Conexion BD",
-					JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -1490,7 +1486,7 @@ public class CDImportacionBD {
 
 	// 26
 	public void importarSueloPavimentos(String ruta) {
-		System.out.println(" importarSueloPavimentos");
+		state=" importarSueloPavimentos";
 		this.querySelect = "SELECT PavimentoErosionID, SitioID, Numero, Diametro FROM SUELO_PavimentoErosion";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -1516,9 +1512,7 @@ public class CDImportacionBD {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla SUELO_PavimentosErosión", "Conexion BD",
-					JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -1534,7 +1528,7 @@ public class CDImportacionBD {
 
 	// 27
 	public void importarSueloPedestal(String ruta) {
-		System.out.println(" importarSueloPedestal");
+		state=" importarSueloPedestal";
 		this.querySelect = "SELECT PedestalID, SitioID, Numero, Altura FROM SUELO_Pedestal";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -1556,9 +1550,7 @@ public class CDImportacionBD {
 			this.sqlExterno.close();
 			rs.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Error! no se pudo importar la información de la tabla SUELO_Pedestal",
-					"Conexion BD", JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -1574,7 +1566,7 @@ public class CDImportacionBD {
 
 	// 28
 	public void importarSueloProfundidad(String ruta) {
-		System.out.println(" importarSueloProfundidad");
+		state=" importarSueloProfundidad";
 		this.querySelect = "SELECT ProfundidadSueloID, SitioID, Punto, Profundidad030, Profundidad3060, PesoTotal030, PesoTotal3060, Equipo030, Equipo3060, "
 				+ "Observaciones FROM SUELO_Profundidad";
 		Float profundidad3060 = null;
@@ -1616,9 +1608,7 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla SUELO_Profundidad ", "Conexion BD",
-					JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -1634,7 +1624,7 @@ public class CDImportacionBD {
 
 	// 29
 	public void importarSueloInformacion(String ruta) {
-		System.out.println(" importarSueloInformacion");
+		state=" importarSueloInformacion";
 		this.querySelect = "SELECT SueloID, SitioID, UsoSueloID, OtroUsoSuelo, Espesor, PendienteDominante, Observaciones, NumeroCanalillos, ProfundidadPromedioCanalillos, "
 				+ "AnchoPromedioCanalillos, LongitudCanalillos, VolumenCanalillos, NumeroCarcavas, ProfundidadPromedioCarcavas, AnchoPromedioCarcavas, LongitudCarcavas, VolumenCarcavas, "
 				+ "NumeroMonticulos, AlturaPromedioMonticulos, AnchoPromedioMonticulos, LongitudPromedioMonticulos, VolumenMonticulos FROM SUELO_Suelo";
@@ -1746,9 +1736,7 @@ public class CDImportacionBD {
 			this.sqlExterno.close();
 			rs.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Error! no se pudo importar la información de la tabla SUELO_Suelo",
-					"Conexion BD", JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -1764,7 +1752,7 @@ public class CDImportacionBD {
 
 	// 30
 	public void importarSueloVarillasErosion(String ruta) {
-		System.out.println(" importarSueloVarillasErosion");
+		state=" importarSueloVarillasErosion";
 		this.querySelect = "SELECT VarillaID, SitioID, NoVarilla, Azimut, Distancia, Profundidad FROM SUELO_VarillaErosion";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -1791,9 +1779,7 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla SUELO_VarillasErosion", "Conexion BD",
-					JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -1809,7 +1795,7 @@ public class CDImportacionBD {
 
 	// 31
 	public void importarCarbonoCoberturaDosel(String ruta) {
-		System.out.println(" importarCarbonoCoberturaDosel");
+		state=" importarCarbonoCoberturaDosel";
 		this.querySelect = "SELECT CoberturaDoselID, SitioID, Transecto, Punto1, Punto2, Punto3, Punto4, Punto5, Punto6, Punto7, "
 				+ "Punto8, Punto9, Punto10 FROM CARBONO_CoberturaDosel";
 		this.baseDatosLocal = LocalConnection.getConnection();
@@ -1846,9 +1832,7 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla CARBONO_CoberturaDosel", "Conexion BD",
-					JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -1864,7 +1848,7 @@ public class CDImportacionBD {
 
 	// 32
 	public void importarCarbonoCubiertaVegetal(String ruta) {
-		System.out.println(" importarCarbonoCubiertaVegetal");
+		state=" importarCarbonoCubiertaVegetal";
 		this.querySelect = "SELECT CubiertaVegetalID, SitioID, Transecto, ComponenteID, Altura5, Altura10 FROM CARBONO_CubiertaVegetal";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -1891,9 +1875,7 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla CARBONO_CubiertaVegetal", "Conexion BD",
-					JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -1909,7 +1891,7 @@ public class CDImportacionBD {
 
 	// 33
 	public void importarCarbonoLongitudComponente(String ruta) {
-		System.out.println(" importarCarbonoLongitudComponente");
+		state=" importarCarbonoLongitudComponente";
 		this.querySelect = "SELECT LongitudComponenteID, SitioID, Consecutivo, Transecto, ComponenteID, FamiliaID, GeneroID, EspecieID, InfraespecieID, NombreComun, Segmento1, Segmento2, Segmento3, Segmento4, "
 				+ "Segmento5, Segmento6, Segmento7, Segmento8, Segmento9, Segmento10, Total, ClaveColecta FROM CARBONO_LongitudComponente";
 		Integer segmento1 = null;
@@ -1998,9 +1980,7 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla CARBONO_LongitudComponente", "Conexion BD",
-					JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -2017,7 +1997,7 @@ public class CDImportacionBD {
 
 	// 34
 	public void importarCarbonoMaterialLenioso100(String ruta) {
-		System.out.println(" importarCarbonoMaterialLenioso100");
+		state=" importarCarbonoMaterialLenioso100";
 		this.querySelect = "SELECT MaterialLenioso100ID, SitioID, Transecto, Pendiente, UnaHora, DiezHoras, CienHoras FROM CARBONO_MaterialLenioso100";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -2045,9 +2025,7 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla CARBONO_MaterialLenioso100", "Conexion BD",
-					JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -2063,7 +2041,7 @@ public class CDImportacionBD {
 
 	// 35
 	public void importarCarbonoMaterialLenioso1000(String ruta) {
-		System.out.println(" importarCarbonoMaterialLenioso1000");
+		state=" importarCarbonoMaterialLenioso1000";
 		this.querySelect = "SELECT MaterialLenioso1000ID, SitioID, Transecto, Diametro, Grado FROM CARBONO_MaterialLenioso1000";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -2089,9 +2067,7 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla CARBONO_MaterialLenioso1000", "Conexion BD",
-					JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -2107,7 +2083,7 @@ public class CDImportacionBD {
 
 	// 36
 	public void importarTaxonomiaArbolado(String ruta) {
-		System.out.println(" importarTaxonomiaArbolado");
+		state=" importarTaxonomiaArbolado";
 		this.querySelect = "SELECT ArboladoID, SitioID, Consecutivo, NoIndividuo, NoRama, Azimut, Distancia, FamiliaID, GeneroID, EspecieID, InfraespecieID, "
 				+ "NombreComun, EsSubmuestra, FormaVidaID, FormaFusteID, CondicionID, MuertoPieID, GradoPutrefaccionID, TipoToconID, DiametroNormal, "
 				+ "DiametroBasal, AlturaTotal, AnguloInclinacion, AlturaFusteLimpio, AlturaComercial, DiametroCopaNS, DiametroCopaEO, ProporcionCopaVivaID, ExposicionCopaID, "
@@ -2211,9 +2187,7 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla TAXONOMIA_Arbolado", "Conexion BD",
-					JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -2229,7 +2203,7 @@ public class CDImportacionBD {
 
 	// 37
 	public void importarSubmuestra(String ruta) {
-		System.out.println(" importarSubmuestra");
+		state=" importarSubmuestra";
 		this.querySelect = "SELECT SubmuestraID, SitioID, ArboladoID, DiametroBasal, Edad, NumeroAnillos25, LongitudAnillos10, GrozorCorteza FROM ARBOLADO_Submuestra";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -2259,9 +2233,7 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla ARBOLADO_Submuestra", "Conexion BD",
-					JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -2278,7 +2250,7 @@ public class CDImportacionBD {
 
 	// 38
 	public void importarSubmuestraTroza(String ruta) {
-		System.out.println(" importarSubmuestraTroza");
+		state=" importarSubmuestraTroza";
 		this.querySelect = "SELECT TrozaID, SubmuestraID, NoTroza, TipoTrozaID FROM ARBOLADO_Troza";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -2290,7 +2262,7 @@ public class CDImportacionBD {
 				Integer trozaID = rs.getInt("TrozaID");
 				Integer submuestraID = rs.getInt("SubmuestraID");
 				Integer sitioID = extraerSitioARBOLADOSubmuestra(submuestraID, ruta);
-				Integer upmID = extraerUPM(sitioID, ruta);
+				upmID = extraerUPM(sitioID, ruta);
 				Integer noTroza = rs.getInt("NoTroza");
 				Integer tipoTrozaID = rs.getInt("TipoTrozaID");
 				ps.executeUpdate(
@@ -2303,9 +2275,7 @@ public class CDImportacionBD {
 			this.sqlExterno.close();
 			rs.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Error! no se pudo importar la información de la tabla ARBOLADO_Troza",
-					"Conexion BD", JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -2320,7 +2290,7 @@ public class CDImportacionBD {
 	}
 
 	public void importarSubmuestraObservaciones(String ruta) {
-		System.out.println(" importarSubmuestraObservaciones");
+		state=" importarSubmuestraObservaciones";
 		this.querySelect = "SELECT SubmuestraObservacionesID, SitioID, Observaciones FROM SUBMUESTRA_Observaciones";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -2344,9 +2314,7 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla SUBMUESTRA_Observaciones", "Conexion BD",
-					JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -2362,7 +2330,7 @@ public class CDImportacionBD {
 
 	// 39
 	public void importarArboladoDanioSeveridad(String ruta) {
-		System.out.println(" importarArboladoDanioSeveridad");
+		state=" importarArboladoDanioSeveridad";
 		this.querySelect = "SELECT DanioSeveridadID, ArboladoID, NumeroDanio, AgenteDanioID, SeveridadID FROM ARBOLADO_DanioSeveridad";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -2374,7 +2342,7 @@ public class CDImportacionBD {
 				Integer danioSeveridadID = rs.getInt("DanioSeveridadID");
 				Integer arbolID = rs.getInt("ArboladoID");
 				Integer sitioID = extraerSitioARBOLADODanioSeveridad(arbolID, ruta);
-				Integer upmID = extraerUPM(sitioID, ruta);
+				upmID = extraerUPM(sitioID, ruta);
 				Integer noDanio = rs.getInt("NumeroDanio");
 				Integer agenteDanioID = rs.getInt("AgenteDanioID");
 				Integer severidadID = rs.getInt("SeveridadID");
@@ -2389,9 +2357,7 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla ARBOLADO_DanioSeveridad", "Conexion BD",
-					JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -2407,7 +2373,7 @@ public class CDImportacionBD {
 
 	// 40
 	public void importarTaxonomiaColectaBotanica(String ruta) {
-		System.out.println(" importarTaxonomiaColectaBotanica");
+		state=" importarTaxonomiaColectaBotanica";
 		this.querySelect = "SELECT ColectaBotanicaID, UPMID, FamiliaID, GeneroID, EspecieID, InfraespecieID, NombreComun, Sitio, SeccionID, Consecutivo, ClaveColecta, ContraFuertes, Exudado, IndicarExudado, Color, IndicarColor, CambioColor, AceitesVolatiles, ColorFlor, IndicarColorFlor, HojasTejidoVivo, FotoFlor, FotoFruto, FotoHojasArriba, FotoHojasAbajo, FotoArbolCompleto, FotoCorteza, VirutaIncluida, "
 				+ "CortezaIncluida, MaderaIncluida, Observaciones FROM TAXONOMIA_ColectaBotanica";
 		this.baseDatosLocal = LocalConnection.getConnection();
@@ -2467,9 +2433,7 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla TAXONOMIA_ColectaBotanica", "Conexion BD",
-					JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -2485,7 +2449,7 @@ public class CDImportacionBD {
 
 	// 41
 	public void importarTaxonomiaRepoblado(String ruta) {
-		System.out.println(" importarTaxonomiaRepoblado");
+		state=" importarTaxonomiaRepoblado";
 		this.querySelect = "SELECT RepobladoID, SitioID, Consecutivo, FamiliaID, GeneroID, EspecieID, InfraespecieID, NombreComun, Frecuencia025150, Edad025150, Frecuencia151275, Edad151275, "
 				+ "Frecuencia275, Edad275, VigorID, DanioID, PorcentajeDanio, ClaveColecta FROM TAXONOMIA_Repoblado";
 		Integer frecuencia025150 = null;
@@ -2557,9 +2521,7 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla TAXONOMIA_Repoblado", "Conexion BD",
-					JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -2575,7 +2537,7 @@ public class CDImportacionBD {
 
 	// 42
 	public void importarTaxonomiaRepobladoVM(String ruta) {
-		System.out.println(" importarTaxonomiaRepobladoVM");
+		state=" importarTaxonomiaRepobladoVM";
 		this.querySelect = "SELECT RepobladoVMID, SitioID, Consecutivo, FormaVidaID, FamiliaID, GeneroID, EspecieID, InfraespecieID, NombreComun, Frecuencia50, PorcentajeCobertura50, Frecuencia51200, PorcentajeCobertura51200,"
 				+ "Frecuencia200, PorcentajeCobertura200, VigorID, ClaveColecta FROM TAXONOMIA_RepobladoVM";
 		Integer frecuencia50 = null;
@@ -2642,9 +2604,7 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla TAXONOMIA_RepobladoVM", "Conexion BD",
-					JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -2660,7 +2620,7 @@ public class CDImportacionBD {
 
 	// 43
 	public void importarTaxonomiaSotoBosque(String ruta) {
-		System.out.println(" importarTaxonomiaSotoBosque");
+		state=" importarTaxonomiaSotoBosque";
 		this.querySelect = "SELECT SotoBosqueID, SitioID, Consecutivo, FamiliaID, GeneroID, EspecieID, InfraespecieID, NombreComun, Frecuencia025150, Cobertura025150, Frecuencia151275, Cobertura151275, Frecuencia275, Cobertura275, VigorID, DanioID, "
 				+ "PorcentajeDanio, ClaveColecta FROM TAXONOMIA_SotoBosque";
 		Integer frecuencia025150 = null;
@@ -2732,9 +2692,7 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla TAXONOMIA_SotoBosque", "Conexion BD",
-					JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -2750,7 +2708,7 @@ public class CDImportacionBD {
 
 	// 44
 	public void importarTaxonomiaVegetacionMayorGregarios(String ruta) {
-		System.out.println(" importarTaxonomiaVegetacionMayorGregarios");
+		state=" importarTaxonomiaVegetacionMayorGregarios";
 		Integer formaVidaID = null;
 		Integer condicionID = null;
 		Integer familiaID = null;
@@ -2849,9 +2807,7 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla TAXONOMIA_VegetacionMayorGregarios",
-					"Conexion BD", JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -2867,7 +2823,7 @@ public class CDImportacionBD {
 
 	// 45
 	public void importarVegetacionMayorGDanioSeveridad(String ruta) {
-		System.out.println(" importarVegetacionMayorGDanioSeveridad");
+		state=" importarVegetacionMayorGDanioSeveridad";
 		Integer numeroDanio = null;
 		Integer agenteDanioID = null;
 		Integer severidadID = null;
@@ -2882,7 +2838,7 @@ public class CDImportacionBD {
 
 				Integer vegetacionMayorGregariosID = rs.getInt("VegetacionMayorID");
 				Integer sitioID = extraerSitioIDVegetacionMayorGregarios(vegetacionMayorGregariosID, ruta);
-				Integer upmID = extraerUPM(sitioID, ruta);
+				upmID = extraerUPM(sitioID, ruta);
 				Integer danioSeveridadID = rs.getInt("DanioSeveridadID");
 				if (rs.getObject("NumeroDanio") != null) {
 					numeroDanio = rs.getInt("NumeroDanio");
@@ -2907,9 +2863,7 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla VEGETACIONMAYORG_DanioSeveridad",
-					"Conexion BD", JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -2926,7 +2880,7 @@ public class CDImportacionBD {
 
 	// 46
 	public void importarTaxonomiaVegetacionMayorIndividual(String ruta) {
-		System.out.println(" importarTaxonomiaVegetacionMayorIndividual");
+		state=" importarTaxonomiaVegetacionMayorIndividual";
 		Integer formaVidaID = null;
 		Integer condicionID = null;
 		Integer familiaID = null;
@@ -3014,9 +2968,7 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla TAXONOMIA_VegetacionMayorIndividual",
-					"Conexion BD", JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -3033,7 +2985,7 @@ public class CDImportacionBD {
 
 	// 47
 	public void importarVegetacionMayorIDanioSeveridad(String ruta) {
-		System.out.println(" importarVegetacionMayorIDanioSeveridad");
+		state=" importarVegetacionMayorIDanioSeveridad";
 		Integer numeroDanio = null;
 		Integer agenteDanio = null;
 		Integer severidadID = null;
@@ -3048,7 +3000,7 @@ public class CDImportacionBD {
 				Integer danioSeveridadID = rs.getInt("DanioSeveridadID");
 				Integer vegetacionMayorIndividualID = rs.getInt("VegetacionMayorID");
 				Integer sitioID = extraerSitioIDVegetacionMayorIndividual(vegetacionMayorIndividualID, ruta);
-				Integer upmID = extraerUPM(sitioID, ruta);
+				upmID = extraerUPM(sitioID, ruta);
 				if (rs.getObject("NumeroDanio") != null) {
 					numeroDanio = rs.getInt("NumeroDanio");
 				}
@@ -3072,9 +3024,7 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla VEGETACIONMAYORI_DanioSeveridad",
-					"Conexion BD", JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -3090,7 +3040,7 @@ public class CDImportacionBD {
 
 	// 48
 	public void importarTaxonomiaVegetacionMenor(String ruta) {
-		System.out.println(" importarTaxonomiaVegetacionMenor");
+		state=" importarTaxonomiaVegetacionMenor";
 		this.querySelect = "SELECT VegetacionMenorID, SitioID, Consecutivo, FamiliaID, GeneroID, EspecieID, InfraespecieID, NombreComun, FormaVidaID, CondicionID, Numero0110, Numero1125, Numero5175, Numero76100, Numero101125, Numero126150, Numero150, PorcentajeCobertura, VigorID, ClaveColecta FROM TAXONOMIA_VegetacionMenor";
 		Integer familiaID = null;
 		Integer generoID = null;
@@ -3191,9 +3141,7 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla TAXONOMIA_VegetacionMenor", "Conexion BD",
-					JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -3209,7 +3157,7 @@ public class CDImportacionBD {
 
 	// 49
 	public void importarVegetacionMenorDanioSeveridad(String ruta) {
-		System.out.println(" importarVegetacionMenorDanioSeveridad");
+		state=" importarVegetacionMenorDanioSeveridad";
 		Integer numeroDanio = null;
 		Integer agenteDanioID = null;
 		Integer severidadID = null;
@@ -3224,7 +3172,7 @@ public class CDImportacionBD {
 				Integer danioSeveridadVMID = rs.getInt("DanioSeveridadVMID");
 				Integer vegetacionMenorID = rs.getInt("VegetacionMenorID");
 				Integer sitioID = extraerSitioIDVegetacionMenor(vegetacionMenorID, ruta);
-				Integer upmID = extraerUPM(sitioID, ruta);
+				upmID = extraerUPM(sitioID, ruta);
 				if (rs.getObject("NumeroDanio") != null) {
 					numeroDanio = rs.getInt("NumeroDanio");
 				}
@@ -3249,9 +3197,7 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla VEGETACIONMENOR_DanioSeveridad",
-					"Conexion BD", JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -3266,7 +3212,7 @@ public class CDImportacionBD {
 	}
 
 	public void importarRepobladoDanioSeveridad(String ruta) {
-		System.out.println(" importarRepobladoDanioSeveridad");
+		state=" importarRepobladoDanioSeveridad";
 		this.querySelect = "SELECT RepobladoDanioID, RepobladoVMID, NumeroDanio, AgenteDanioID, SeveridadID FROM REPOBLADO_AgenteDanio";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -3291,9 +3237,7 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla REPOBLADO_AgenteDanio", "Conexion BD",
-					JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -3309,7 +3253,7 @@ public class CDImportacionBD {
 
 	// 50
 	public void importarUPMContacto(String ruta) {
-		System.out.println(" importarUPMContacto");
+		state=" importarUPMContacto";
 		this.querySelect = "SELECT ContactoID, UPMID, TipoContacto, Nombre, Direccion, TipoTelefono, NumeroTelefono, TieneCorreo, DireccionCorreo, "
 				+ "TieneRadio, Canal, Frecuencia FROM UPM_Contacto";
 		this.baseDatosLocal = LocalConnection.getConnection();
@@ -3320,7 +3264,7 @@ public class CDImportacionBD {
 			ResultSet rs = sqlExterno.executeQuery(this.querySelect);
 			while (rs.next()) {
 				Integer contactoID = rs.getInt("ContactoID");
-				Integer upmID = rs.getInt("UPMID");
+				upmID = rs.getInt("UPMID");
 				Integer tipoContacto = rs.getInt("TipoContacto");
 				String nombre = rs.getString("Nombre");
 				String direccion = rs.getString("Direccion");
@@ -3345,8 +3289,7 @@ public class CDImportacionBD {
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Error! no se pudo importar la información de la tabla UPM_Contacto",
-					"Conexion BD", JOptionPane.ERROR_MESSAGE);
+			state="Mensaje BUSCADO =" + e.getMessage() + " " + upmID;
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -3362,7 +3305,7 @@ public class CDImportacionBD {
 
 	// 51
 	public void importarUPMEpifitas(String ruta) {
-		System.out.println(" importarUPMEpifitas");
+		state=" importarUPMEpifitas";
 		this.querySelect = "SELECT EpifitaID, UPMID, ClaseTipoID, PresenciaTroncosID, PresenciaRamasID FROM UPM_Epifita";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -3372,7 +3315,7 @@ public class CDImportacionBD {
 			ResultSet rs = sqlExterno.executeQuery(this.querySelect);
 			while (rs.next()) {
 				Integer epifitaID = rs.getInt("EpifitaID");
-				Integer upmID = rs.getInt("UPMID");
+				upmID = rs.getInt("UPMID");
 				Integer claseTipoID = rs.getInt("ClaseTipoID");
 				Integer presenciaTroncosID = rs.getInt("PresenciaTroncosID");
 				Integer presenciaRamasID = rs.getInt("PresenciaRamasID");
@@ -3386,9 +3329,7 @@ public class CDImportacionBD {
 			this.sqlExterno.close();
 			rs.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Error! no se pudo importar la información de la tabla UPM_Epifita",
-					"Conexion BD", JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -3404,7 +3345,7 @@ public class CDImportacionBD {
 
 	// 53
 	public void importarSecuencias(String ruta) {
-		System.out.println(" importarSecuencias");
+		state=" importarSecuencias";
 		this.querySelect = "SELECT SecuenciaCapturaID, SecuenciaID, UPMID, Sitio, FormatoID, Estatus FROM SYS_SecuenciaCaptura";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -3428,9 +3369,7 @@ public class CDImportacionBD {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla SYS_SecuenciaCaptura", "Conexion BD",
-					JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -3445,7 +3384,7 @@ public class CDImportacionBD {
 	}
 
 	public void importarUPMRevision(String ruta) {
-		System.out.println(" importarUPMRevision");
+		state=" importarUPMRevision";
 		this.querySelect = "SELECT RevisionID, UPMID, SitioID, Sitio, SecuenciaID FROM SYS_UPM_Revision";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -3467,9 +3406,7 @@ public class CDImportacionBD {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-					"Error! no se pudo importar la información de la tabla SYS_UPM_Revision", "Conexion BD",
-					JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -3609,7 +3546,7 @@ public class CDImportacionBD {
 
 	// 54
 	public void importarBrigadas(String ruta) {
-		System.out.println(" importarBrigadas");
+		state=" importarBrigadas";
 		this.querySelect = "SELECT BrigadaID, UPMID, BrigadistaID, PuestoID, EmpresaID FROM UPM_Brigada";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
@@ -3630,9 +3567,7 @@ public class CDImportacionBD {
 				ps.close();
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Error! no se pudo importar la información de la tabla UPM_Brigada",
-					"Conexion BD", JOptionPane.ERROR_MESSAGE);
+			
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -3646,15 +3581,17 @@ public class CDImportacionBD {
 		}
 	}
 
-	public void eliminarPorUPM(int upm) {
-		System.out.println(" eliminarPorUPM");
+	public void eliminarPorUPM(int upm,String ruta) {
+		state=" eliminarPorUPM";
 		String query = "DELETE FROM UPM_UPM WHERE UPMID =" + upm;
 		Connection conn = LocalConnection.getConnection();
 		try {
 			Statement st = conn.createStatement();
 			st.executeUpdate(query);
+				
 			conn.commit();
 			st.close();
+			JOptionPane.showMessageDialog(null,"Se elimino correctamente");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, "Error! no se pudo eliminar la informacion del upm seleccionado",
@@ -3670,6 +3607,5 @@ public class CDImportacionBD {
 			}
 		}
 	}
-	
-	
-   }
+
+}
