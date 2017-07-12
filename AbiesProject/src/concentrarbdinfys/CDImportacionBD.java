@@ -26,15 +26,8 @@ public class CDImportacionBD {
 	private int upmIDExterno;
 	private int upmIDLocal;
 	public Integer upmID;
-	public String state="";
+	public boolean repetidos=false;
 	
-	public String getState() {
-		return state;
-	}
-
-	public void setState(String state) {
-		this.state = state;
-	}
 
 	ArrayList<Integer> arregloExterno = new ArrayList<Integer>();
 	ArrayList<Integer> arregloInterno = new ArrayList<Integer>();
@@ -74,10 +67,14 @@ public class CDImportacionBD {
 				for (int i = 0; i < arregloInterno.size(); i++) {
 					if (arregloExterno.get(j).toString().equals(arregloInterno.get(i).toString())) {
 						arregloRepetidos.add(arregloInterno.get(i));
+						
 					}
 				}
 			}
 			
+			for (int i = 0; i < arregloRepetidos.size(); i++) {
+				repetidos=true;
+			}
 				arregloExterno.clear();
 				
 				 arregloInterno.clear();
@@ -92,19 +89,7 @@ public class CDImportacionBD {
 			try {
 				baseDatosLocal.close();
 				baseDatosExterna.close();
-				for (int i = 0; i < arregloRepetidos.size(); i++) {
-					Object[] opciones = { "Si", "No" };
-					int respuesta = JOptionPane.showOptionDialog(null,"El UPMID: " + arregloRepetidos.get(i) + " ya se encuentra en la base de datos local, ¿desea reeplazarlo?","Importación", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, opciones,opciones[1]);
-					if (respuesta == JOptionPane.YES_OPTION) {
-						
-						eliminarRepetido(arregloRepetidos.get(i));
-						JOptionPane.showMessageDialog(null, "Se elimino el UPM " + arregloRepetidos.get(i).toString());
-					}
-					if (respuesta == JOptionPane.NO_OPTION) {
-						
-					}
-				}
-				arregloRepetidos.clear();
+
 			} catch (SQLException e) {
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(null,
@@ -158,8 +143,8 @@ public class CDImportacionBD {
             Statement st = conn.createStatement();
             st.executeUpdate(queryDelete);
             conn.commit();
-            JOptionPane.showMessageDialog(null, "Se elimino el UPM " +upmID);
             st.close();
+            JOptionPane.showMessageDialog(null, "Se elimino el UPM " +upmID);
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error! no se pudo eliminar la información de inaccesibilidad del upm" , "Conexion BD", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
@@ -3606,6 +3591,31 @@ public class CDImportacionBD {
 						JOptionPane.ERROR_MESSAGE);
 			}
 		}
+	}
+	public boolean isRepetidos() {
+		return repetidos;
+	}
+
+	public void setRepetidos(boolean eliminarRepetidos) {
+		this.repetidos = eliminarRepetidos;
+	}
+
+	public ArrayList<Integer> getArregloRepetidos() {
+		return arregloRepetidos;
+	}
+
+	public void setArregloRepetidos(ArrayList<Integer> arregloRepetidos) {
+		this.arregloRepetidos = arregloRepetidos;
+	}
+
+	public String state="";
+	
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
 	}
 
 }

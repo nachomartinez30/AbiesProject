@@ -30,9 +30,6 @@ import javax.swing.JFileChooser;
 import java.awt.Toolkit;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -42,8 +39,8 @@ import java.nio.file.Paths;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JScrollPane;
 
 public class ConcentradorAbies extends JFrame {
 
@@ -63,22 +60,7 @@ public class ConcentradorAbies extends JFrame {
 	public JButton btnEjecutar;
 	public JLabel lblEstatus;
 	public File[] baseDatos;
-	
-	
-	
-	public String querySelect;
-	public String queryInsert;
-	public String queryDelete;
-	public Connection baseDatosLocal;
-	public Connection baseDatosExterna;
-	public Statement sqlExterno;
-	public Statement sqlLocal;
-	public int upmIDExterno;
-	public int upmIDLocal;
-	public Integer upmID;
-	int UPMsRepetidos[]={0};
 	private JTextArea txtaMonitoreo;
-	
 
 	/**
 	 * Create the frame.
@@ -88,7 +70,7 @@ public class ConcentradorAbies extends JFrame {
 				Toolkit.getDefaultToolkit().getImage(ConcentradorAbies.class.getResource("/Icons/AbiesProject.png")));
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 796, 536);
+		setBounds(100, 100, 796, 557);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -166,18 +148,16 @@ public class ConcentradorAbies extends JFrame {
 		btnEjecutar = new JButton("Ejecutar");
 		btnEjecutar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
 				HiloImportacion importacion =new HiloImportacion(lblEstatus, pbExportacion, btnEjecutar, baseDatos, btnBuscar, txtUbicacion,txtaMonitoreo);
 				importacion.execute();
-				
-			}//final action performed	
+			}
 		});
 		btnEjecutar.setEnabled(false);
 		btnEjecutar.setBounds(351, 293, 111, 24);
 		panel.add(btnEjecutar);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(12, 398, 756, 88);
+		scrollPane.setBounds(12, 395, 745, 112);
 		panel.add(scrollPane);
 		
 		txtaMonitoreo = new JTextArea();
@@ -213,6 +193,7 @@ public class ConcentradorAbies extends JFrame {
 
 		lblEstatus.setText("Importando UPM...");
 		bdImportar.validarRepetidos(pathUbicacion);
+		//bdImportar.eliminarRepetido(upmID);
 		bdImportar.importarUPM_UPM(pathUbicacion); // 1
 
 		lblEstatus.setText("Importando Contacto...");
