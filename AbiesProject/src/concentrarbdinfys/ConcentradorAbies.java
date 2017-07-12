@@ -39,6 +39,8 @@ import java.nio.file.Paths;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import javax.swing.JTextArea;
+import javax.swing.JScrollPane;
 
 public class ConcentradorAbies extends JFrame {
 
@@ -58,6 +60,7 @@ public class ConcentradorAbies extends JFrame {
 	public JButton btnEjecutar;
 	public JLabel lblEstatus;
 	public File[] baseDatos;
+	private JTextArea txtaMonitoreo;
 
 	/**
 	 * Create the frame.
@@ -67,7 +70,7 @@ public class ConcentradorAbies extends JFrame {
 				Toolkit.getDefaultToolkit().getImage(ConcentradorAbies.class.getResource("/Icons/AbiesProject.png")));
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 796, 447);
+		setBounds(100, 100, 796, 557);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -145,13 +148,20 @@ public class ConcentradorAbies extends JFrame {
 		btnEjecutar = new JButton("Ejecutar");
 		btnEjecutar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				HiloImportacion importacion =new HiloImportacion(lblEstatus, pbExportacion, btnEjecutar, baseDatos, btnBuscar, txtUbicacion);
+				HiloImportacion importacion =new HiloImportacion(lblEstatus, pbExportacion, btnEjecutar, baseDatos, btnBuscar, txtUbicacion,txtaMonitoreo);
 				importacion.execute();
 			}
 		});
 		btnEjecutar.setEnabled(false);
 		btnEjecutar.setBounds(351, 293, 111, 24);
 		panel.add(btnEjecutar);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(12, 395, 745, 112);
+		panel.add(scrollPane);
+		
+		txtaMonitoreo = new JTextArea();
+		scrollPane.setViewportView(txtaMonitoreo);
 	}
 
 	public void setPathConcentrador(String ruta) {
@@ -183,6 +193,7 @@ public class ConcentradorAbies extends JFrame {
 
 		lblEstatus.setText("Importando UPM...");
 		bdImportar.validarRepetidos(pathUbicacion);
+		//bdImportar.eliminarRepetido(upmID);
 		bdImportar.importarUPM_UPM(pathUbicacion); // 1
 
 		lblEstatus.setText("Importando Contacto...");
