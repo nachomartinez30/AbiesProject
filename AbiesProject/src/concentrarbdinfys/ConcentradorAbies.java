@@ -41,6 +41,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
+import javax.swing.JCheckBox;
 
 public class ConcentradorAbies extends JFrame {
 
@@ -61,6 +62,7 @@ public class ConcentradorAbies extends JFrame {
 	public JLabel lblEstatus;
 	public File[] baseDatos;
 	private JTextArea txtaMonitoreo;
+	private JCheckBox chckbxContinuarSinRepetidos;
 
 	/**
 	 * Create the frame.
@@ -148,7 +150,7 @@ public class ConcentradorAbies extends JFrame {
 		btnEjecutar = new JButton("Ejecutar");
 		btnEjecutar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				HiloImportacion importacion =new HiloImportacion(lblEstatus, pbExportacion, btnEjecutar, baseDatos, btnBuscar, txtUbicacion,txtaMonitoreo);
+				HiloImportacion importacion =new HiloImportacion(lblEstatus, pbExportacion, btnEjecutar, baseDatos, btnBuscar, txtUbicacion,txtaMonitoreo,chckbxContinuarSinRepetidos);
 				importacion.execute();
 			}
 		});
@@ -162,6 +164,17 @@ public class ConcentradorAbies extends JFrame {
 		
 		txtaMonitoreo = new JTextArea();
 		scrollPane.setViewportView(txtaMonitoreo);
+		
+		chckbxContinuarSinRepetidos = new JCheckBox("Continuar sin repetidos");
+		chckbxContinuarSinRepetidos.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(chckbxContinuarSinRepetidos.isSelected()==true) {
+					JOptionPane.showMessageDialog(null, "Si elije esta opcion, se omitirán todos los UPMs repetidos");
+				}
+			}
+		});
+		chckbxContinuarSinRepetidos.setBounds(564, 293, 166, 24);
+		panel.add(chckbxContinuarSinRepetidos);
 	}
 
 	public void setPathConcentrador(String ruta) {

@@ -1,10 +1,12 @@
 package concentrarbdinfys;
 
 import java.awt.BasicStroke;
+import java.awt.Checkbox;
 import java.io.File;
 
 //import gob.conafor.sys.mod.CDImportacionBD;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
@@ -21,13 +23,14 @@ public class HiloImportacion extends SwingWorker<Integer, String> {
 	private JProgressBar pbExportacion;
 	private JButton btnEjecutar, btnBuscar;
 	public JTextArea txtaMonitoreo;
+	public JCheckBox chckbxContinuarSinRepetidos;
 
 	public boolean termino;
 	public File[] baseDatos;
 	public int contadorBD = 0;
 
 	public HiloImportacion(JLabel lblEstatus, JProgressBar pbExportacion, JButton btnEjecutar, File[] baseDatos,
-			JButton btnBuscar, JTextField txtUbicacion, JTextArea txtaMonitoreo) {
+			JButton btnBuscar, JTextField txtUbicacion, JTextArea txtaMonitoreo,JCheckBox chckbxContinuarSinRepetidos) {
 		this.lblEstatus = lblEstatus;
 		this.baseDatos = baseDatos;
 		this.pbExportacion = pbExportacion;
@@ -36,11 +39,13 @@ public class HiloImportacion extends SwingWorker<Integer, String> {
 		this.txtUbicacion = txtUbicacion;
 		this.baseDatos = baseDatos;
 		this.txtaMonitoreo = txtaMonitoreo;
+		this.chckbxContinuarSinRepetidos=chckbxContinuarSinRepetidos;
 	}
 
 	@Override
 	protected Integer doInBackground() {
 		int i = 0;
+		chckbxContinuarSinRepetidos.setEnabled(false);
 		pbExportacion.setIndeterminate(true);
 		while (i != baseDatos.length) {
 			System.out.println(baseDatos[i].getPath().toString());
@@ -51,6 +56,7 @@ public class HiloImportacion extends SwingWorker<Integer, String> {
 			i++;
 		}
 		pbExportacion.setIndeterminate(false);
+		chckbxContinuarSinRepetidos.setEnabled(true);
 		btnBuscar.setEnabled(true);
 		return 0;
 
@@ -79,23 +85,25 @@ public class HiloImportacion extends SwingWorker<Integer, String> {
 		bdImportar.validarRepetidos(pathUbicacion);
 			Object[] opciones = { "Si", "No" };
 			for (int j = 0; j < bdImportar.arregloRepetidos.size(); j++) {
-				int respuesta = JOptionPane.showOptionDialog(null,
-						"El UPMID: " + bdImportar.arregloRepetidos.get(j)
-								+ " ya se encuentra en la base de datos local, Â¿desea reeplazarlo?",
-						"Importación", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, opciones,
-						opciones[1]);
-				if (respuesta == JOptionPane.YES_OPTION) {
-					bdImportar.eliminarRepetido(bdImportar.arregloRepetidos.get(j));
+				if(chckbxContinuarSinRepetidos.isSelected()==true) {//continuar sin repetidos
+					txtaMonitoreo.setText(txtaMonitoreo.getText()+"\nUPM REPETIDO="+bdImportar.arregloRepetidos.get(j));
+				}else {
+					int respuesta = JOptionPane.showOptionDialog(null,"El UPMID: " + bdImportar.arregloRepetidos.get(j)+ " ya se encuentra en la base de datos local, Â¿desea reeplazarlo?","Importación", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, opciones,opciones[1]);		
+					if (respuesta == JOptionPane.YES_OPTION) {
+						bdImportar.eliminarRepetido(bdImportar.arregloRepetidos.get(j));
+					}
+					if (respuesta == JOptionPane.NO_OPTION) {
+						System.out.println("opcion no");
+					}
 				}
-				if (respuesta == JOptionPane.NO_OPTION) {
-					System.out.println("opcion no");
-				}
+				
+				
 
-			}
-
+			}	
 		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
 		bdImportar.importarUPM_UPM(pathUbicacion); // 1
 		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+		bdImportar.arregloRepetidos.clear();
 
 		lblEstatus.setText("Importando Contacto...");
 		bdImportar.importarUPMContacto(pathUbicacion); // 2

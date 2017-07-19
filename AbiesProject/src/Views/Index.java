@@ -53,7 +53,8 @@ public class Index extends JFrame {
 	private JPanel contentPane;
 	private JTable table;
 	public String ruta = "";
-	private String configUser = "/AbiesProject/src/Database/ConfigUser.db";
+	//private String configUser = "/AbiesProject/src/Database/ConfigUser.db";
+	private String configUser = "/ConfigUser.db";
 	private String background = "/Icons/";
 	private boolean leftPanel = true;
 
@@ -105,7 +106,7 @@ public class Index extends JFrame {
 		ConfigUserConnection.getConnection(configUser);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Index.class.getResource("/Icons/g5296.png")));
 		setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
-		setTitle("Abies (V_1.4.1)");
+		setTitle("Abies (V_1.4.2)");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1366, 847);
 		contentPane = new JPanel();
