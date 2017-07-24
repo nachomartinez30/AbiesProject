@@ -74,6 +74,7 @@ public class FrmExportar extends JInternalFrame {
 	private JCheckBox chckbxVegetacionMayorGregarios;
 	private JCheckBox chckbxVegetacionMayorIndividual;
 	private JCheckBox chckbxVegetacionMenor;
+	private JCheckBox chckbxRepobladoVm;
 
 	public FrmExportar(String ruta) {
 		setClosable(true);
@@ -117,6 +118,7 @@ public class FrmExportar extends JInternalFrame {
 					chckbxVegetacionMayorGregarios.setSelected(true);
 					chckbxVegetacionMayorIndividual.setSelected(true);
 					chckbxVegetacionMenor.setSelected(true);
+					chckbxRepobladoVm.setSelected(true);
 				}
 				if (chckbxTodo.isSelected() == false) {
 					chckbxArbolado.setSelected(false);
@@ -127,6 +129,7 @@ public class FrmExportar extends JInternalFrame {
 					chckbxVegetacionMayorGregarios.setSelected(false);
 					chckbxVegetacionMayorIndividual.setSelected(false);
 					chckbxVegetacionMenor.setSelected(false);
+					chckbxRepobladoVm.setSelected(false);
 				}
 			}
 		});
@@ -170,7 +173,7 @@ public class FrmExportar extends JInternalFrame {
 		chckbxRepoblado.setFont(new Font("Dialog", Font.PLAIN, 12));
 		verticalBox_1.add(chckbxRepoblado);
 		
-		JCheckBox chckbxRepobladoVm = new JCheckBox("Repoblado V.M.");
+		chckbxRepobladoVm = new JCheckBox("Repoblado V.M.");
 		chckbxRepobladoVm.setFont(new Font("Dialog", Font.PLAIN, 12));
 		verticalBox_1.add(chckbxRepobladoVm);
 
@@ -219,7 +222,7 @@ public class FrmExportar extends JInternalFrame {
 			ProgressExport progresoExportado = new ProgressExport(pbProgresoExportacion, lblExportando, ruta,
 					exportPath, chckbxArbolado, chckbxSitios, chckbxUpms, chckbxRepoblado, chckbxSotobosque, chckbxTodo,
 					chckbxInlcuirCoordenadas, chckbxInlcuirProveedores, chckbxVegetacionMayorGregarios,
-					chckbxVegetacionMayorIndividual, chckbxVegetacionMenor, btnExportar);
+					chckbxVegetacionMayorIndividual, chckbxVegetacionMenor,chckbxRepobladoVm, btnExportar);
 
 			progresoExportado.addPropertyChangeListener(new PropertyChangeListener() {
 				@Override
@@ -296,6 +299,12 @@ public class FrmExportar extends JInternalFrame {
 				progresoExportado.setCoordenadasGrl(coordenadas);
 				progresoExportado.setProveedoresGrl(proveedores);
 				progresoExportado.setVegetacionMayorIndividual(true);
+			}
+			
+			if (chckbxRepobladoVm.isSelected() == true) {
+				progresoExportado.setCoordenadasGrl(coordenadas);
+				progresoExportado.setProveedoresGrl(proveedores);
+				progresoExportado.setRepobladoVM(true);
 			}
 
 			progresoExportado.execute();
