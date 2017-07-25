@@ -203,7 +203,7 @@ public class CDImportacionBD {
 				String explicacionInaccesibilidad = rs.getString("ExplicacionInaccesibilidad");
 				Integer informacionContacto = rs.getInt("InformacionContacto");
 				ps.executeUpdate(
-						"INSERT INTO UPM_UPM(UPMID, FechaInicio, FechaFin, TipoUPMID, Altitud, PendienteRepresentativa, "
+						"INSERT OR IGNORE INTO UPM_UPM(UPMID, FechaInicio, FechaFin, TipoUPMID, Altitud, PendienteRepresentativa, "
 								+ "FisiografiaID, ExposicionID, 'Predio', 'Paraje', TipoTenenciaID, Accesible, GradosLatitud, MinutosLatitud, "
 								+ "SegundosLatitud, GradosLongitud, MinutosLongitud, SegundosLongitud, Datum, ErrorPresicion, "
 								+ "Azimut, Distancia, TipoInaccesibilidadID, OtroTipoInaccesibilidad, ExplicacionInaccesibilidad, "
@@ -215,6 +215,7 @@ public class CDImportacionBD {
 								+ datum + "', " + errorPresicion + ", " + azimut + ", " + distancia + ", "
 								+ tipoInaccesibilidadID + ", '" + otroTipoInaccesibilidad + "', '"
 								+ explicacionInaccesibilidad + "', " + informacionContacto + ")");
+			
 				tipoInaccesibilidadID = null;
 				this.baseDatosLocal.commit();
 				ps.close();
@@ -222,7 +223,7 @@ public class CDImportacionBD {
 			this.sqlExterno.close();
 			rs.close();
 		} catch (SQLException e) {
-			
+			e.printStackTrace();
 		} finally {
 			try {
 				baseDatosLocal.close();
@@ -263,7 +264,7 @@ public class CDImportacionBD {
 				Integer azimut = rs.getInt("Azimut");
 				Float distancia = rs.getFloat("Distancia");
 				ps.executeUpdate(
-						"INSERT INTO PC_PuntoControl(PuntoControlID,UPMID, Descripcion, Paraje, GradosLatitud, MinutosLatitud, SegundosLatitud, GradosLongitud, "
+						"INSERT OR IGNORE INTO PC_PuntoControl(PuntoControlID,UPMID, Descripcion, Paraje, GradosLatitud, MinutosLatitud, SegundosLatitud, GradosLongitud, "
 								+ "MinutosLongitud, SegundosLongitud, ErrorPresicion, Datum, Azimut, Distancia)VALUES("
 								+ puntoControlID + "," + upmID + ", '" + descripcion + "', '" + paraje + "', "
 								+ gradosLatitud + ", " + minutosLatitud + ", " + segundosLatitud + ", " + gradosLongitud
@@ -307,7 +308,7 @@ public class CDImportacionBD {
 				Float distancia = rs.getFloat("Distancia");
 				Integer condicionAccesibilidadID = rs.getInt("CondicionAccesibilidadID");
 				ps.executeUpdate(
-						"INSERT INTO PC_Accesibilidad(AccesibilidadID, UPMID, MedioTransporteID, ViaAccesibilidadID, Distancia, CondicionAccesibilidadID)"
+						"INSERT OR IGNORE INTO PC_Accesibilidad(AccesibilidadID, UPMID, MedioTransporteID, ViaAccesibilidadID, Distancia, CondicionAccesibilidadID)"
 								+ "VALUES(" + accesibilidadID + "," + upmID + ", " + medioTransporteID + ", "
 								+ viaAccesibilidadID + ", " + distancia + ", " + condicionAccesibilidadID + ")");
 				this.baseDatosLocal.commit();
@@ -397,7 +398,7 @@ public class CDImportacionBD {
 				Float distancia3 = rs.getFloat("Distancia3");
 				Float distancia4 = rs.getFloat("Distancia4");
 				ps.executeUpdate(
-						"INSERT INTO SITIOS_Sitio(UPMID, SitioID, Sitio, SenialGPS, GradosLatitud, MinutosLatitud, SegundosLatitud, GradosLongitud, MinutosLongitud, "
+						"INSERT OR IGNORE INTO SITIOS_Sitio(UPMID, SitioID, Sitio, SenialGPS, GradosLatitud, MinutosLatitud, SegundosLatitud, GradosLongitud, MinutosLongitud, "
 								+ "SegundosLongitud, ErrorPresicion, EvidenciaMuestreo, Datum, Azimut, Distancia, SitioAccesible, TipoInaccesibilidad, ExplicacionInaccesibilidad, CoberturaForestal, "
 								+ "Condicion, ClaveSerieV, FaseSucecional, ArbolFuera, Ecotono, CondicionPresenteCampo, CondicionEcotono, RepobladoFuera, PorcentajeRepoblado, "
 								+ "SotoBosqueFuera, PorcentajeSotoBosqueFuera, Observaciones, HipsometroBrujula, CintaClinometroBrujula, Cuadrante1, Cuadrante2, Cuadrante3, "
@@ -462,7 +463,7 @@ public class CDImportacionBD {
 				Integer grava = rs.getInt("Grava");
 				Integer otros = rs.getInt("Otros");
 				ps.executeUpdate(
-						"INSERT INTO SITIOS_CoberturaSuelo(SitioID,UPMID,CoberturaID,  Gramineas, Helechos, Musgos, Liquenes, Hierbas, Roca, SueloDesnudo, Hojarasca, Grava, Otros)"
+						"INSERT OR IGNORE INTO SITIOS_CoberturaSuelo(SitioID,UPMID,CoberturaID,  Gramineas, Helechos, Musgos, Liquenes, Hierbas, Roca, SueloDesnudo, Hojarasca, Grava, Otros)"
 								+ "VALUES(" + sitioID + ", " + upmid + "," + coberturaID + ", " + gramineas + ", "
 								+ helechos + ", " + musgos + ", " + liquenes + ", " + hierbas + ", " + rocas + ", "
 								+ sueloDesnudo + ", " + hojarasca + ", " + grava + ", " + otros + ")");
@@ -507,7 +508,7 @@ public class CDImportacionBD {
 				String hora = rs.getString("Hora");
 				Integer declinacionMagnetica = rs.getInt("DeclinacionMagnetica");
 				ps.executeUpdate(
-						"INSERT INTO SITIOS_FotografiaHemisferica(SitioID,UPMID,FotografiaHemisfericaID, CoberturaArborea, TomaFotografia, Hora, DeclinacionMagnetica)"
+						"INSERT OR IGNORE INTO SITIOS_FotografiaHemisferica(SitioID,UPMID,FotografiaHemisfericaID, CoberturaArborea, TomaFotografia, Hora, DeclinacionMagnetica)"
 								+ "VALUES(" + sitioID + ", " + upmid + "," + fotografiaHemisfericaID + ", "
 								+ coberturaArborea + ", " + tomaFotografia + ", '" + hora + "', " + declinacionMagnetica
 								+ ")");
@@ -553,7 +554,7 @@ public class CDImportacionBD {
 				String especifique = rs.getString("Especifique");
 				String observaciones = rs.getString("Observaciones");
 				ps.executeUpdate(
-						"INSERT INTO SITIOS_Transponder(SitioID,UPMID,TransponderID, TipoColocacionID, Especifique, Observaciones)"
+						"INSERT OR IGNORE INTO SITIOS_Transponder(SitioID,UPMID,TransponderID, TipoColocacionID, Especifique, Observaciones)"
 								+ "VALUES(" + sitioID + ", " + upmid + "," + transponderID + ", " + tipoColocacionID
 								+ ", '" + especifique + "', '" + observaciones + "')");
 				this.baseDatosLocal.commit();
@@ -601,7 +602,7 @@ public class CDImportacionBD {
 				Float profundidad = rs.getFloat("Profundidad");
 				String observaciones = rs.getString("Observaciones");
 				ps.executeUpdate(
-						"INSERT INTO SITIOS_ParametrosFisicoQuimicos(SitioID,UPMID,ParametrosFQID,  TipoAgua, Salinidad, Temperatura, ConductividadElectrica, Ph, PotencialRedox, "
+						"INSERT OR IGNORE INTO SITIOS_ParametrosFisicoQuimicos(SitioID,UPMID,ParametrosFQID,  TipoAgua, Salinidad, Temperatura, ConductividadElectrica, Ph, PotencialRedox, "
 								+ "Profundidad, Observaciones)VALUES(" + sitioID + ", " + upmid + "," + parametrosFQID
 								+ ", " + tipoAgua + ", " + salinidad + ", " + temperatura + ", "
 								+ conductividadElectrica + ", " + ph + ", " + potencialRedox + ", " + profundidad
@@ -645,7 +646,7 @@ public class CDImportacionBD {
 				Float ancho = rs.getFloat("Ancho");
 				Float profundidad = rs.getFloat("Profundidad");
 				ps.executeUpdate(
-						"INSERT INTO SUELO_Canalillo(SitioID,UPMID,CanalilloID,  Numero, Ancho, Profundidad)VALUES("
+						"INSERT OR IGNORE INTO SUELO_Canalillo(SitioID,UPMID,CanalilloID,  Numero, Ancho, Profundidad)VALUES("
 								+ sitioID + ", " + upmid + "," + canalilloID + ", " + numero + ", " + ancho + ", "
 								+ profundidad + ")");
 				this.baseDatosLocal.commit();
@@ -686,7 +687,7 @@ public class CDImportacionBD {
 				Float ancho = rs.getFloat("Ancho");
 				Float profundidad = rs.getFloat("Profundidad");
 				ps.executeUpdate(
-						"INSERT INTO SUELO_Carcava(SitioID,UPMID,CarcavaID,  Numero, Ancho, Profundidad)VALUES("
+						"INSERT OR IGNORE INTO SUELO_Carcava(SitioID,UPMID,CarcavaID,  Numero, Ancho, Profundidad)VALUES("
 								+ sitioID + ", " + upmid + "," + carcavaID + ", " + numero + ", " + ancho + ", "
 								+ profundidad + ")");
 				this.baseDatosLocal.commit();
@@ -726,7 +727,7 @@ public class CDImportacionBD {
 				Integer transecto = rs.getInt("Transecto");
 				Integer pendiente = rs.getInt("Pendiente");
 				ps.executeUpdate(
-						"INSERT INTO SUELO_CoberturaSuelo(SitioID,UPMID,CoberturaSueloID,  Transecto, Pendiente)VALUES("
+						"INSERT OR IGNORE INTO SUELO_CoberturaSuelo(SitioID,UPMID,CoberturaSueloID,  Transecto, Pendiente)VALUES("
 								+ sitioID + ", " + upmid + "," + coberturaSueloID + ", " + transecto + ", " + pendiente
 								+ ")");
 				this.baseDatosLocal.commit();
@@ -766,7 +767,7 @@ public class CDImportacionBD {
 				Integer upmid = extraerUPM(sitioID, ruta);
 				Integer numero = rs.getInt("Numero");
 				Float diametro = rs.getFloat("Diametro");
-				ps.executeUpdate("INSERT INTO SUELO_Costras(SitioID,UPMID,CostrasID,  Numero, Diametro)VALUES("
+				ps.executeUpdate("INSERT OR IGNORE INTO SUELO_Costras(SitioID,UPMID,CostrasID,  Numero, Diametro)VALUES("
 						+ sitioID + ", " + upmid + "," + costrasID + ", " + numero + ", " + diametro + ")");
 				this.baseDatosLocal.commit();
 				ps.close();
@@ -809,7 +810,7 @@ public class CDImportacionBD {
 				Float distancia = rs.getFloat("Distancia");
 				Integer azimut = rs.getInt("Azimut");
 				ps.executeUpdate(
-						"INSERT INTO SUELO_DeformacionViento(SitioID,UPMID,DeformacionVientoID, Medicion, Altura, Diametro, Longitud, Distancia, Azimut)VALUES("
+						"INSERT OR IGNORE INTO SUELO_DeformacionViento(SitioID,UPMID,DeformacionVientoID, Medicion, Altura, Diametro, Longitud, Distancia, Azimut)VALUES("
 								+ sitioID + ", " + upmid + "," + deformacionVientoID + ", " + medicion + ", " + altura
 								+ ", " + diametro + ", " + longitud + ", " + distancia + ", " + azimut + ")");
 				this.baseDatosLocal.commit();
@@ -853,7 +854,7 @@ public class CDImportacionBD {
 				Float distancia = rs.getFloat("Distancia");
 				Integer azimut = rs.getInt("Azimut");
 				ps.executeUpdate(
-						"INSERT INTO SUELO_ErosionHidricaCanalillo(SitioID,UPMID,ErosionCanalilloID,Medicion, Profundidad, Ancho, Distancia, Azimut)"
+						"INSERT OR IGNORE INTO SUELO_ErosionHidricaCanalillo(SitioID,UPMID,ErosionCanalilloID,Medicion, Profundidad, Ancho, Distancia, Azimut)"
 								+ "VALUES(" + sitioID + ", " + upmid + ", " + erosionCanalilloID + ", " + medicion
 								+ ", " + profundidad + ", " + ancho + ", " + distancia + ", " + azimut + ")");
 				this.baseDatosLocal.commit();
@@ -897,7 +898,7 @@ public class CDImportacionBD {
 				Float distancia = rs.getFloat("Distancia");
 				Integer azimut = rs.getInt("Azimut");
 				ps.executeUpdate(
-						"INSERT INTO SUELO_ErosionHidricaCarcava(SitioID,UPMID,ErosionCarcavaID, Medicion, Profundidad, Ancho, Distancia, Azimut)"
+						"INSERT OR IGNORE INTO SUELO_ErosionHidricaCarcava(SitioID,UPMID,ErosionCarcavaID, Medicion, Profundidad, Ancho, Distancia, Azimut)"
 								+ "VALUES(" + sitioID + ", " + upmid + ", " + erosionCarcavaID + ", " + medicion + ", "
 								+ profundidad + ", " + ancho + ", " + distancia + ", " + azimut + ")");
 				this.baseDatosLocal.commit();
@@ -939,7 +940,7 @@ public class CDImportacionBD {
 				Float ancho = rs.getFloat("Ancho");
 				Float largo = rs.getFloat("Largo");
 				ps.executeUpdate(
-						"INSERT INTO SUELO_ErosionLaminar(SitioID,UPMID,ErosionLaminarID,  Numero, Ancho, Largo)VALUES("
+						"INSERT OR IGNORE INTO SUELO_ErosionLaminar(SitioID,UPMID,ErosionLaminarID,  Numero, Ancho, Largo)VALUES("
 								+ sitioID + ", " + upmid + ", " + erosionLaminarID + ", " + numero + ", " + ancho + ", "
 								+ largo + ")");
 				this.baseDatosLocal.commit();
@@ -1006,7 +1007,7 @@ public class CDImportacionBD {
 				Integer lecturaTierraID = rs.getInt("LecturaTierraID");
 
 				ps.executeUpdate(
-						"INSERT INTO SUELO_EvidenciaErosion(UPMID,SitioID,EvidenciaErosionID, CoberturaSueloID, Punto, Dosel, LecturaTierraID)VALUES("
+						"INSERT OR IGNORE INTO SUELO_EvidenciaErosion(UPMID,SitioID,EvidenciaErosionID, CoberturaSueloID, Punto, Dosel, LecturaTierraID)VALUES("
 								+ upmid + ", " + sitioID + ", " + evidenciaErosionID + ", " + coberturaSueloID + ", "
 								+ punto + ", " + dosel + ", " + lecturaTierraID + ")");
 				this.baseDatosLocal.commit();
@@ -1064,7 +1065,7 @@ public class CDImportacionBD {
 				}
 				String observaciones = rs.getString("Observaciones");
 				ps.executeUpdate(
-						"INSERT INTO SUELO_Hojarasca(SitioID,UPMID,HojarascaID,  Punto, TipoHojarascaID, EspesorHO, EspesorF, PesoTotalHO, PesoTotalF, PesoMuestraHO, PesoMuestraF, "
+						"INSERT OR IGNORE INTO SUELO_Hojarasca(SitioID,UPMID,HojarascaID,  Punto, TipoHojarascaID, EspesorHO, EspesorF, PesoTotalHO, PesoTotalF, PesoMuestraHO, PesoMuestraF, "
 								+ "Observaciones)VALUES(" + sitioID + ", " + upmid + ", " + hojarascaID + ", " + punto
 								+ ", " + tipoHojarascaID + ", " + espesorHO + ", " + espesorF + ", " + pesoTotalHO
 								+ ", " + pesoTotalF + ", " + pesoMuestraHO + ", " + pesoMuestraF + ", '" + observaciones
@@ -1098,7 +1099,7 @@ public class CDImportacionBD {
 	public void importarSueloLongitudCanalillo(String ruta) {
 		state=" importarSueloLongitudCanalillo";
 		this.querySelect = "SELECT LongitudCanalilloID, SitioID, CampoLongitud, Longitud FROM SUELO_LongitudCanalillo";
-		this.queryInsert = "INSERT INTO SUELO_LongitudCanalillo(LongitudCanalilloID, SitioID, CampoLongitud, Longitud)VALUES(?,?, ?, ?)";
+		this.queryInsert = "INSERT OR IGNORE INTO SUELO_LongitudCanalillo(LongitudCanalilloID, SitioID, CampoLongitud, Longitud)VALUES(?,?, ?, ?)";
 		this.baseDatosLocal = LocalConnection.getConnection();
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
 		try {
@@ -1112,7 +1113,7 @@ public class CDImportacionBD {
 				Integer campoLongitud = rs.getInt("CampoLongitud");
 				Float longitud = rs.getFloat("Longitud");
 				ps.executeUpdate(
-						"INSERT INTO SUELO_LongitudCanalillo(SitioID,UPMID,LongitudCanalilloID, CampoLongitud, Longitud)"
+						"INSERT OR IGNORE INTO SUELO_LongitudCanalillo(SitioID,UPMID,LongitudCanalilloID, CampoLongitud, Longitud)"
 								+ "VALUES(" + sitioID + ", " + upmid + ", " + longitudCanalilloID + ", " + campoLongitud
 								+ ", " + longitud + ")");
 				this.baseDatosLocal.commit();
@@ -1153,7 +1154,7 @@ public class CDImportacionBD {
 				Integer campoLongitud = rs.getInt("CampoLongitud");
 				Float longitud = rs.getFloat("Longitud");
 				ps.executeUpdate(
-						"INSERT INTO SUELO_LongitudCarcava(SitioID,UPMID,LongitudCarcavaID, CampoLongitud, Longitud)VALUES("
+						"INSERT OR IGNORE INTO SUELO_LongitudCarcava(SitioID,UPMID,LongitudCarcavaID, CampoLongitud, Longitud)VALUES("
 								+ sitioID + ", " + upmid + ", " + longitudCarcavaID + ", " + campoLongitud + ", "
 								+ longitud + ")");
 				this.baseDatosLocal.commit();
@@ -1194,7 +1195,7 @@ public class CDImportacionBD {
 				Integer campoLongitud = rs.getInt("CampoLongitud");
 				Float longitud = rs.getFloat("Longitud");
 				ps.executeUpdate(
-						"INSERT INTO SUELO_LongitudMonticulo(SitioID,UPMID,LongitudMonticuloID,  CampoLongitud, Longitud)VALUES("
+						"INSERT OR IGNORE INTO SUELO_LongitudMonticulo(SitioID,UPMID,LongitudMonticuloID,  CampoLongitud, Longitud)VALUES("
 								+ sitioID + ", " + upmid + ", " + longitudMonticuloID + ", " + campoLongitud + ", "
 								+ longitud + ")");
 				this.baseDatosLocal.commit();
@@ -1237,7 +1238,7 @@ public class CDImportacionBD {
 				Float longitud = rs.getFloat("Longitud");
 				Float volumen = rs.getFloat("Volumen");
 				ps.executeUpdate(
-						"INSERT INTO SUELO_MedicionCanalillos(SitioID,UPMID,MedicionCanalillosID,  NumeroCanalillos, ProfundidadPromedio, Longitud, Volumen)"
+						"INSERT OR IGNORE INTO SUELO_MedicionCanalillos(SitioID,UPMID,MedicionCanalillosID,  NumeroCanalillos, ProfundidadPromedio, Longitud, Volumen)"
 								+ "VALUES(" + sitioID + ", " + upmid + ", " + medicionCanalillosID + ", "
 								+ numeroCanalillos + ", " + profundidadPromedio + ", " + longitud + ", " + volumen
 								+ ")");
@@ -1282,7 +1283,7 @@ public class CDImportacionBD {
 				Float longitud = rs.getFloat("Longitud");
 				Float volumen = rs.getFloat("Volumen");
 				ps.executeUpdate(
-						"INSERT INTO SUELO_MedicionCanalillos(SitioID,UPMID,MedicionCarcavasID,  NumeroCarcavas, ProfundidadPromedio, AnchoPromedio, Longitud, Volumen)"
+						"INSERT OR IGNORE INTO SUELO_MedicionCanalillos(SitioID,UPMID,MedicionCarcavasID,  NumeroCarcavas, ProfundidadPromedio, AnchoPromedio, Longitud, Volumen)"
 								+ "VALUES(" + sitioID + ", " + upmid + ", " + medicionCarcavasID + ", " + numeroCarcavas
 								+ ", " + profundidadPromedio + ", " + anchoPromedio + ", " + longitud + ", " + volumen
 								+ ")");
@@ -1327,7 +1328,7 @@ public class CDImportacionBD {
 				Float longitud = rs.getFloat("Longitud");
 				Float volumen = rs.getFloat("Volumen");
 				ps.executeUpdate(
-						"INSERT INTO SUELO_MedicionCanalillos(SitioID,UPMID,MedicionDunas, NumeroCarcavas, ProfundidadPromedio, AnchoPromedio, Longitud, Volumen)"
+						"INSERT OR IGNORE INTO SUELO_MedicionCanalillos(SitioID,UPMID,MedicionDunas, NumeroCarcavas, ProfundidadPromedio, AnchoPromedio, Longitud, Volumen)"
 								+ "VALUES(" + sitioID + ", " + upmid + ", " + medicionDunas + ", " + numeroDunas + ", "
 								+ alturaPromedio + ", " + anchoPromedio + ", " + longitud + ", " + volumen + ")");
 				this.baseDatosLocal.commit();
@@ -1387,7 +1388,7 @@ public class CDImportacionBD {
 				Float promedio = rs.getFloat("Promedio");
 				String claveColecta = rs.getString("ClaveColecta");
 				ps.executeUpdate(
-						"INSERT INTO SUELO_Muestras(SitioID,UPMID,MuestrasID,  ProfundidadID, PesoMuestra, Lectura1, Lectura2, Lectura3, Lectura4, "
+						"INSERT OR IGNORE INTO SUELO_Muestras(SitioID,UPMID,MuestrasID,  ProfundidadID, PesoMuestra, Lectura1, Lectura2, Lectura3, Lectura4, "
 								+ "Promedio, ClaveColecta)VALUES(" + sitioID + ", " + upmid + ", " + muestrasID + ", "
 								+ profundidadID + ", " + pesoMuestra + ", " + lectura1 + ", " + lectura2 + ", "
 								+ lectura3 + ", " + lectura4 + ", " + promedio + ", '" + claveColecta + "')");
@@ -1442,7 +1443,7 @@ public class CDImportacionBD {
 				Float altura = rs.getFloat("Altura");
 				String observaciones = rs.getString("Observaciones");
 				ps.executeUpdate(
-						"INSERT INTO SUELO_MuestrasPerfil(SitioID,UPMID,MuestrasPerfilID, GradosLatitud, MinutosLatitud, SegundosLatitud, GradosLongitud, MinutosLongitud, SegundosLongitud, Elevacion, "
+						"INSERT OR IGNORE INTO SUELO_MuestrasPerfil(SitioID,UPMID,MuestrasPerfilID, GradosLatitud, MinutosLatitud, SegundosLatitud, GradosLongitud, MinutosLongitud, SegundosLongitud, Elevacion, "
 								+ "DiametroInterno, DiametroExterno, Altura, Observaciones)VALUES(" + sitioID + ", "
 								+ upmid + ", " + muestrasPerfilID + ", " + gradosLatitud + ", " + minutosLatitud + ", "
 								+ segundosLatitud + ", " + gradosLongitud + ", " + minutosLongitud + ", "
@@ -1486,7 +1487,7 @@ public class CDImportacionBD {
 				Integer numero = rs.getInt("Numero");
 				Float diametro = rs.getFloat("Diametro");
 				ps.executeUpdate(
-						"INSERT INTO SUELO_PavimentoErosion(SitioID,UPMID,PavimentoErosionID,  Numero, Diametro)VALUES("
+						"INSERT OR IGNORE INTO SUELO_PavimentoErosion(SitioID,UPMID,PavimentoErosionID,  Numero, Diametro)VALUES("
 								+ sitioID + ", " + upmid + ", " + pavimentoErosionID + ", " + numero + ", " + diametro
 								+ ")");
 				this.baseDatosLocal.commit();
@@ -1527,7 +1528,7 @@ public class CDImportacionBD {
 				Integer upmid = extraerUPM(sitioID, ruta);
 				Integer numero = rs.getInt("Numero");
 				Float altura = rs.getFloat("Altura");
-				ps.executeUpdate("INSERT INTO SUELO_Pedestal(SitioID,UPMID,PedestalID, Numero, Altura)VALUES(" + sitioID
+				ps.executeUpdate("INSERT OR IGNORE INTO SUELO_Pedestal(SitioID,UPMID,PedestalID, Numero, Altura)VALUES(" + sitioID
 						+ ", " + upmid + ", " + pedestalID + ", " + numero + ", " + altura + ")");
 				this.baseDatosLocal.commit();
 				ps.close();
@@ -1579,7 +1580,7 @@ public class CDImportacionBD {
 				Float equipo3060 = rs.getFloat("Equipo3060");
 				String observaciones = rs.getString("Observaciones");
 				ps.executeUpdate(
-						"INSERT INTO SUELO_Profundidad(SitioID,UPMID,ProfundidadSueloID,  Punto, Profundidad030, Profundidad3060, PesoTotal030, PesoTotal3060, Equipo030, Equipo3060, "
+						"INSERT OR IGNORE INTO SUELO_Profundidad(SitioID,UPMID,ProfundidadSueloID,  Punto, Profundidad030, Profundidad3060, PesoTotal030, PesoTotal3060, Equipo030, Equipo3060, "
 								+ "Observaciones)VALUES(" + sitioID + ", " + upmid + ", " + profundidadSueloID + ", "
 								+ punto + ", " + profundidad030 + ", " + profundidad3060 + ", " + pesoTotal030 + ", "
 								+ pesoTotal3060 + ", '" + equipo030 + "', '" + equipo3060 + "', '" + observaciones
@@ -1689,7 +1690,7 @@ public class CDImportacionBD {
 					volumenMonticulos = rs.getFloat("VolumenMonticulos");
 				}
 				ps.executeUpdate(
-						"INSERT INTO SUELO_Suelo(SitioID,UPMID,SueloID, UsoSueloID, OtroUsoSuelo, Espesor, PendienteDominante, Observaciones, NumeroCanalillos, ProfundidadPromedioCanalillos, "
+						"INSERT OR IGNORE INTO SUELO_Suelo(SitioID,UPMID,SueloID, UsoSueloID, OtroUsoSuelo, Espesor, PendienteDominante, Observaciones, NumeroCanalillos, ProfundidadPromedioCanalillos, "
 								+ "AnchoPromedioCanalillos, LongitudCanalillos, VolumenCanalillos, NumeroCarcavas, ProfundidadPromedioCarcavas, AnchoPromedioCarcavas, LongitudCarcavas, VolumenCarcavas, "
 								+ "NumeroMonticulos, AlturaPromedioMonticulos, AnchoPromedioMonticulos, LongitudPromedioMonticulos, VolumenMonticulos)"
 								+ "VALUES(" + sitioID + ", " + upmid + ", " + sueloID + ", " + usoSueloID + ", '"
@@ -1754,7 +1755,7 @@ public class CDImportacionBD {
 				Float distancia = rs.getFloat("Distancia");
 				Float profundidad = rs.getFloat("Profundidad");
 				ps.executeUpdate(
-						"INSERT INTO SUELO_VarillaErosion(SitioID,UPMID,VarillaID, NoVarilla, Azimut, Distancia, Profundidad)"
+						"INSERT OR IGNORE INTO SUELO_VarillaErosion(SitioID,UPMID,VarillaID, NoVarilla, Azimut, Distancia, Profundidad)"
 								+ "VALUES(" + sitioID + ", " + upmid + ", " + varillaID + ", " + noVarilla + ", "
 								+ azimut + ", " + distancia + ", " + profundidad + ")");
 				this.baseDatosLocal.commit();
@@ -1805,7 +1806,7 @@ public class CDImportacionBD {
 				Integer punto9 = rs.getInt("Punto9");
 				Integer punto10 = rs.getInt("Punto10");
 				ps.executeUpdate(
-						"INSERT INTO CARBONO_CoberturaDosel(SitioID,UPMID,CoberturaDoselID, Transecto, Punto1, Punto2, Punto3, Punto4, Punto5, Punto6, Punto7, "
+						"INSERT OR IGNORE INTO CARBONO_CoberturaDosel(SitioID,UPMID,CoberturaDoselID, Transecto, Punto1, Punto2, Punto3, Punto4, Punto5, Punto6, Punto7, "
 								+ "Punto8, Punto9, Punto10 )VALUES(" + sitioID + ", " + upmid + ", " + coberturaDoselID
 								+ ", " + transecto + ", " + punto1 + ", " + punto2 + ", " + punto3 + ", " + punto4
 								+ ", " + punto5 + ", " + punto6 + ", " + punto7 + ", " + punto8 + ", " + punto9 + ", "
@@ -1850,7 +1851,7 @@ public class CDImportacionBD {
 				Float altura5 = rs.getFloat("Altura5");
 				Float altura10 = rs.getFloat("Altura10");
 				ps.executeUpdate(
-						"INSERT INTO CARBONO_CubiertaVegetal(SitioID,UPMID,CubiertaVegetalID,  Transecto, ComponenteID, Altura5, Altura10)"
+						"INSERT OR IGNORE INTO CARBONO_CubiertaVegetal(SitioID,UPMID,CubiertaVegetalID,  Transecto, ComponenteID, Altura5, Altura10)"
 								+ "VALUES(" + sitioID + ", " + upmid + ", " + cubiertaVegetalID + ", " + transecto
 								+ ", " + componenteID + ", " + altura5 + ", " + altura10 + ")");
 				this.baseDatosLocal.commit();
@@ -1940,7 +1941,7 @@ public class CDImportacionBD {
 				Integer total = rs.getInt("Total");
 				String claveColecta = rs.getString("ClaveColecta");
 				ps.executeUpdate(
-						"INSERT INTO CARBONO_LongitudComponente(SitioID,UPMID,LongitudComponenteID,  Consecutivo, Transecto, ComponenteID, FamiliaID, GeneroID, EspecieID, InfraespecieID, NombreComun, Segmento1, Segmento2, Segmento3, Segmento4, "
+						"INSERT OR IGNORE INTO CARBONO_LongitudComponente(SitioID,UPMID,LongitudComponenteID,  Consecutivo, Transecto, ComponenteID, FamiliaID, GeneroID, EspecieID, InfraespecieID, NombreComun, Segmento1, Segmento2, Segmento3, Segmento4, "
 								+ "Segmento5, Segmento6, Segmento7, Segmento8, Segmento9, Segmento10, Total, ClaveColecta)VALUES("
 								+ sitioID + ", " + upmid + ", " + longitudComponenteID + ", " + consecutivo + ", "
 								+ transecto + ", " + componenteID + ", " + familiaID + ", " + generoID + ", "
@@ -2000,7 +2001,7 @@ public class CDImportacionBD {
 				Integer diezhoras = rs.getInt("DiezHoras");
 				Integer cienHoras = rs.getInt("CienHoras");
 				ps.executeUpdate(
-						"INSERT INTO CARBONO_MaterialLenioso100(SitioID,UPMID,MaterialLenioso100ID, Transecto, Pendiente, UnaHora, DiezHoras, CienHoras)VALUES"
+						"INSERT OR IGNORE INTO CARBONO_MaterialLenioso100(SitioID,UPMID,MaterialLenioso100ID, Transecto, Pendiente, UnaHora, DiezHoras, CienHoras)VALUES"
 								+ "(" + sitioID + ", " + upmid + ", " + materialLenioso100ID + ", " + transecto + ", "
 								+ pendiente + ", " + unaHora + ", " + diezhoras + ", " + cienHoras + ")");
 				this.baseDatosLocal.commit();
@@ -2042,7 +2043,7 @@ public class CDImportacionBD {
 				Float diametro = rs.getFloat("Diametro");
 				Integer grados = rs.getInt("Grado");
 				ps.executeUpdate(
-						"INSERT INTO CARBONO_MaterialLenioso1000(SitioID,UPMID,MaterialLenioso1000ID, Transecto, Diametro, Grado)VALUES("
+						"INSERT OR IGNORE INTO CARBONO_MaterialLenioso1000(SitioID,UPMID,MaterialLenioso1000ID, Transecto, Diametro, Grado)VALUES("
 								+ sitioID + ", " + upmid + ", " + materialLenioso1000ID + ", " + transecto + ", "
 								+ diametro + ", " + grados + ")");
 				this.baseDatosLocal.commit();
@@ -2142,7 +2143,7 @@ public class CDImportacionBD {
 				Integer nivelVigorID = rs.getInt("NivelVigorID");
 				String claveColecta = rs.getString("ClaveColecta");
 				ps.executeUpdate(
-						"INSERT INTO TAXONOMIA_Arbolado(SitioID,UPMID,ArboladoID, Consecutivo, NoIndividuo, NoRama, Azimut, Distancia, FamiliaID, GeneroID, EspecieID, InfraespecieID, "
+						"INSERT OR IGNORE INTO TAXONOMIA_Arbolado(SitioID,UPMID,ArboladoID, Consecutivo, NoIndividuo, NoRama, Azimut, Distancia, FamiliaID, GeneroID, EspecieID, InfraespecieID, "
 								+ "NombreComun, EsSubmuestra, FormaVidaID, FormaFusteID, CondicionID, MuertoPieID, GradoPutrefaccionID, TipoToconID, DiametroNormal, "
 								+ "DiametroBasal, AlturaTotal, AnguloInclinacion, AlturaFusteLimpio, AlturaComercial, DiametroCopaNS, DiametroCopaEO, ProporcionCopaVivaID, ExposicionCopaID, "
 								+ "PosicionCopaID, DensidadCopaID, MuerteRegresivaID, TransparenciaFollajeID, VigorID, NivelVigorID, ClaveColecta)VALUES("
@@ -2207,7 +2208,7 @@ public class CDImportacionBD {
 				Float longitudAnillos10 = rs.getFloat("LongitudAnillos10");
 				Float grozorCorteza = rs.getFloat("GrozorCorteza");
 				ps.executeUpdate(
-						"INSERT INTO ARBOLADO_Submuestra(SitioID,UPMID,SubmuestraID,  ArboladoID, DiametroBasal, Edad, NumeroAnillos25, LongitudAnillos10, GrozorCorteza)VALUES("
+						"INSERT OR IGNORE INTO ARBOLADO_Submuestra(SitioID,UPMID,SubmuestraID,  ArboladoID, DiametroBasal, Edad, NumeroAnillos25, LongitudAnillos10, GrozorCorteza)VALUES("
 								+ sitioID + ", " + upmid + ", " + submuestraID + ", " + arboladoID + ", "
 								+ diametroBasal + ", " + edad + ", " + numeroAnillos25 + ", " + longitudAnillos10 + ", "
 								+ grozorCorteza + ")");
@@ -2251,7 +2252,7 @@ public class CDImportacionBD {
 				Integer noTroza = rs.getInt("NoTroza");
 				Integer tipoTrozaID = rs.getInt("TipoTrozaID");
 				ps.executeUpdate(
-						"INSERT INTO ARBOLADO_Troza(SitioID,UPMID,TrozaID, SubmuestraID, NoTroza, TipoTrozaID)VALUES("
+						"INSERT OR IGNORE INTO ARBOLADO_Troza(SitioID,UPMID,TrozaID, SubmuestraID, NoTroza, TipoTrozaID)VALUES("
 								+ sitioID + ", " + upmID + ", " + trozaID + ", " + submuestraID + ", " + noTroza + ", "
 								+ tipoTrozaID + ")");
 				this.baseDatosLocal.commit();
@@ -2289,7 +2290,7 @@ public class CDImportacionBD {
 				Integer upmid = extraerUPM(sitioID, ruta);
 				String observaciones = rs.getString("Observaciones");
 				ps.executeUpdate(
-						"INSERT INTO SUBMUESTRA_Observaciones(SitioID,UPMID,SubmuestraObservacionesID,  Observaciones)VALUES("
+						"INSERT OR IGNORE INTO SUBMUESTRA_Observaciones(SitioID,UPMID,SubmuestraObservacionesID,  Observaciones)VALUES("
 								+ sitioID + ", " + upmid + ", " + submuestraObservacionesID + ", '" + observaciones
 								+ ")");
 				this.baseDatosLocal.commit();
@@ -2332,7 +2333,7 @@ public class CDImportacionBD {
 				Integer agenteDanioID = rs.getInt("AgenteDanioID");
 				Integer severidadID = rs.getInt("SeveridadID");
 				ps.executeUpdate(
-						"INSERT INTO ARBOLADO_DanioSeveridad(SitioID,UPMID,DanioSeveridadID, ArboladoID, NumeroDanio, AgenteDanioID, SeveridadID)VALUES("
+						"INSERT OR IGNORE INTO ARBOLADO_DanioSeveridad(SitioID,UPMID,DanioSeveridadID, ArboladoID, NumeroDanio, AgenteDanioID, SeveridadID)VALUES("
 								+ sitioID + ", " + upmID + ", " + danioSeveridadID + ", " + arbolID + ", " + noDanio
 								+ ", " + agenteDanioID + ", " + severidadID + ")");
 				this.baseDatosLocal.commit();
@@ -2400,7 +2401,7 @@ public class CDImportacionBD {
 				Integer maderaIncluida = rs.getInt("MaderaIncluida");
 				String observaciones = rs.getString("Observaciones");
 				ps.executeUpdate(
-						"INSERT INTO TAXONOMIA_ColectaBotanica(ColectaBotanicaID, UPMID, FamiliaID, GeneroID, EspecieID, InfraespecieID, NombreComun, Sitio, SeccionID, Consecutivo, ClaveColecta, ContraFuertes, Exudado, IndicarExudado, Color, IndicarColor, CambioColor, AceitesVolatiles, ColorFlor, IndicarColorFlor, HojasTejidoVivo, FotoFlor, FotoFruto, FotoHojasArriba, FotoHojasAbajo, FotoArbolCompleto, FotoCorteza, "
+						"INSERT OR IGNORE INTO TAXONOMIA_ColectaBotanica(ColectaBotanicaID, UPMID, FamiliaID, GeneroID, EspecieID, InfraespecieID, NombreComun, Sitio, SeccionID, Consecutivo, ClaveColecta, ContraFuertes, Exudado, IndicarExudado, Color, IndicarColor, CambioColor, AceitesVolatiles, ColorFlor, IndicarColorFlor, HojasTejidoVivo, FotoFlor, FotoFruto, FotoHojasArriba, FotoHojasAbajo, FotoArbolCompleto, FotoCorteza, "
 								+ "VirutaIncluida, CortezaIncluida, MaderaIncluida, Observaciones)VALUES("
 								+ colectaBotanicaID + ", " + UPMID + ", " + familiaID + ", " + generoID + ", "
 								+ especieID + ", " + infraespecieID + ", '" + nombreComun + "'," + sitio + ", "
@@ -2485,7 +2486,7 @@ public class CDImportacionBD {
 				}
 				String claveColecta = rs.getString("ClaveColecta");
 				ps.executeUpdate(
-						"INSERT INTO TAXONOMIA_Repoblado(SitioID,UPMID,RepobladoID,  Consecutivo, FamiliaID, GeneroID, EspecieID, InfraespecieID, NombreComun, Frecuencia025150, Edad025150, Frecuencia151275, Edad151275, "
+						"INSERT OR IGNORE INTO TAXONOMIA_Repoblado(SitioID,UPMID,RepobladoID,  Consecutivo, FamiliaID, GeneroID, EspecieID, InfraespecieID, NombreComun, Frecuencia025150, Edad025150, Frecuencia151275, Edad151275, "
 								+ "Frecuencia275, Edad275, VigorID, DanioID, PorcentajeDanio, ClaveColecta)VALUES("
 								+ sitioID + ", " + upmid + ", " + repobladoID + ", " + consecutivo + ", " + familiaID
 								+ ", " + generoID + ", " + especieID + ", " + infraespecieID + "" + ", '" + nombreComun
@@ -2569,7 +2570,7 @@ public class CDImportacionBD {
 				Integer vigorID = rs.getInt("VigorID");
 				String claveColecta = rs.getString("ClaveColecta");
 				ps.executeUpdate(
-						"INSERT INTO TAXONOMIA_RepobladoVM(SitioID,UPMID,RepobladoVMID,  Consecutivo, FormaVidaID, FamiliaID, GeneroID, EspecieID, InfraespecieID, NombreComun, Frecuencia50, PorcentajeCobertura50, Frecuencia51200, PorcentajeCobertura51200, "
+						"INSERT OR IGNORE INTO TAXONOMIA_RepobladoVM(SitioID,UPMID,RepobladoVMID,  Consecutivo, FormaVidaID, FamiliaID, GeneroID, EspecieID, InfraespecieID, NombreComun, Frecuencia50, PorcentajeCobertura50, Frecuencia51200, PorcentajeCobertura51200, "
 								+ "Frecuencia200, PorcentajeCobertura200, VigorID, ClaveColecta)VALUES(" + sitioID
 								+ ", " + upmid + ", " + repobladoVMID + ", " + consecutivo + ", " + formaVidaID + ", "
 								+ familiaID + ", " + generoID + ", " + especieID + ", " + infraespecieID + ", '"
@@ -2656,7 +2657,7 @@ public class CDImportacionBD {
 				}
 				String claveColecta = rs.getString("ClaveColecta");
 				ps.executeUpdate(
-						"INSERT INTO TAXONOMIA_SotoBosque(SitioID,UPMID,SotoBosqueID, Consecutivo, FamiliaID, GeneroID, EspecieID, InfraespecieID, NombreComun, Frecuencia025150, Cobertura025150, Frecuencia151275, Cobertura151275, Frecuencia275, Cobertura275, VigorID, DanioID, "
+						"INSERT OR IGNORE INTO TAXONOMIA_SotoBosque(SitioID,UPMID,SotoBosqueID, Consecutivo, FamiliaID, GeneroID, EspecieID, InfraespecieID, NombreComun, Frecuencia025150, Cobertura025150, Frecuencia151275, Cobertura151275, Frecuencia275, Cobertura275, VigorID, DanioID, "
 								+ "PorcentajeDanio, ClaveColecta)VALUES(" + sitioID + ", " + upmid + ", " + sotoBosqueID
 								+ ", " + consecutivo + ", " + familiaID + ", " + generoID + ", " + especieID + ", "
 								+ infraespecieID + ", '" + nombreComun + "', " + frecuencia025150 + ", "
@@ -2764,7 +2765,7 @@ public class CDImportacionBD {
 				Integer vigorID = rs.getInt("VigorID");
 				String claveColecta = rs.getString("ClaveColecta");
 				ps.executeUpdate(
-						"INSERT INTO TAXONOMIA_VegetacionMayorGregarios(SitioID,UPMID,VegetacionMayorID, Consecutivo, NoIndividuo, FormaVidaID, CondicionID, FamiliaID, GeneroID, EspecieID, InfraespecieID, NombreComun, FormaCrecimientoID, DensidadColoniaID, AlturaTotalMaxima, AlturaTotalMedia, AlturaTotalMinima, DiametroCoberturaMayor, "
+						"INSERT OR IGNORE INTO TAXONOMIA_VegetacionMayorGregarios(SitioID,UPMID,VegetacionMayorID, Consecutivo, NoIndividuo, FormaVidaID, CondicionID, FamiliaID, GeneroID, EspecieID, InfraespecieID, NombreComun, FormaCrecimientoID, DensidadColoniaID, AlturaTotalMaxima, AlturaTotalMedia, AlturaTotalMinima, DiametroCoberturaMayor, "
 								+ "DiametroCoberturaMenor, VigorID, ClaveColecta)VALUES(" + sitioID + ", " + upmid
 								+ ", " + vegetacionMayorID + ", " + consecutivo + ", " + noIndividuo + ", "
 								+ formaVidaID + ", " + condicionID + ", " + familiaID + ", " + generoID + ", "
@@ -2835,7 +2836,7 @@ public class CDImportacionBD {
 					severidadID = rs.getInt("SeveridadID");
 				}
 				ps.executeUpdate(
-						"INSERT INTO VEGETACIONMAYORG_DanioSeveridad(SitioID,UPMID, DanioSeveridadID, VegetacionMayorID, NumeroDanio, AgenteDanioID, SeveridadID)VALUES("
+						"INSERT OR IGNORE INTO VEGETACIONMAYORG_DanioSeveridad(SitioID,UPMID, DanioSeveridadID, VegetacionMayorID, NumeroDanio, AgenteDanioID, SeveridadID)VALUES("
 								+ sitioID + "," + upmID + "," + danioSeveridadID + ", " + vegetacionMayorGregariosID
 								+ ", " + numeroDanio + ", " + agenteDanioID + ", " + severidadID + ")");
 				numeroDanio = null;
@@ -2928,7 +2929,7 @@ public class CDImportacionBD {
 				Integer vigorID = rs.getInt("VigorID");
 				String claveColecta = rs.getString("ClaveColecta");
 				ps.executeUpdate(
-						"INSERT INTO TAXONOMIA_VegetacionMayorIndividual(SitioID,UPMID,VegetacionMayorID, Consecutivo, NoIndividuo, FormaVidaID, CondicionID, FamiliaID, GeneroID, EspecieID, InfraespecieID, NombreComun, FormaGeometricaID, DensidadFollajeID, DiametroBase, AlturaTotal, DiametroCoberturaMayor, DiametroCoberturaMenor, VigorID, ClaveColecta)"
+						"INSERT OR IGNORE INTO TAXONOMIA_VegetacionMayorIndividual(SitioID,UPMID,VegetacionMayorID, Consecutivo, NoIndividuo, FormaVidaID, CondicionID, FamiliaID, GeneroID, EspecieID, InfraespecieID, NombreComun, FormaGeometricaID, DensidadFollajeID, DiametroBase, AlturaTotal, DiametroCoberturaMayor, DiametroCoberturaMenor, VigorID, ClaveColecta)"
 								+ "VALUES(" + sitioID + ", " + upmid + ", " + vegetacionMayorID + ", " + consecutivo
 								+ ", " + noIndividuo + ", " + formaVidaID + ", " + condicionID + ", " + familiaID + ", "
 								+ generoID + ", " + especieID + ", " + infraespecieID + ", '" + nombreComun + "', "
@@ -2996,7 +2997,7 @@ public class CDImportacionBD {
 					severidadID = rs.getInt("SeveridadID");
 				}
 				ps.executeUpdate(
-						"INSERT INTO VEGETACIONMAYORI_DanioSeveridad(SitioID,UPMID,DanioSeveridadID, VegetacionMayorID, NumeroDanio, AgenteDanioID, SeveridadID)VALUES("
+						"INSERT OR IGNORE INTO VEGETACIONMAYORI_DanioSeveridad(SitioID,UPMID,DanioSeveridadID, VegetacionMayorID, NumeroDanio, AgenteDanioID, SeveridadID)VALUES("
 								+ sitioID + "," + upmID + "," + danioSeveridadID + ", " + vegetacionMayorIndividualID
 								+ ", " + numeroDanio + ", " + agenteDanio + ", " + severidadID + ")");
 				numeroDanio = null;
@@ -3098,7 +3099,7 @@ public class CDImportacionBD {
 				Integer vigorID = rs.getInt("VigorID");
 				String claveColecta = rs.getString("ClaveColecta");
 				ps.executeUpdate(
-						"INSERT INTO TAXONOMIA_VegetacionMenor(SitioID,UPMID,VegetacionMenorID,  Consecutivo, FamiliaID, GeneroID, EspecieID, InfraespecieID, NombreComun, FormaVidaID, CondicionID, Numero0110, Numero1125, Numero5175, Numero76100, Numero101125, Numero126150, Numero150, PorcentajeCobertura, VigorID, ClaveColecta)VALUES("
+						"INSERT OR IGNORE INTO TAXONOMIA_VegetacionMenor(SitioID,UPMID,VegetacionMenorID,  Consecutivo, FamiliaID, GeneroID, EspecieID, InfraespecieID, NombreComun, FormaVidaID, CondicionID, Numero0110, Numero1125, Numero5175, Numero76100, Numero101125, Numero126150, Numero150, PorcentajeCobertura, VigorID, ClaveColecta)VALUES("
 								+ sitioID + ", " + upmid + ", " + vegetacionMenorID + ", " + consecutivo + ", "
 								+ familiaID + ", " + generoID + ", " + especieID + ", " + infraespecieID + ", '"
 								+ nombreComun + "', " + formaVidaID + ", " + condicionID + ", " + numero0110 + ", "
@@ -3168,7 +3169,7 @@ public class CDImportacionBD {
 					severidadID = rs.getInt("SeveridadID");
 				}
 				ps.executeUpdate(
-						"INSERT INTO VEGETACIONMENOR_DanioSeveridad(SitioID,UPMID,DanioSeveridadVMID, VegetacionMenorID, NumeroDanio, AgenteDanioID, SeveridadID)"
+						"INSERT OR IGNORE INTO VEGETACIONMENOR_DanioSeveridad(SitioID,UPMID,DanioSeveridadVMID, VegetacionMenorID, NumeroDanio, AgenteDanioID, SeveridadID)"
 								+ "VALUES(" + sitioID + "," + upmID + "," + danioSeveridadVMID + ", "
 								+ vegetacionMenorID + ", " + numeroDanio + ", " + agenteDanioID + ", " + severidadID
 								+ ")");
@@ -3212,7 +3213,7 @@ public class CDImportacionBD {
 				Integer agenteDanioID = rs.getInt("AgenteDanioID");
 				Integer severidadID = rs.getInt("SeveridadID");
 				ps.executeUpdate(
-						"INSERT INTO REPOBLADO_AgenteDanio(RepobladoDanioID, RepobladoVMID, NumeroDanio, AgenteDanioID, SeveridadID)"
+						"INSERT OR IGNORE INTO REPOBLADO_AgenteDanio(RepobladoDanioID, RepobladoVMID, NumeroDanio, AgenteDanioID, SeveridadID)"
 								+ "VALUES(" + repobladoDanioID + ", " + repobladoVMID + ", " + numeroDanio + ", "
 								+ agenteDanioID + ", " + severidadID + ")");
 				this.baseDatosLocal.commit();
@@ -3262,7 +3263,7 @@ public class CDImportacionBD {
 				String frecuencia = rs.getString("Frecuencia");
 
 				ps.executeUpdate(
-						"INSERT INTO UPM_Contacto(ContactoID, UPMID, TipoContacto, Nombre, Direccion, TipoTelefono, NumeroTelefono, TieneCorreo, DireccionCorreo, "
+						"INSERT OR IGNORE INTO UPM_Contacto(ContactoID, UPMID, TipoContacto, Nombre, Direccion, TipoTelefono, NumeroTelefono, TieneCorreo, DireccionCorreo, "
 								+ "TieneRadio, Canal, Frecuencia)VALUES(" + contactoID + ", " + upmID + ", "
 								+ tipoContacto + " , '" + nombre + "', '" + direccion + "', " + tipoTelefono + ", '"
 								+ numeroTelefono + "', " + tieneCorreo + ", '" + direccionCorreo + "' , " + tieneRadio
@@ -3305,7 +3306,7 @@ public class CDImportacionBD {
 				Integer presenciaTroncosID = rs.getInt("PresenciaTroncosID");
 				Integer presenciaRamasID = rs.getInt("PresenciaRamasID");
 				ps.executeUpdate(
-						"INSERT INTO UPM_Epifita(EpifitaID, UPMID, ClaseTipoID, PresenciaTroncosID, PresenciaRamasID)VALUES("
+						"INSERT OR IGNORE INTO UPM_Epifita(EpifitaID, UPMID, ClaseTipoID, PresenciaTroncosID, PresenciaRamasID)VALUES("
 								+ epifitaID + ", " + upmID + ", " + claseTipoID + ", " + presenciaTroncosID + ", "
 								+ presenciaRamasID + ")");
 				this.baseDatosLocal.commit();
@@ -3346,7 +3347,7 @@ public class CDImportacionBD {
 				Integer formatoID = rs.getInt("FormatoID");
 				Integer estatus = rs.getInt("Estatus");
 				ps.executeUpdate(
-						"INSERT INTO SYS_SecuenciaCaptura(SecuenciaCapturaID, SecuenciaID, UPMID, Sitio, FormatoID, Estatus)"
+						"INSERT OR IGNORE INTO SYS_SecuenciaCaptura(SecuenciaCapturaID, SecuenciaID, UPMID, Sitio, FormatoID, Estatus)"
 								+ "VALUES(" + secuenciaCapturaID + ", " + secuenciaID + ", " + UPMID + ", " + sitio
 								+ ", " + formatoID + ", " + estatus + ")");
 				this.baseDatosLocal.commit();
@@ -3384,7 +3385,7 @@ public class CDImportacionBD {
 				Integer sitio = rs.getInt("Sitio");
 				Integer secuenciaID = rs.getInt("SecuenciaID");
 				ps.executeUpdate(
-						"INSERT INTO SYS_UPM_Revision(RevisionID, UPMID, SitioID, Sitio, SecuenciaID)" + "VALUES("
+						"INSERT OR IGNORE INTO SYS_UPM_Revision(RevisionID, UPMID, SitioID, Sitio, SecuenciaID)" + "VALUES("
 								+ revisionID + ", " + UPMID + ", " + sitioID + ", " + sitio + ", " + secuenciaID + ")");
 				this.baseDatosLocal.commit();
 				ps.close();
@@ -3545,7 +3546,7 @@ public class CDImportacionBD {
 				Integer brigadistaID = rs.getInt("BrigadistaID");
 				Integer puestoID = rs.getInt("PuestoID");
 				Integer empresaID = rs.getInt("EmpresaID");
-				ps.executeUpdate("INSERT INTO UPM_Brigada(BrigadaID, UPMID, BrigadistaID, PuestoID, EmpresaID)"
+				ps.executeUpdate("INSERT OR IGNORE INTO UPM_Brigada(BrigadaID, UPMID, BrigadistaID, PuestoID, EmpresaID)"
 						+ "VALUES(" + brigadaID + ", " + UPMID + ", " + brigadistaID + ", " + puestoID + ", "
 						+ empresaID + ")");
 				this.baseDatosLocal.commit();

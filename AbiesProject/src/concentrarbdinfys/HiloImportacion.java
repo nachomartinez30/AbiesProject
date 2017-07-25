@@ -85,9 +85,12 @@ public class HiloImportacion extends SwingWorker<Integer, String> {
 		bdImportar.validarRepetidos(pathUbicacion);
 			Object[] opciones = { "Si", "No" };
 			for (int j = 0; j < bdImportar.arregloRepetidos.size(); j++) {
+				
 				if(chckbxContinuarSinRepetidos.isSelected()==true) {//continuar sin repetidos
 					txtaMonitoreo.setText(txtaMonitoreo.getText()+"\nUPM REPETIDO="+bdImportar.arregloRepetidos.get(j));
-				}else {
+				}
+				
+				else {
 					int respuesta = JOptionPane.showOptionDialog(null,"El UPMID: " + bdImportar.arregloRepetidos.get(j)+ " ya se encuentra en la base de datos local, Â¿desea reeplazarlo?","Importación", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, opciones,opciones[1]);		
 					if (respuesta == JOptionPane.YES_OPTION) {
 						bdImportar.eliminarRepetido(bdImportar.arregloRepetidos.get(j));
@@ -96,10 +99,8 @@ public class HiloImportacion extends SwingWorker<Integer, String> {
 						System.out.println("opcion no");
 					}
 				}
-				
-				
-
-			}	
+			}
+			
 		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
 		bdImportar.importarUPM_UPM(pathUbicacion); // 1
 		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
