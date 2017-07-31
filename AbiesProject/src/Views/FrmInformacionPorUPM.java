@@ -29,6 +29,13 @@ import Database.ExternalConnection;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.awt.Color;
 import java.awt.ComponentOrientation;
 import java.awt.Cursor;
@@ -60,8 +67,8 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 	private JList<String> lsUPM;
 	Vector<String> upmTotal = new Vector<String>();
 	JDesktopPane desktopPanelCentral;
-	public String[] vegetacionPorSitioColumnName = { "Sitio", "Tipo vegetaci�n", "Fase sucesional", "Conteo registros",
-			"Conteo individuos" };
+	public String[] vegetacionPorSitioColumnName = { "Sitio", "Tipo vegetaci�n", "Fase sucesional",
+			"Conteo registros", "Conteo individuos" };
 	public String[] especiesPorSitioColumnName = { "Sitio", "Entidad taxonomica", "Forma de vida" };
 	public String[] especiesPorSitioSotobosqueColumnName = { "Sitio", "Entidad taxonomica", "Vigor" };
 	public String[] especiesPorSitioRepobladoColumnName = { "Sitio", "Entidad taxonomica", "Vigor" };
@@ -70,8 +77,10 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 
 	public DefaultTableModel vegetacionPorSitioModel = new DefaultTableModel(null, vegetacionPorSitioColumnName);
 	public DefaultTableModel especiesPorSitioArboladoModel = new DefaultTableModel(null, especiesPorSitioColumnName);
-	public DefaultTableModel especiesPorSitioSotobosqueModel = new DefaultTableModel(null, especiesPorSitioSotobosqueColumnName);
-	public DefaultTableModel especiesPorSitioRepobladoModel = new DefaultTableModel(null, especiesPorSitioRepobladoColumnName);
+	public DefaultTableModel especiesPorSitioSotobosqueModel = new DefaultTableModel(null,
+			especiesPorSitioSotobosqueColumnName);
+	public DefaultTableModel especiesPorSitioRepobladoModel = new DefaultTableModel(null,
+			especiesPorSitioRepobladoColumnName);
 	public DefaultTableModel especiesPorSitioModel = new DefaultTableModel(null, especiesPorSitioColumnName);
 	public DefaultTableModel informacionSitioModel = new DefaultTableModel(null, informacionSitioColumnName);
 
@@ -87,6 +96,10 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 	private JTable tblEspeciesPorSitioSotobosque;
 	private JTable tblEspeciesPorSitioRepoblado;
 	private JButton btnGraficasSotobosqueRepoblado;
+	
+	String Estado, Municipio, Y, X, Accesible, TipoUPM, Exposicion, Fisiografia,Region, UPMID, Altitud,  PendienteRepresentativa,  A,  B,  C,  D,  E,  F,  G,  H;
+
+	
 
 	public FrmInformacionPorUPM(String ruta, JDesktopPane desktopPanelCentral) {
 		setFrameIcon(null);
@@ -131,6 +144,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 					getInformacionSitio(ruta, upmInt);
 					getEspeciesPorSitioSotobosque(ruta, upmInt);
 					getEspeciesPorSitioRepoblado(ruta, upmInt);
+					createKml();
 				}
 
 			}
@@ -201,25 +215,24 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 			}
 		});
 		GroupLayout gl_layeredPaneArbolado = new GroupLayout(layeredPaneArbolado);
-		gl_layeredPaneArbolado
-				.setHorizontalGroup(gl_layeredPaneArbolado.createParallelGroup(Alignment.TRAILING)
-						.addGroup(gl_layeredPaneArbolado.createSequentialGroup().addContainerGap().addGroup(gl_layeredPaneArbolado
+		gl_layeredPaneArbolado.setHorizontalGroup(gl_layeredPaneArbolado.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_layeredPaneArbolado.createSequentialGroup().addContainerGap().addGroup(
+						gl_layeredPaneArbolado.createParallelGroup(Alignment.LEADING).addGroup(gl_layeredPaneArbolado
 								.createParallelGroup(Alignment.LEADING)
-								.addGroup(gl_layeredPaneArbolado.createParallelGroup(Alignment.LEADING)
-										.addGroup(Alignment.TRAILING,
-												gl_layeredPaneArbolado
-														.createSequentialGroup()
-														.addComponent(btnGraficas, GroupLayout.PREFERRED_SIZE, 82,
-																GroupLayout.PREFERRED_SIZE)
-														.addContainerGap())
-										.addGroup(Alignment.TRAILING, gl_layeredPaneArbolado.createSequentialGroup()
+								.addGroup(Alignment.TRAILING,
+										gl_layeredPaneArbolado.createSequentialGroup()
+												.addComponent(btnGraficas, GroupLayout.PREFERRED_SIZE, 82,
+														GroupLayout.PREFERRED_SIZE)
+												.addContainerGap())
+								.addGroup(Alignment.TRAILING,
+										gl_layeredPaneArbolado.createSequentialGroup()
 												.addComponent(scrollPaneEspeciesPorSitio, GroupLayout.DEFAULT_SIZE, 650,
 														Short.MAX_VALUE)
 												.addContainerGap())
-										.addGroup(gl_layeredPaneArbolado.createSequentialGroup()
-												.addComponent(lblEspeciesPorSitio, GroupLayout.DEFAULT_SIZE, 650,
-														Short.MAX_VALUE)
-												.addContainerGap()))
+								.addGroup(gl_layeredPaneArbolado.createSequentialGroup()
+										.addComponent(lblEspeciesPorSitio, GroupLayout.DEFAULT_SIZE, 650,
+												Short.MAX_VALUE)
+										.addContainerGap()))
 								.addGroup(Alignment.TRAILING, gl_layeredPaneArbolado.createSequentialGroup()
 										.addGroup(gl_layeredPaneArbolado.createParallelGroup(Alignment.LEADING)
 												.addComponent(lblNewLabel_2, GroupLayout.PREFERRED_SIZE, 132,
@@ -233,8 +246,8 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 												.addComponent(txtIndividuosTotales, GroupLayout.PREFERRED_SIZE, 67,
 														GroupLayout.PREFERRED_SIZE))
 										.addContainerGap()))));
-		gl_layeredPaneArbolado.setVerticalGroup(gl_layeredPaneArbolado.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_layeredPaneArbolado.createSequentialGroup().addContainerGap().addGroup(gl_layeredPaneArbolado
+		gl_layeredPaneArbolado.setVerticalGroup(gl_layeredPaneArbolado.createParallelGroup(Alignment.LEADING).addGroup(
+				gl_layeredPaneArbolado.createSequentialGroup().addContainerGap().addGroup(gl_layeredPaneArbolado
 						.createParallelGroup(Alignment.LEADING)
 						.addGroup(gl_layeredPaneArbolado.createSequentialGroup()
 								.addComponent(lblNewLabel_2, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
@@ -382,16 +395,14 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 						.addPreferredGap(ComponentPlacement.UNRELATED)
 						.addComponent(panel_2, GroupLayout.PREFERRED_SIZE, 423, GroupLayout.PREFERRED_SIZE).addGap(9))
 				.addComponent(panel, GroupLayout.DEFAULT_SIZE, 1250, Short.MAX_VALUE));
-		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-						.addComponent(panel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-								GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addComponent(tabbedPane).addComponent(panel_2, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(scrollPane))
-						.addGap(0)));
+		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout
+				.createSequentialGroup()
+				.addComponent(panel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+				.addPreferredGap(ComponentPlacement.RELATED)
+				.addGroup(groupLayout.createParallelGroup(Alignment.LEADING).addComponent(tabbedPane)
+						.addComponent(panel_2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(scrollPane))
+				.addGap(0)));
 
 		JLayeredPane layeredPaneSotobosque = new JLayeredPane();
 		tabbedPane.addTab("Repoblado/Sotobosque", null, layeredPaneSotobosque, null);
@@ -427,54 +438,37 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		tblEspeciesPorSitioSotobosque.setBackground(Color.DARK_GRAY);
 		tblEspeciesPorSitioSotobosque.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
 		scrollPane_1.setViewportView(tblEspeciesPorSitioSotobosque);
-		
+
 		JScrollPane scrollPane_2 = new JScrollPane();
 		scrollPane_2.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		scrollPane_2.setBackground(Color.WHITE);
-		
+
 		JLabel lblEspeciesPorSitio_2 = new JLabel("Especies por sitio Repoblado");
 		lblEspeciesPorSitio_2.setHorizontalAlignment(SwingConstants.CENTER);
 		lblEspeciesPorSitio_2.setFont(new Font("Dialog", Font.BOLD, 16));
 		GroupLayout gl_layeredPaneSotobosque = new GroupLayout(layeredPaneSotobosque);
-		gl_layeredPaneSotobosque.setHorizontalGroup(
-			gl_layeredPaneSotobosque.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_layeredPaneSotobosque.createSequentialGroup()
-					.addGap(12)
-					.addComponent(lblEspeciesPorSitio_1, GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE)
-					.addGap(12))
-				.addGroup(gl_layeredPaneSotobosque.createSequentialGroup()
-					.addGap(12)
-					.addComponent(scrollPane_1, GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE)
-					.addGap(12))
-				.addGroup(gl_layeredPaneSotobosque.createSequentialGroup()
-					.addGap(12)
-					.addComponent(lblEspeciesPorSitio_2, GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE)
-					.addGap(12))
-				.addGroup(gl_layeredPaneSotobosque.createSequentialGroup()
-					.addGap(12)
-					.addComponent(scrollPane_2, GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE)
-					.addGap(12))
-				.addGroup(Alignment.TRAILING, gl_layeredPaneSotobosque.createSequentialGroup()
-					.addGap(580)
-					.addComponent(btnGraficasSotobosqueRepoblado, GroupLayout.PREFERRED_SIZE, 82, GroupLayout.PREFERRED_SIZE)
-					.addGap(12))
-		);
-		gl_layeredPaneSotobosque.setVerticalGroup(
-			gl_layeredPaneSotobosque.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_layeredPaneSotobosque.createSequentialGroup()
-					.addGap(29)
-					.addComponent(lblEspeciesPorSitio_1, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
-					.addGap(6)
-					.addComponent(scrollPane_1, GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
-					.addGap(12)
-					.addComponent(lblEspeciesPorSitio_2, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
-					.addGap(12)
-					.addComponent(scrollPane_2, GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
-					.addGap(28)
-					.addComponent(btnGraficasSotobosqueRepoblado)
-					.addGap(11))
-		);
-		
+		gl_layeredPaneSotobosque.setHorizontalGroup(gl_layeredPaneSotobosque.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_layeredPaneSotobosque.createSequentialGroup().addGap(12)
+						.addComponent(lblEspeciesPorSitio_1, GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE).addGap(12))
+				.addGroup(gl_layeredPaneSotobosque.createSequentialGroup().addGap(12)
+						.addComponent(scrollPane_1, GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE).addGap(12))
+				.addGroup(gl_layeredPaneSotobosque.createSequentialGroup().addGap(12)
+						.addComponent(lblEspeciesPorSitio_2, GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE).addGap(12))
+				.addGroup(gl_layeredPaneSotobosque.createSequentialGroup().addGap(12)
+						.addComponent(scrollPane_2, GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE).addGap(12))
+				.addGroup(Alignment.TRAILING,
+						gl_layeredPaneSotobosque.createSequentialGroup().addGap(580)
+								.addComponent(btnGraficasSotobosqueRepoblado, GroupLayout.PREFERRED_SIZE, 82,
+										GroupLayout.PREFERRED_SIZE)
+								.addGap(12)));
+		gl_layeredPaneSotobosque.setVerticalGroup(gl_layeredPaneSotobosque.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_layeredPaneSotobosque.createSequentialGroup().addGap(29)
+						.addComponent(lblEspeciesPorSitio_1, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
+						.addGap(6).addComponent(scrollPane_1, GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE).addGap(12)
+						.addComponent(lblEspeciesPorSitio_2, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
+						.addGap(12).addComponent(scrollPane_2, GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
+						.addGap(28).addComponent(btnGraficasSotobosqueRepoblado).addGap(11)));
+
 		tblEspeciesPorSitioRepoblado = new JTable();
 		tblEspeciesPorSitioRepoblado.setBackground(Color.DARK_GRAY);
 		tblEspeciesPorSitioRepoblado.setFont(new Font("Dialog", Font.PLAIN, 14));
@@ -511,36 +505,89 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		JLabel lblTipoDeVetacion = new JLabel("Tipo de vetacion por sitio en arbolado");
 		lblTipoDeVetacion.setFont(new Font("Dialog", Font.BOLD, 16));
 		lblTipoDeVetacion.setHorizontalAlignment(SwingConstants.CENTER);
+
+		JButton btnVerEnMapa = new JButton("Ver en mapa");
+		btnVerEnMapa.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					String UPM_earth = lsUPM.getSelectedValue();
+					Runtime.getRuntime()
+							.exec(new String[] {
+									"C:\\Program Files (x86)\\Google\\Google Earth Pro\\client\\googleearth.exe",
+									"C:\\Users\\ignacio.martinez\\Desktop\\AbiesProject\\doc.kml" });
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
 		GroupLayout gl_panel_2 = new GroupLayout(panel_2);
 		gl_panel_2.setHorizontalGroup(gl_panel_2.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel_2.createSequentialGroup()
-						.addGroup(
-								gl_panel_2.createParallelGroup(Alignment.LEADING).addGroup(
-										Alignment.TRAILING,
-										gl_panel_2.createSequentialGroup().addGap(0).addComponent(lblInformacinDeSitios,
-												GroupLayout.DEFAULT_SIZE, 289, Short.MAX_VALUE))
-										.addGroup(gl_panel_2.createSequentialGroup().addContainerGap()
-												.addGroup(gl_panel_2.createParallelGroup(Alignment.LEADING)
-														.addComponent(scrollPaneInforSitio, Alignment.TRAILING,
-																GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
-														.addComponent(lblTipoDeVetacion, Alignment.TRAILING,
-																GroupLayout.DEFAULT_SIZE, 277, Short.MAX_VALUE)
-														.addComponent(scrollPaneTipoVegetacionPorSitio,
-																GroupLayout.DEFAULT_SIZE, 289, Short.MAX_VALUE))))
-						.addContainerGap()));
-		gl_panel_2.setVerticalGroup(gl_panel_2.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel_2.createSequentialGroup().addGap(38)
-						.addComponent(lblInformacinDeSitios, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
-						.addGap(18)
-						.addComponent(scrollPaneInforSitio, GroupLayout.PREFERRED_SIZE, 135, GroupLayout.PREFERRED_SIZE)
-						.addGap(103)
-						.addComponent(lblTipoDeVetacion, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
-						.addGap(18).addComponent(scrollPaneTipoVegetacionPorSitio, GroupLayout.PREFERRED_SIZE, 167,
-								GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(311, Short.MAX_VALUE)));
+				.addGroup(gl_panel_2.createSequentialGroup().addGroup(gl_panel_2.createParallelGroup(Alignment.TRAILING)
+						.addGroup(gl_panel_2.createSequentialGroup().addGap(0).addComponent(lblInformacinDeSitios,
+								GroupLayout.DEFAULT_SIZE, 413, Short.MAX_VALUE))
+						.addGroup(gl_panel_2.createSequentialGroup().addContainerGap()
+								.addGroup(gl_panel_2.createParallelGroup(Alignment.LEADING)
+										.addComponent(scrollPaneInforSitio, Alignment.TRAILING,
+												GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE)
+										.addComponent(lblTipoDeVetacion, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE,
+												403, Short.MAX_VALUE)
+										.addComponent(scrollPaneTipoVegetacionPorSitio, GroupLayout.DEFAULT_SIZE, 403,
+												Short.MAX_VALUE))))
+						.addContainerGap())
+				.addGroup(Alignment.TRAILING, gl_panel_2.createSequentialGroup().addContainerGap(205, Short.MAX_VALUE)
+						.addComponent(btnVerEnMapa).addGap(139)));
+		gl_panel_2.setVerticalGroup(gl_panel_2.createParallelGroup(Alignment.LEADING).addGroup(gl_panel_2
+				.createSequentialGroup().addGap(38)
+				.addComponent(lblInformacinDeSitios, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
+				.addGap(18)
+				.addComponent(scrollPaneInforSitio, GroupLayout.PREFERRED_SIZE, 135, GroupLayout.PREFERRED_SIZE)
+				.addGap(103).addComponent(lblTipoDeVetacion, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
+				.addGap(18)
+				.addComponent(scrollPaneTipoVegetacionPorSitio, GroupLayout.PREFERRED_SIZE, 167,
+						GroupLayout.PREFERRED_SIZE)
+				.addPreferredGap(ComponentPlacement.RELATED, 227, Short.MAX_VALUE).addComponent(btnVerEnMapa)
+				.addGap(60)));
 		panel_2.setLayout(gl_panel_2);
 		getContentPane().setLayout(groupLayout);
 		// scrollPaneEast.setViewportView(scrollPaneInforSitio);
+
+	}
+
+	public void createKml() {
+		String kml = "<?xml version='1.0' encoding='UTF-8'?> <kml xmlns='http://www.opengis.net/kml/2.2' xmlns:gx='http://www.google.com/kml/ext/2.2' xmlns:kml='http://www.opengis.net/kml/2.2' xmlns:atom='http://www.w3.org/2005/Atom'> <Document> 	<name>"
+				+ UPMID
+				+ ".kmz</name> 	<Style id='IconStyle04018'> 		<IconStyle> 			<scale>0.25</scale> 			<Icon> 				<href>files/Layer0_Symbol_dc4f048_0.png</href> 			</Icon> 		</IconStyle> 		<LabelStyle> 			<color>00000000</color> 			<scale>0</scale> 		</LabelStyle> 		<PolyStyle> 			<color>ff000000</color> 			<outline>0</outline> 		</PolyStyle> 	</Style> 	<Placemark id='ID_04018'> 		<name>"
+				+ UPMID
+				+ "</name> 		<Snippet maxLines='0'></Snippet> 		<description><![CDATA[<html xmlns:fo='http://www.w3.org/1999/XSL/Format' xmlns:msxsl='urn:schemas-microsoft-com:xslt'> <head> <META http-equiv='Content-Type' content='text/html'> <meta http-equiv='content-type' content='text/html; charset=UTF-8'> </head> <body style='margin:0px 0px 0px 0px;overflow:auto;background:#FFFFFF;'> <table style='font-family:Arial,Verdana,Times;font-size:12px;text-align:left;width:100%;border-collapse:collapse;padding:3px 3px 3px 3px'> <tr style='text-align:center;font-weight:bold;background:#9CBCE2'> <td>"
+				+ UPMID
+				+ "</td> </tr> <tr> <td> <table style='font-family:Arial,Verdana,Times;font-size:12px;text-align:left;width:100%;border-spacing:0px; padding:3px 3px 3px 3px'> <tr> <td>FID</td> <td>"
+				+ UPMID + "</td> </tr> <tr bgcolor='#D4E4F3'> <td>ZONA_INFYS</td> <td>" + Region
+				+ "</td> </tr> <tr> <td>A16</td> <td>" + A + "</td> </tr> <tr bgcolor='#D4E4F3'> <td>C16</td> <td>" + C
+				+ "</td> </tr> <tr> <td>D16</td> <td>" + D + "</td> </tr> <tr bgcolor='#D4E4F3'> <td>E16</td> <td>" + E
+				+ "</td> </tr> <tr> <td>F16</td> <td>" + F + "</td> </tr> <tr bgcolor='#D4E4F3'> <td>G16</td> <td>" + G
+				+ "</td> </tr> <tr> <td>H16</td> <td>" + H + "</td> </tr> <tr bgcolor='#D4E4F3'> <td>B16</td> <td>" + B
+				+ "</td> </tr> <tr> <td>X</td> <td>" + X + "</td> </tr> <tr bgcolor='#D4E4F3'> <td>Y</td> <td>" + Y
+				+ "</td> </tr> <tr> <td>NOM_EDO</td> <td>" + Estado
+				+ "</td> </tr> <tr bgcolor='#D4E4F3'> <td>NOM_MUN</td> <td>" + Municipio
+				+ "</td> </tr> <tr bgcolor='#D4E4F3'> <td>ID_UPM</td> <td>" + UPMID
+				+ "</td> </tr> </table> </td> </tr> </table> </body> </html>]]></description> 		<styleUrl>#IconStyle04018</styleUrl> 		<gx:balloonVisibility>1</gx:balloonVisibility> 		<Point> 			<coordinates>"
+				+ X + "," + Y + ",0</coordinates> 		</Point> 	</Placemark> </Document> </kml>";
+		//System.out.println(kml);
+		Writer writer = null;
+
+		try {
+			Path currentPath = Paths.get("");
+			String path = currentPath.toAbsolutePath().toString();
+			
+		    writer = new BufferedWriter(new OutputStreamWriter(
+		          new FileOutputStream(path+"\\doc.kml"), "utf-8"));
+		    writer.write(kml);
+		} catch (IOException ex) {
+		  // report
+		} finally {
+		   try {writer.close();} catch (Exception ex) {/*ignore*/}
+		}
 
 	}
 
@@ -584,8 +631,8 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 	}
 
 	public void getInformacionUPM(String ruta, int upmid) {
-		String query = "SELECT  upmMalla.Estado, upmMalla.Municipio, upm.Altitud, upm.PendienteRepresentativa, CASE upm.Accesible WHEN 1 THEN 'SI' WHEN 2 THEN 'NO' END Accesible, tipoUPM.TipoUPM, exposicionUPM.Descripcion AS Exposicion, fisiografia.TipoFisiografia AS Fisiografia FROM UPM_UPM upm JOIN UPM_MallaPuntos upmMalla ON upm.UPMID=upmMalla.UPMID LEFT JOIN CAT_TipoUPM tipoUPM ON tipoUPM.TipoUPMID=upm.TipoUPMID LEFT JOIN CAT_TipoExposicion exposicionUPM ON exposicionUPM.ExposicionID =upm.ExposicionID LEFT JOIN CAT_TipoFisiografia fisiografia ON fisiografia.FisiografiaID=upm.FisiografiaID where upm.UPMID="
-				+ upmid;
+		String query = "SELECT  upm.UPMID, upmMalla.Estado, upmMalla.Municipio, upm.Altitud, upm.PendienteRepresentativa, upmMalla.A, upmMalla.B, upmMalla.C, upmMalla.D, upmMalla.E, upmMalla.F, upmMalla.G, upmMalla.H, sitio.GradosLatitud + (sitio.MinutosLatitud / 60.0) +  (sitio.SegundosLatitud / 3600.0) AS Y, -1 * ((-1 * sitio.GradosLongitud) + (sitio.MinutosLongitud / 60.0) +  (sitio.SegundosLongitud / 3600.0)) AS X, CASE upm.Accesible WHEN 1 THEN 'SI' WHEN 2 THEN 'NO' END Accesible, tipoUPM.TipoUPM, exposicionUPM.Descripcion AS Exposicion, fisiografia.TipoFisiografia AS Fisiografia, upmMalla.Region FROM  UPM_UPM upm  JOIN UPM_MallaPuntos upmMalla ON upm.UPMID=upmMalla.UPMID JOIN sitios_Sitio sitio ON sitio.UPMID=upm.UPMID LEFT JOIN CAT_TipoUPM tipoUPM ON tipoUPM.TipoUPMID=upm.TipoUPMID  LEFT JOIN CAT_TipoExposicion exposicionUPM ON exposicionUPM.ExposicionID =upm.ExposicionID  LEFT JOIN CAT_TipoFisiografia fisiografia ON fisiografia.FisiografiaID=upm.FisiografiaID WHERE upm.UPMID="
+				+ upmid+" AND sitio.Sitio=1";
 
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
 		try {
@@ -593,14 +640,35 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 			ResultSet rsExterno = sqlExterno.executeQuery(query);
 
 			while (rsExterno.next()) {
-				lblEstadoResp.setText(rsExterno.getString("Estado"));
-				lblMunicipioResp.setText(rsExterno.getString("Municipio"));
-				lblAltitudResp.setText(Integer.toString(rsExterno.getInt("Altitud")));
-				lblPendienteRepresentativaResp.setText(Integer.toString(rsExterno.getInt("PendienteRepresentativa")));
-				lblExposicionResp.setText(rsExterno.getString("Exposicion"));
-				lblFisiografiaResp.setText(rsExterno.getString("Fisiografia"));
-				lblAccesible.setText(rsExterno.getString("Accesible"));
-				lblTipo.setText(rsExterno.getString("TipoUPM"));
+				UPMID=Integer.toString(rsExterno.getInt("UPMID"));
+				Altitud=Integer.toString(rsExterno.getInt("Altitud"));
+				PendienteRepresentativa=Integer.toString(rsExterno.getInt("PendienteRepresentativa"));
+				A=Integer.toString(rsExterno.getInt("A"));
+				B=Integer.toString(rsExterno.getInt("B"));
+				C=Integer.toString(rsExterno.getInt("C"));
+				D=Integer.toString(rsExterno.getInt("D"));
+				E=Integer.toString(rsExterno.getInt("E"));
+				F=Integer.toString(rsExterno.getInt("F"));
+				G=Integer.toString(rsExterno.getInt("G"));
+				H=Integer.toString(rsExterno.getInt("H"));
+				Estado=rsExterno.getString("Estado");
+				Municipio=rsExterno.getString("Municipio");
+				Y=rsExterno.getString("Y");
+				X=rsExterno.getString("X");
+				Accesible=rsExterno.getString("Accesible");
+				TipoUPM=rsExterno.getString("TipoUPM");
+				Exposicion=rsExterno.getString("Exposicion");
+				Fisiografia=rsExterno.getString("Fisiografia");
+				Region=rsExterno.getString("Region");
+				
+				lblEstadoResp.setText(Estado);
+				lblMunicipioResp.setText(Municipio);
+				lblAltitudResp.setText(Altitud);
+				lblPendienteRepresentativaResp.setText(PendienteRepresentativa);
+				lblExposicionResp.setText(Exposicion);
+				lblFisiografiaResp.setText(Fisiografia);
+				lblAccesible.setText(Accesible);
+				lblTipo.setText(TipoUPM);
 			}
 			baseDatosExterna.close();
 		} catch (Exception e) {
@@ -628,7 +696,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 	public void getVegetacionPorSitio(String ruta, int upmid) {
 		String query = "SELECT DISTINCT sitio.SitioID, sitio.Sitio, claveSerieV.TipoVegetacion, faseSucecional.Clave  AS FaseSucecional, arbolado.Consecutivo as No_registros, arbolado.NoIndividuo AS Individuo FROM TAXONOMIA_Arbolado arbolado LEFT JOIN SITIOS_Sitio sitio ON sitio.SitioID=arbolado.SitioID and sitio.UPMID=arbolado.UPMID LEFT JOIN CAT_ClaveSerieV claveSerieV ON claveSerieV.ClaveSerieVID = sitio.ClaveSerieV LEFT JOIN CAT_FaseSucecional faseSucecional on faseSucecional.FaseSucecionalID =sitio.FaseSucecional WHERE arbolado.UPMID="
 				+ upmid + " GROUP BY arbolado.UPMID, arbolado.SitioID ORDER BY arbolado.UPMID  ";
-		//System.out.println(query);
+		// System.out.println(query);
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
 		try {
 			sqlExterno = baseDatosExterna.createStatement();
@@ -690,7 +758,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		String query = "SELECT  DISTINCT  sitio.sitio, printf('%s %s %s',genero.Nombre, especie.Nombre, infraespecie.Nombre) as Entidad, vigorSotobosque.Descripcion AS Vigor FROM TAXONOMIA_Sotobosque sotobosque  JOIN SITIOS_Sitio sitio ON sitio.SitioID=sotobosque.SitioID  LEFT JOIN CAT_ClaveSerieV claveSerieV ON claveSerieV.ClaveSerieVID = sitio.ClaveSerieV and sitio.UPMID=sotobosque.UPMID  LEFT JOIN CAT_FaseSucecional faseSucecional on faseSucecional.FaseSucecionalID =sitio.FaseSucecional  LEFT JOIN CAT_FamiliaEspecie familia ON sotobosque.FamiliaID = familia.FamiliaID   LEFT JOIN CAT_Genero genero ON sotobosque.GeneroID = genero.GeneroID   LEFT JOIN CAT_Especie especie ON sotobosque.EspecieID = especie.EspecieID   LEFT JOIN CAT_Infraespecie infraespecie ON sotobosque.InfraespecieID = infraespecie.InfraespecieID   LEFT JOIN CAT_TipoVigorSotobosqueRepoblado vigorSotobosque ON vigorSotobosque.VigorID=sotobosque.VigorID WHERE sotobosque.UPMID="
 				+ upmid
 				+ "  GROUP BY sotobosque.UPMID, sotobosque.SitioID, sotobosque.SotoBosqueID ORDER BY sitio.sitio";
-		//System.out.println(query);
+		// System.out.println(query);
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
 		// System.out.println(query);
 		try {
@@ -718,12 +786,11 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		tblEspeciesPorSitioSotobosque.getColumnModel().getColumn(0).setCellRenderer(cellRenderedCenter);
 		tblEspeciesPorSitioSotobosque.getColumnModel().getColumn(2).setCellRenderer(cellRenderedCenter);
 	}
-	
+
 	public void getEspeciesPorSitioRepoblado(String ruta, int upmid) {
 		String query = "SELECT  DISTINCT  sitio.sitio, printf('%s %s %s',genero.Nombre, especie.Nombre, infraespecie.Nombre) as Entidad, vigorSotobosque.Descripcion AS Vigor  FROM TAXONOMIA_Repoblado repoblado   JOIN SITIOS_Sitio sitio ON sitio.SitioID=repoblado.SitioID   LEFT JOIN CAT_ClaveSerieV claveSerieV ON claveSerieV.ClaveSerieVID = sitio.ClaveSerieV and sitio.UPMID=repoblado.UPMID   LEFT JOIN CAT_FaseSucecional faseSucecional on faseSucecional.FaseSucecionalID =sitio.FaseSucecional   LEFT JOIN CAT_FamiliaEspecie familia ON repoblado.FamiliaID = familia.FamiliaID    LEFT JOIN CAT_Genero genero ON repoblado.GeneroID = genero.GeneroID    LEFT JOIN CAT_Especie especie ON repoblado.EspecieID = especie.EspecieID    LEFT JOIN CAT_Infraespecie infraespecie ON repoblado.InfraespecieID = infraespecie.InfraespecieID    LEFT JOIN CAT_TipoVigorSotobosqueRepoblado vigorSotobosque ON vigorSotobosque.VigorID=repoblado.VigorID  WHERE repoblado.UPMID= "
-				+ upmid
-				+ "  GROUP BY repoblado.UPMID,repoblado.SitioID,repoblado.RepobladoID ORDER BY sitio.sitio ";
-		//System.out.println(query);
+				+ upmid + "  GROUP BY repoblado.UPMID,repoblado.SitioID,repoblado.RepobladoID ORDER BY sitio.sitio ";
+		// System.out.println(query);
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
 		// System.out.println(query);
 		try {

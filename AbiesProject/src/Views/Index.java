@@ -106,7 +106,7 @@ public class Index extends JFrame {
 		ConfigUserConnection.getConnection(configUser);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Index.class.getResource("/Icons/g5296.png")));
 		setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
-		setTitle("Abies (V_1.4.3)");
+		setTitle("Abies (V_1.5)");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1366, 847);
 		contentPane = new JPanel();
