@@ -50,6 +50,8 @@ import javax.swing.AbstractListModel;
 
 public class FrmInformacionPorUPM extends JInternalFrame {
 	public String ruta;
+	Path currentPath = Paths.get("");
+	String path = currentPath.toAbsolutePath().toString();
 	private Connection baseDatosExterna;
 	private java.sql.Statement sqlExterno;
 	int upmInt = 0;
@@ -96,10 +98,9 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 	private JTable tblEspeciesPorSitioSotobosque;
 	private JTable tblEspeciesPorSitioRepoblado;
 	private JButton btnGraficasSotobosqueRepoblado;
-	
-	String Estado, Municipio, Y, X, Accesible, TipoUPM, Exposicion, Fisiografia,Region, UPMID, Altitud,  PendienteRepresentativa,  A,  B,  C,  D,  E,  F,  G,  H;
 
-	
+	String Estado, Municipio, Y, X, Accesible, TipoUPM, Exposicion, Fisiografia, Region, UPMID, Altitud,
+			PendienteRepresentativa, A, B, C, D, E, F, G, H;
 
 	public FrmInformacionPorUPM(String ruta, JDesktopPane desktopPanelCentral) {
 		setFrameIcon(null);
@@ -514,7 +515,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 					Runtime.getRuntime()
 							.exec(new String[] {
 									"C:\\Program Files (x86)\\Google\\Google Earth Pro\\client\\googleearth.exe",
-									"C:\\Users\\ignacio.martinez\\Desktop\\AbiesProject\\doc.kml" });
+									path + "\\doc.kml" });
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -557,7 +558,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 	public void createKml() {
 		String kml = "<?xml version='1.0' encoding='UTF-8'?> <kml xmlns='http://www.opengis.net/kml/2.2' xmlns:gx='http://www.google.com/kml/ext/2.2' xmlns:kml='http://www.opengis.net/kml/2.2' xmlns:atom='http://www.w3.org/2005/Atom'> <Document> 	<name>"
 				+ UPMID
-				+ ".kmz</name> 	<Style id='IconStyle04018'> 		<IconStyle> 			<scale>0.25</scale> 			<Icon> 				<href>files/Layer0_Symbol_dc4f048_0.png</href> 			</Icon> 		</IconStyle> 		<LabelStyle> 			<color>00000000</color> 			<scale>0</scale> 		</LabelStyle> 		<PolyStyle> 			<color>ff000000</color> 			<outline>0</outline> 		</PolyStyle> 	</Style> 	<Placemark id='ID_04018'> 		<name>"
+				+ ".kmz</name> <NetworkLink>   <name>UPM</name>     <visibility>0</visibility>     <snippet>Check/refresh NetworkLink to draw circle</snippet>     <description><![CDATA[First move to location where you want a circle drawn then check NetworkLink in Google Earth's Places panel to create the circle with its center at center of current view point. <P>Manually refresh to redraw.<P> Powered by <a href=\"http://kml4earth.appspot.com/\">Kml4Earth</a>]]></description>     <balloonVisibility xmlns='http://www.google.com/kml/ext/2.2'>1</balloonVisibility>     <Link>       <href>http://kml4earth.appspot.com:80/circle.gsp?color=ff00ff00&amp;width=2</href>       <viewRefreshMode>onRequest</viewRefreshMode>       <viewFormat>LookAt=[lookatLon],[lookatLat]&amp;LonLat=[lookatTerrainLon],[lookatTerrainLat]</viewFormat>       <httpQuery>meters=112.9&amp;desc=radius+56.4+meters</httpQuery>     </Link>   </NetworkLink>  	<Style id='IconStyle04018'> 		<IconStyle> 			<scale>0.25</scale> 			<Icon> 				<href>files/Layer0_Symbol_dc4f048_0.png</href> 			</Icon> 		</IconStyle> 		<LabelStyle> 			<color>00000000</color> 			<scale>0</scale> 		</LabelStyle> 		<PolyStyle> 			<color>ff000000</color> 			<outline>0</outline> 		</PolyStyle> 	</Style> 	<Placemark id='ID_04018'> 		<name>"
 				+ UPMID
 				+ "</name> 		<Snippet maxLines='0'></Snippet> 		<description><![CDATA[<html xmlns:fo='http://www.w3.org/1999/XSL/Format' xmlns:msxsl='urn:schemas-microsoft-com:xslt'> <head> <META http-equiv='Content-Type' content='text/html'> <meta http-equiv='content-type' content='text/html; charset=UTF-8'> </head> <body style='margin:0px 0px 0px 0px;overflow:auto;background:#FFFFFF;'> <table style='font-family:Arial,Verdana,Times;font-size:12px;text-align:left;width:100%;border-collapse:collapse;padding:3px 3px 3px 3px'> <tr style='text-align:center;font-weight:bold;background:#9CBCE2'> <td>"
 				+ UPMID
@@ -572,21 +573,23 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 				+ "</td> </tr> <tr bgcolor='#D4E4F3'> <td>NOM_MUN</td> <td>" + Municipio
 				+ "</td> </tr> <tr bgcolor='#D4E4F3'> <td>ID_UPM</td> <td>" + UPMID
 				+ "</td> </tr> </table> </td> </tr> </table> </body> </html>]]></description> 		<styleUrl>#IconStyle04018</styleUrl> 		<gx:balloonVisibility>1</gx:balloonVisibility> 		<Point> 			<coordinates>"
-				+ X + "," + Y + ",0</coordinates> 		</Point> 	</Placemark> </Document> </kml>";
+				+ X + "," + Y
+				+ ",0</coordinates> 		</Point> <NetworkLink>     <name>Circle generator radius 4 meters</name>     <snippet></snippet>     <description><![CDATA[Circle auto-refreshes itself whenever the view changes.<P> To change circle options visit <a href=\"http://kml4earth.appspot.com/circlegen.html?auto=1\">web site</a>.<P> Powered by <a href=\"http://kml4earth.appspot.com/\">Kml4Earth</a>]]></description>     <Link>       <href>https://kml4earth.appspot.com:443/circle.gsp?color=ff00ff00&amp;width=2</href>       <viewRefreshMode>onStop</viewRefreshMode>       <viewRefreshTime>2</viewRefreshTime>       <viewFormat>LookAt=[lookatLon],[lookatLat]&amp;LonLat=[lookatTerrainLon],[lookatTerrainLat]</viewFormat>       <httpQuery>meters=8.0&amp;desc=radius+4+meters</httpQuery>     </Link>   </NetworkLink>   \r\n"
+				+ "	</Placemark> </Document> </kml>";
 		//System.out.println(kml);
 		Writer writer = null;
 
 		try {
-			Path currentPath = Paths.get("");
-			String path = currentPath.toAbsolutePath().toString();
-			
-		    writer = new BufferedWriter(new OutputStreamWriter(
-		          new FileOutputStream(path+"\\doc.kml"), "utf-8"));
-		    writer.write(kml);
+
+			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path + "\\doc.kml"), "utf-8"));
+			writer.write(kml);
 		} catch (IOException ex) {
-		  // report
+			// report
 		} finally {
-		   try {writer.close();} catch (Exception ex) {/*ignore*/}
+			try {
+				writer.close();
+			} catch (Exception ex) {
+				/* ignore */}
 		}
 
 	}
@@ -632,7 +635,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 
 	public void getInformacionUPM(String ruta, int upmid) {
 		String query = "SELECT  upm.UPMID, upmMalla.Estado, upmMalla.Municipio, upm.Altitud, upm.PendienteRepresentativa, upmMalla.A, upmMalla.B, upmMalla.C, upmMalla.D, upmMalla.E, upmMalla.F, upmMalla.G, upmMalla.H, sitio.GradosLatitud + (sitio.MinutosLatitud / 60.0) +  (sitio.SegundosLatitud / 3600.0) AS Y, -1 * ((-1 * sitio.GradosLongitud) + (sitio.MinutosLongitud / 60.0) +  (sitio.SegundosLongitud / 3600.0)) AS X, CASE upm.Accesible WHEN 1 THEN 'SI' WHEN 2 THEN 'NO' END Accesible, tipoUPM.TipoUPM, exposicionUPM.Descripcion AS Exposicion, fisiografia.TipoFisiografia AS Fisiografia, upmMalla.Region FROM  UPM_UPM upm  JOIN UPM_MallaPuntos upmMalla ON upm.UPMID=upmMalla.UPMID JOIN sitios_Sitio sitio ON sitio.UPMID=upm.UPMID LEFT JOIN CAT_TipoUPM tipoUPM ON tipoUPM.TipoUPMID=upm.TipoUPMID  LEFT JOIN CAT_TipoExposicion exposicionUPM ON exposicionUPM.ExposicionID =upm.ExposicionID  LEFT JOIN CAT_TipoFisiografia fisiografia ON fisiografia.FisiografiaID=upm.FisiografiaID WHERE upm.UPMID="
-				+ upmid+" AND sitio.Sitio=1";
+				+ upmid + " AND sitio.Sitio=1";
 
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
 		try {
@@ -640,27 +643,27 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 			ResultSet rsExterno = sqlExterno.executeQuery(query);
 
 			while (rsExterno.next()) {
-				UPMID=Integer.toString(rsExterno.getInt("UPMID"));
-				Altitud=Integer.toString(rsExterno.getInt("Altitud"));
-				PendienteRepresentativa=Integer.toString(rsExterno.getInt("PendienteRepresentativa"));
-				A=Integer.toString(rsExterno.getInt("A"));
-				B=Integer.toString(rsExterno.getInt("B"));
-				C=Integer.toString(rsExterno.getInt("C"));
-				D=Integer.toString(rsExterno.getInt("D"));
-				E=Integer.toString(rsExterno.getInt("E"));
-				F=Integer.toString(rsExterno.getInt("F"));
-				G=Integer.toString(rsExterno.getInt("G"));
-				H=Integer.toString(rsExterno.getInt("H"));
-				Estado=rsExterno.getString("Estado");
-				Municipio=rsExterno.getString("Municipio");
-				Y=rsExterno.getString("Y");
-				X=rsExterno.getString("X");
-				Accesible=rsExterno.getString("Accesible");
-				TipoUPM=rsExterno.getString("TipoUPM");
-				Exposicion=rsExterno.getString("Exposicion");
-				Fisiografia=rsExterno.getString("Fisiografia");
-				Region=rsExterno.getString("Region");
-				
+				UPMID = Integer.toString(rsExterno.getInt("UPMID"));
+				Altitud = Integer.toString(rsExterno.getInt("Altitud"));
+				PendienteRepresentativa = Integer.toString(rsExterno.getInt("PendienteRepresentativa"));
+				A = Integer.toString(rsExterno.getInt("A"));
+				B = Integer.toString(rsExterno.getInt("B"));
+				C = Integer.toString(rsExterno.getInt("C"));
+				D = Integer.toString(rsExterno.getInt("D"));
+				E = Integer.toString(rsExterno.getInt("E"));
+				F = Integer.toString(rsExterno.getInt("F"));
+				G = Integer.toString(rsExterno.getInt("G"));
+				H = Integer.toString(rsExterno.getInt("H"));
+				Estado = rsExterno.getString("Estado");
+				Municipio = rsExterno.getString("Municipio");
+				Y = rsExterno.getString("Y");
+				X = rsExterno.getString("X");
+				Accesible = rsExterno.getString("Accesible");
+				TipoUPM = rsExterno.getString("TipoUPM");
+				Exposicion = rsExterno.getString("Exposicion");
+				Fisiografia = rsExterno.getString("Fisiografia");
+				Region = rsExterno.getString("Region");
+
 				lblEstadoResp.setText(Estado);
 				lblMunicipioResp.setText(Municipio);
 				lblAltitudResp.setText(Altitud);

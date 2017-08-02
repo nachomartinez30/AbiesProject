@@ -29,7 +29,9 @@ import java.awt.event.ActionEvent;
 public class FrmCalidad extends JInternalFrame {
 	private JDesktopPane desktopPane;
 	FrmDistribucionEspecies distribucion;
-	ProgressDistribucion progreso;
+	FrmDiferenciaCoordenadas coordenadas;
+	ProgressDistribucion progresoDistribucion;
+	ProgressCoordenateDiff progresoCoordenadas;
 	public String ruta;
 	private Connection baseDatosExterna;
 	private java.sql.Statement sqlExterno;
@@ -52,8 +54,8 @@ public class FrmCalidad extends JInternalFrame {
 		btnDistribucin = new JButton("Distribuci\u00F3n");
 		btnDistribucin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				progreso=new ProgressDistribucion(progressBar, ruta,distribucion.tblDistribuciones,distribucion.tblException);
-				progreso.execute();
+				progresoDistribucion=new ProgressDistribucion(progressBar, ruta,distribucion.tblDistribuciones,distribucion.tblException);
+				progresoDistribucion.execute();
 				if (distribucion.isVisible() == false) {
 					distribucion.setVisible(true);
 					
@@ -81,31 +83,61 @@ public class FrmCalidad extends JInternalFrame {
 		lblCalidad.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		progressBar = new JProgressBar();
+		
+		JButton btnDifCoordenadas = new JButton("Dif. Coordenadas");
+		btnDifCoordenadas.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				progresoCoordenadas=new ProgressCoordenateDiff(progressBar, ruta,coordenadas.tblResultadosCoordenadas);
+				progresoCoordenadas.execute();
+				if (coordenadas.isVisible() == false) {
+					coordenadas.setVisible(true);
+					
+					desktopPane.add(coordenadas);
+
+				}
+
+				if (coordenadas.isBackgroundSet()) {
+					coordenadas.moveToFront();
+				}
+
+				try {
+					coordenadas.setMaximum(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
 		GroupLayout gl_panel = new GroupLayout(panel);
-		gl_panel.setHorizontalGroup(gl_panel
-				.createParallelGroup(
-						Alignment.LEADING)
-				.addGroup(
-						gl_panel.createSequentialGroup().addContainerGap()
-								.addGroup(
-										gl_panel.createParallelGroup(Alignment.LEADING)
-												.addGroup(gl_panel.createSequentialGroup()
-														.addComponent(lblCalidad, GroupLayout.DEFAULT_SIZE, 96,
-																Short.MAX_VALUE)
-														.addContainerGap())
-												.addGroup(gl_panel.createSequentialGroup()
-														.addComponent(progressBar, GroupLayout.DEFAULT_SIZE, 113,
-																Short.MAX_VALUE)
-														.addContainerGap())))
-				.addGroup(Alignment.TRAILING,
-						gl_panel.createSequentialGroup().addGap(13)
-								.addComponent(btnDistribucin, GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE)
-								.addContainerGap()));
-		gl_panel.setVerticalGroup(gl_panel.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel.createSequentialGroup().addGap(8).addComponent(lblCalidad).addGap(26)
-						.addComponent(progressBar, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-								GroupLayout.PREFERRED_SIZE)
-						.addGap(33).addComponent(btnDistribucin).addContainerGap(517, Short.MAX_VALUE)));
+		gl_panel.setHorizontalGroup(
+			gl_panel.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_panel.createSequentialGroup()
+					.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel.createSequentialGroup()
+							.addContainerGap()
+							.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
+								.addComponent(lblCalidad, GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE)
+								.addComponent(progressBar, GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE)))
+						.addGroup(gl_panel.createSequentialGroup()
+							.addGap(13)
+							.addComponent(btnDistribucin, GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE))
+						.addGroup(gl_panel.createSequentialGroup()
+							.addContainerGap()
+							.addComponent(btnDifCoordenadas, GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)))
+					.addContainerGap())
+		);
+		gl_panel.setVerticalGroup(
+			gl_panel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel.createSequentialGroup()
+					.addGap(8)
+					.addComponent(lblCalidad)
+					.addGap(26)
+					.addComponent(progressBar, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addGap(33)
+					.addComponent(btnDistribucin)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(btnDifCoordenadas)
+					.addContainerGap(480, Short.MAX_VALUE))
+		);
 		panel.setLayout(gl_panel);
 
 		desktopPane = new JDesktopPane();
@@ -113,7 +145,6 @@ public class FrmCalidad extends JInternalFrame {
 		desktopPane.setLayout(null);
 
 		distribucion = new FrmDistribucionEspecies(ruta);
-
+		coordenadas = new FrmDiferenciaCoordenadas();
 	}
-
 }

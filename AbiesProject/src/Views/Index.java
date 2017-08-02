@@ -18,6 +18,7 @@ import java.awt.GridLayout;
 import javax.swing.JCheckBoxMenuItem;
 import Database.ConfigUserConnection;
 import Database.ExternalConnection;
+import Database.Ruta;
 
 import javax.swing.Box;
 import javax.swing.JLabel;
@@ -49,11 +50,12 @@ public class Index extends JFrame {
 	FrmExportar exportar;
 	FrmInformacionPorUPM informacionUpm;
 	FrmCalidad calidad;
-	
+
 	private JPanel contentPane;
 	private JTable table;
 	public String ruta = "";
-	//private String configUser = "/AbiesProject/src/Database/ConfigUser.db";
+
+	Ruta ruta_class = new Ruta();
 	private String configUser = "/ConfigUser.db";
 	private String background = "/Icons/";
 	private boolean leftPanel = true;
@@ -106,7 +108,7 @@ public class Index extends JFrame {
 		ConfigUserConnection.getConnection(configUser);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Index.class.getResource("/Icons/g5296.png")));
 		setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
-		setTitle("Abies (V_1.5)");
+		setTitle("Abies (V_1.5.1)");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1366, 847);
 		contentPane = new JPanel();
@@ -218,35 +220,23 @@ public class Index extends JFrame {
 		});
 		btnCalidad.setEnabled(false);
 		GroupLayout gl_panelIzquierdo = new GroupLayout(panelIzquierdo);
-		gl_panelIzquierdo.setHorizontalGroup(
-			gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
+		gl_panelIzquierdo.setHorizontalGroup(gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panelIzquierdo.createSequentialGroup()
-					.addGroup(gl_panelIzquierdo.createParallelGroup(Alignment.TRAILING)
-						.addComponent(btnEstadisticas, GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE)
-						.addGroup(gl_panelIzquierdo.createSequentialGroup()
-							.addGap(1)
-							.addComponent(btnInfPorUpm, GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE))
-						.addGroup(gl_panelIzquierdo.createSequentialGroup()
-							.addGap(1)
-							.addComponent(btnCalidad, GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE))
-						.addGroup(gl_panelIzquierdo.createSequentialGroup()
-							.addContainerGap()
-							.addComponent(btnExportar, GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)))
-					.addContainerGap())
-		);
-		gl_panelIzquierdo.setVerticalGroup(
-			gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panelIzquierdo.createSequentialGroup()
-					.addGap(30)
-					.addComponent(btnEstadisticas)
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(btnInfPorUpm)
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(btnCalidad)
-					.addPreferredGap(ComponentPlacement.RELATED, 605, Short.MAX_VALUE)
-					.addComponent(btnExportar)
-					.addGap(39))
-		);
+						.addGroup(gl_panelIzquierdo.createParallelGroup(Alignment.TRAILING)
+								.addComponent(btnEstadisticas, GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE)
+								.addGroup(gl_panelIzquierdo.createSequentialGroup().addGap(1).addComponent(btnInfPorUpm,
+										GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE))
+								.addGroup(gl_panelIzquierdo.createSequentialGroup().addGap(1).addComponent(btnCalidad,
+										GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE))
+								.addGroup(gl_panelIzquierdo.createSequentialGroup().addContainerGap()
+										.addComponent(btnExportar, GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)))
+						.addContainerGap()));
+		gl_panelIzquierdo.setVerticalGroup(gl_panelIzquierdo.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panelIzquierdo.createSequentialGroup().addGap(30).addComponent(btnEstadisticas)
+						.addPreferredGap(ComponentPlacement.UNRELATED).addComponent(btnInfPorUpm)
+						.addPreferredGap(ComponentPlacement.UNRELATED).addComponent(btnCalidad)
+						.addPreferredGap(ComponentPlacement.RELATED, 605, Short.MAX_VALUE).addComponent(btnExportar)
+						.addGap(39)));
 		panelIzquierdo.setLayout(gl_panelIzquierdo);
 
 		JPanel panelSuperior = new JPanel();
@@ -277,7 +267,7 @@ public class Index extends JFrame {
 		mntmConcentrador_1 = new JMenuItem("Concentrador");
 		mntmConcentrador_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-//				Concentrar concentrador = new Concentrar();
+				// Concentrar concentrador = new Concentrar();
 				ConcentradorAbies concentrador = new ConcentradorAbies();
 				concentrador.setVisible(true);
 			}
@@ -365,17 +355,18 @@ public class Index extends JFrame {
 
 	public void cargarBaseDatos() {
 		JFileChooser fcBaseDatos = new JFileChooser(ruta);
-		
+
 		fcBaseDatos.setDialogTitle("Base de datos a importar");
 		FileNameExtensionFilter filtro = new FileNameExtensionFilter("*.cons", "cons");
 		fcBaseDatos.setAcceptAllFileFilterUsed(false);
 		fcBaseDatos.setFileFilter(filtro);
-		
+
 		int returnVal = fcBaseDatos.showOpenDialog(this);
 		// fcBaseDatos.showOpenDialog(Main.main);
 		try {
 			File baseDatos = fcBaseDatos.getSelectedFile();
 			ruta = baseDatos.getAbsolutePath();
+			ruta_class.setRuta(baseDatos.getAbsolutePath());
 			int tamanio = ruta.length();
 			int cadena = tamanio - 4;
 			String extension = ruta.substring(cadena, tamanio);
@@ -468,4 +459,5 @@ public class Index extends JFrame {
 		}
 
 	}
+
 }
