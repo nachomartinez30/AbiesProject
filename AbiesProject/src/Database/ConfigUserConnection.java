@@ -16,7 +16,7 @@ public class ConfigUserConnection {
 		try {
 			Class.forName(driver);
 			connect = DriverManager.getConnection(getURL(ruta));
-			System.out.println(getURL(ruta));
+			//System.out.println(getURL(ruta));
 			connect.setAutoCommit(false);
 
 		} catch (Exception e) {

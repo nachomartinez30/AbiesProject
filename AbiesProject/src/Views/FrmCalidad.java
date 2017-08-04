@@ -25,6 +25,7 @@ import java.sql.ResultSet;
 import javax.swing.JProgressBar;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Color;
 
 public class FrmCalidad extends JInternalFrame {
 	private JDesktopPane desktopPane;
@@ -52,6 +53,7 @@ public class FrmCalidad extends JInternalFrame {
 		getContentPane().add(panel, BorderLayout.WEST);
 
 		btnDistribucin = new JButton("Distribuci\u00F3n");
+		btnDistribucin.setMnemonic('d');
 		btnDistribucin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				progresoDistribucion=new ProgressDistribucion(progressBar, ruta,distribucion.tblDistribuciones,distribucion.tblException);
@@ -83,8 +85,10 @@ public class FrmCalidad extends JInternalFrame {
 		lblCalidad.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		progressBar = new JProgressBar();
+		progressBar.setForeground(Color.ORANGE);
 		
 		JButton btnDifCoordenadas = new JButton("Dif. Coordenadas");
+		btnDifCoordenadas.setMnemonic('c');
 		btnDifCoordenadas.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				progresoCoordenadas=new ProgressCoordenateDiff(progressBar, ruta,coordenadas.tblResultadosCoordenadas);

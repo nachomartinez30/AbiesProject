@@ -19,12 +19,14 @@ import javax.swing.ListSelectionModel;
 import java.awt.Font;
 import javax.swing.JSeparator;
 import javax.swing.GroupLayout;
+import javax.swing.ImageIcon;
 import javax.swing.GroupLayout.Alignment;
 import java.awt.Component;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
+import Database.ConfigUserConnection;
 import Database.ExternalConnection;
 
 import java.awt.event.MouseAdapter;
@@ -49,6 +51,10 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.AbstractListModel;
 
 public class FrmInformacionPorUPM extends JInternalFrame {
+	String googleEarth;
+	private String configUser = "/ConfigUser.db";
+	private Connection baseDatosConfig;
+	private java.sql.Statement sqlConfig;
 	public String ruta;
 	Path currentPath = Paths.get("");
 	String path = currentPath.toAbsolutePath().toString();
@@ -103,6 +109,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 			PendienteRepresentativa, A, B, C, D, E, F, G, H;
 
 	public FrmInformacionPorUPM(String ruta, JDesktopPane desktopPanelCentral) {
+		getGoogleEarth(configUser);
 		setFrameIcon(null);
 		setMaximizable(true);
 		setResizable(true);
@@ -198,6 +205,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		lblEspeciesPorSitio.setHorizontalAlignment(SwingConstants.CENTER);
 
 		btnGraficas = new JButton("Gr\u00E1ficas");
+		btnGraficas.setMnemonic('g');
 		btnGraficas.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -413,6 +421,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		scrollPane_1.setBackground(Color.WHITE);
 
 		btnGraficasSotobosqueRepoblado = new JButton("Gr\u00E1ficas");
+		btnGraficasSotobosqueRepoblado.setMnemonic('g');
 		btnGraficasSotobosqueRepoblado.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				FrmGraficasSotobosqueRepoblado graficasRepobladoSotobosque = new FrmGraficasSotobosqueRepoblado(ruta);
@@ -508,13 +517,14 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		lblTipoDeVetacion.setHorizontalAlignment(SwingConstants.CENTER);
 
 		JButton btnVerEnMapa = new JButton("Ver en mapa");
+		btnVerEnMapa.setMnemonic('v');
 		btnVerEnMapa.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
 					String UPM_earth = lsUPM.getSelectedValue();
 					Runtime.getRuntime()
 							.exec(new String[] {
-									"C:\\Program Files (x86)\\Google\\Google Earth Pro\\client\\googleearth.exe",
+									googleEarth,
 									path + "\\doc.kml" });
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -606,6 +616,26 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 				txtRegistrosTotales.setText(Integer.toString(rsExterno.getInt("Registros_totales")));
 			}
 			baseDatosExterna.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public void getGoogleEarth(String ruta) {
+		String query = "SELECT google_earth FROM configUserAbies";
+		
+		this.baseDatosConfig = ConfigUserConnection.getConnection(ruta);
+		//System.out.println(ruta);
+		try {
+			sqlConfig = baseDatosConfig.createStatement();
+			ResultSet rsConfig = sqlConfig.executeQuery(query);
+
+			while (rsConfig.next()) {
+				googleEarth=rsConfig.getString("google_earth");
+			}
+			//System.out.println("Inf_CONG googleEarth="+googleEarth);
+			baseDatosConfig.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

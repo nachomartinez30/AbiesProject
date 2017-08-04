@@ -43,6 +43,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import javax.swing.ImageIcon;
 import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
 
 public class Index extends JFrame {
 
@@ -77,6 +78,10 @@ public class Index extends JFrame {
 	private JButton btnCalidad;
 	private JMenuItem mntmConcentrador;
 	private JMenuItem mntmConcentrador_1;
+	private JMenu mnConfiguracin;
+	private Component horizontalStrut_2;
+	private JMenuItem mntmGoogleEarth;
+	String google_earth="";
 
 	/**
 	 * Launch the application.
@@ -108,7 +113,7 @@ public class Index extends JFrame {
 		ConfigUserConnection.getConnection(configUser);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Index.class.getResource("/Icons/g5296.png")));
 		setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
-		setTitle("Abies (V_1.5.1)");
+		setTitle("Abies (V_1.5.2)");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1366, 847);
 		contentPane = new JPanel();
@@ -121,6 +126,7 @@ public class Index extends JFrame {
 		contentPane.add(panelIzquierdo, BorderLayout.WEST);
 
 		btnEstadisticas = new JButton("Estadisticas");
+		btnEstadisticas.setMnemonic('e');
 		btnEstadisticas.setEnabled(false);
 		btnEstadisticas.addActionListener(new ActionListener() {
 			@Override
@@ -145,6 +151,7 @@ public class Index extends JFrame {
 		});
 
 		btnExportar = new JButton("CSV");
+		btnExportar.setMnemonic('s');
 		btnExportar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -172,6 +179,7 @@ public class Index extends JFrame {
 		btnExportar.setEnabled(false);
 
 		btnInfPorUpm = new JButton("Inf. Por UPM");
+		btnInfPorUpm.setMnemonic('i');
 		btnInfPorUpm.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -196,6 +204,7 @@ public class Index extends JFrame {
 		btnInfPorUpm.setEnabled(false);
 
 		btnCalidad = new JButton("Ctrl. Calidad");
+		btnCalidad.setMnemonic('c');
 		btnCalidad.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -251,9 +260,11 @@ public class Index extends JFrame {
 		panelSuperior.add(menuBar);
 
 		JMenu mnBaseDeDatos = new JMenu("Base de datos");
+		mnBaseDeDatos.setMnemonic('b');
 		menuBar.add(mnBaseDeDatos);
 
 		JMenuItem mntmCargar = new JMenuItem("Cargar");
+		mntmCargar.setMnemonic(KeyEvent.VK_C);
 		mntmCargar.addActionListener(new ActionListener() {
 
 			@Override
@@ -265,6 +276,7 @@ public class Index extends JFrame {
 		mnBaseDeDatos.add(mntmCargar);
 
 		mntmConcentrador_1 = new JMenuItem("Concentrador");
+		mntmConcentrador_1.setMnemonic(KeyEvent.VK_O);
 		mntmConcentrador_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				// Concentrar concentrador = new Concentrar();
@@ -278,6 +290,7 @@ public class Index extends JFrame {
 		menuBar.add(horizontalStrut);
 
 		JMenu mnVentana = new JMenu("Ventana");
+		mnVentana.setMnemonic(KeyEvent.VK_V);
 		menuBar.add(mnVentana);
 
 		chckboxOcultarPanelIzquierdo = new JCheckBoxMenuItem("Ocultar panel izquierdo");
@@ -320,6 +333,22 @@ public class Index extends JFrame {
 
 		Component horizontalStrut_1 = Box.createHorizontalStrut(20);
 		menuBar.add(horizontalStrut_1);
+
+		mnConfiguracin = new JMenu("Configuraci\u00F3n");
+		menuBar.add(mnConfiguracin);
+
+		mntmGoogleEarth = new JMenuItem("Google earth");
+		mntmGoogleEarth.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				getConfigGoogleEarth(configUser);
+				
+				
+			}
+		});
+		mnConfiguracin.add(mntmGoogleEarth);
+
+		horizontalStrut_2 = Box.createHorizontalStrut(20);
+		menuBar.add(horizontalStrut_2);
 
 		JLabel lblBdActual = new JLabel("BD actual:");
 		lblBdActual.setEnabled(false);
@@ -398,6 +427,35 @@ public class Index extends JFrame {
 		btnExportar.setEnabled(true);
 		btnCalidad.setEnabled(true);
 		btnInfPorUpm.setEnabled(true);
+	}
+
+	public void setGoogleEarth(String ruta, String ruta_earth) {
+		String query = "UPDATE configUserAbies SET google_earth='" + ruta_earth+"'";
+		Connection configConnection = ConfigUserConnection.getConnection(ruta);
+		//System.out.println("RutaSetGoogle="+ruta_earth);
+		try {
+			java.sql.Statement st = configConnection.createStatement();
+			st.executeUpdate(query);
+			configConnection.commit();
+			st.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+	public void getConfigGoogleEarth(String configUser) {
+		JFileChooser chooser = new JFileChooser("C:\\");
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("Google earth", "exe");
+		chooser.setFileFilter(filter);
+		
+		int returnVal = chooser.showOpenDialog(this);
+		if(returnVal == JFileChooser.APPROVE_OPTION) {
+		   
+			File file = chooser.getSelectedFile();
+			google_earth = file.getAbsolutePath();
+			setGoogleEarth(configUser, google_earth);
+			JOptionPane.showMessageDialog(null, "Se actualizó ruta de Google Earth");
+		}
 	}
 
 	public void getUserConfigs(String ruta) {

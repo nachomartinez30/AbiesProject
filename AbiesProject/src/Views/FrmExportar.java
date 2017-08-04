@@ -85,6 +85,7 @@ public class FrmExportar extends JInternalFrame {
 		getContentPane().add(panel, BorderLayout.CENTER);
 
 		btnExportar = new JButton("Exportar");
+		btnExportar.setMnemonic('e');
 		btnExportar.setBounds(353, 480, 80, 24);
 		btnExportar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -105,6 +106,7 @@ public class FrmExportar extends JInternalFrame {
 		panel.add(btnExportar);
 
 		chckbxTodo = new JCheckBox("Todo");
+		chckbxTodo.setMnemonic('t');
 		chckbxTodo.setForeground(Color.ORANGE);
 		chckbxTodo.setBounds(353, 428, 80, 24);
 		chckbxTodo.addActionListener(new ActionListener() {
@@ -154,10 +156,12 @@ public class FrmExportar extends JInternalFrame {
 		panel.add(verticalBox);
 
 		chckbxInlcuirCoordenadas = new JCheckBox("Inlcuir coordenadas");
+		chckbxInlcuirCoordenadas.setMnemonic('c');
 		chckbxInlcuirCoordenadas.setForeground(Color.ORANGE);
 		verticalBox.add(chckbxInlcuirCoordenadas);
 
 		chckbxInlcuirProveedores = new JCheckBox("Inlcuir proveedores");
+		chckbxInlcuirProveedores.setMnemonic('p');
 		chckbxInlcuirProveedores.setForeground(Color.ORANGE);
 		verticalBox.add(chckbxInlcuirProveedores);
 
