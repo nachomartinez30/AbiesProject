@@ -49,9 +49,17 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.AbstractListModel;
+import javax.swing.JSpinner;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JCheckBox;
+import java.awt.Dimension;
+import javax.swing.JTextArea;
 
 public class FrmInformacionPorUPM extends JInternalFrame {
+
 	String googleEarth;
+	String UPMElegido, sitio_1, sitio_2, sitio_3, sitio_4;
 	private String configUser = "/ConfigUser.db";
 	private Connection baseDatosConfig;
 	private java.sql.Statement sqlConfig;
@@ -69,19 +77,18 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 	private JLabel lblFisiografiaResp;
 	private JTextField txtRegistrosTotales;
 	private JTextField txtIndividuosTotales;
-	private JTable tblVegetacionPorSitio;
 	private JTable tblEspeciesPorSitioArbolado;
 	private JLabel lblUPM;
 	private JList<String> lsUPM;
 	Vector<String> upmTotal = new Vector<String>();
 	JDesktopPane desktopPanelCentral;
-	public String[] vegetacionPorSitioColumnName = { "Sitio", "Tipo vegetaciï¿½n", "Fase sucesional",
+	public String[] vegetacionPorSitioColumnName = { "Sitio", "Accesible", "Tipo vegetación", "Fase sucesional",
 			"Conteo registros", "Conteo individuos" };
 	public String[] especiesPorSitioColumnName = { "Sitio", "Entidad taxonomica", "Forma de vida" };
 	public String[] especiesPorSitioSotobosqueColumnName = { "Sitio", "Entidad taxonomica", "Vigor" };
 	public String[] especiesPorSitioRepobladoColumnName = { "Sitio", "Entidad taxonomica", "Vigor" };
 	public String[] informacionSitioColumnName = { "Sitio", "Sitio accesible", "Tipo inaccesibilidad",
-			"Descripcion inaccesibilidad", "Tipo de vegetaciï¿½n", "Fase sucecional" };
+			"Descripcion inaccesibilidad", "Tipo de vegetación", "Fase sucecional", "Registros", "Individuos" };
 
 	public DefaultTableModel vegetacionPorSitioModel = new DefaultTableModel(null, vegetacionPorSitioColumnName);
 	public DefaultTableModel especiesPorSitioArboladoModel = new DefaultTableModel(null, especiesPorSitioColumnName);
@@ -98,7 +105,6 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 	private JLabel lblTipo;
 	private JScrollPane scrollPaneInforSitio;
 	private JLabel lblInformacinDeSitios;
-	private JScrollPane scrollPaneTipoVegetacionPorSitio;
 	private JScrollPane scrollPaneEspeciesPorSitio;
 	private JButton btnGraficas;
 	private JTable tblEspeciesPorSitioSotobosque;
@@ -107,6 +113,43 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 
 	String Estado, Municipio, Y, X, Accesible, TipoUPM, Exposicion, Fisiografia, Region, UPMID, Altitud,
 			PendienteRepresentativa, A, B, C, D, E, F, G, H;
+	private JLayeredPane layeredPane;
+	private JComboBox cmbSitio;
+	private JButton btnVerEnMapa;
+	private JTextField txtLatitud;
+	private JTextField txtLongitud;
+	private JTextField txtErrorPresicion;
+	private JTextField txtTipoInaccesibilidad;
+	private JLabel lblS_2;
+	private JLabel lblS1;
+	private JLabel lblS4;
+	private JLabel lblS3;
+	private JTextField txtAzimut;
+	private JTextField txtDistancia;
+	private JTextField txtDescripcionInaccesibilidad;
+	private JTextField txtCobertura;
+	private JTextField txtCondicion;
+	private JTextField txtTipoVegetacion;
+	private JTextField txtFaseSucecional;
+	private JTextField txtCuadrante1;
+	private JTextField txtCuadrante2;
+	private JTextField txtCuadrante4;
+	private JTextField txtCuadrante3;
+	private JTextField txtDistancia1;
+	private JTextField txtDistancia2;
+	private JTextField txtDistancia3;
+	private JTextField txtDistancia4;
+	private JCheckBox chckbxAccesible;
+	private JCheckBox chckbxSealGps;
+	private JCheckBox chckbxEvidenciaDeMuestreo;
+	private JCheckBox chckbxArbolFuera;
+	private JCheckBox chckbxEcotono;
+	private JScrollPane scrollPane_3;
+	private JTextArea txtACondicionPresente;
+	private JScrollPane scrollPane_4;
+	private JTextArea txtAObservaciones;
+	private JScrollPane scrollPane_5;
+	private JTextArea txtAExplicacionInaccesibilidad;
 
 	public FrmInformacionPorUPM(String ruta, JDesktopPane desktopPanelCentral) {
 		getGoogleEarth(configUser);
@@ -117,7 +160,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		this.desktopPanelCentral = desktopPanelCentral;
 		this.ruta = ruta;
 		setUpmsTotales(ruta);
-		setBounds(100, 100, 1260, 895);
+		setBounds(100, 100, 1316, 895);
 
 		JScrollPane scrollPane = new JScrollPane();
 
@@ -139,7 +182,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 			public void mouseClicked(MouseEvent arg0) {
 				if (arg0.getClickCount() == 2 && !arg0.isConsumed()) {
 					arg0.consume();
-					String UPMElegido = lsUPM.getSelectedValue();
+					UPMElegido = lsUPM.getSelectedValue();
 					upmInt = Integer.parseInt(UPMElegido);
 
 					lblUPM.setText(UPMElegido);
@@ -147,12 +190,47 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 					getRegistrosTotales(ruta, upmInt);
 					getIndividuosTotales(ruta, upmInt);
 					getInformacionUPM(ruta, upmInt);
-					getVegetacionPorSitio(ruta, upmInt);
 					getEspeciesPorSitioArbolado(ruta, upmInt);
-					getInformacionSitio(ruta, upmInt);
 					getEspeciesPorSitioSotobosque(ruta, upmInt);
 					getEspeciesPorSitioRepoblado(ruta, upmInt);
 					createKml();
+					sitio_1 = getSitioAccesible(ruta, "1", UPMElegido);
+					sitio_2 = getSitioAccesible(ruta, "2", UPMElegido);
+					sitio_3 = getSitioAccesible(ruta, "3", UPMElegido);
+					sitio_4 = getSitioAccesible(ruta, "4", UPMElegido);
+
+					if (sitio_1.equals("SI")) {
+						lblS1.setIcon(
+								new ImageIcon(FrmInformacionPorUPM.class.getResource("/Icons/sitio_accesible.png")));
+					} else {
+						lblS1.setIcon(
+								new ImageIcon(FrmInformacionPorUPM.class.getResource("/Icons/sitio_inaccesible.png")));
+					}
+					if (sitio_2.equals("SI")) {
+						lblS_2.setIcon(
+								new ImageIcon(FrmInformacionPorUPM.class.getResource("/Icons/sitio_accesible.png")));
+					} else {
+						lblS_2.setIcon(
+								new ImageIcon(FrmInformacionPorUPM.class.getResource("/Icons/sitio_inaccesible.png")));
+					}
+					if (sitio_3.equals("SI")) {
+						lblS3.setIcon(
+								new ImageIcon(FrmInformacionPorUPM.class.getResource("/Icons/sitio_accesible.png")));
+					} else {
+						lblS3.setIcon(
+								new ImageIcon(FrmInformacionPorUPM.class.getResource("/Icons/sitio_inaccesible.png")));
+					}
+					if (sitio_4.equals("SI")) {
+						lblS4.setIcon(
+								new ImageIcon(FrmInformacionPorUPM.class.getResource("/Icons/sitio_accesible.png")));
+					} else {
+						lblS4.setIcon(
+								new ImageIcon(FrmInformacionPorUPM.class.getResource("/Icons/sitio_inaccesible.png")));
+					}
+					getSitio(ruta, cmbSitio.getSelectedItem().toString(), UPMElegido);
+					getInformacionGralSitio(ruta, upmInt);
+
+					btnVerEnMapa.setEnabled(true);
 				}
 
 			}
@@ -170,6 +248,388 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 
 		JTabbedPane tabbedPane = new JTabbedPane(SwingConstants.TOP);
 		tabbedPane.setAutoscrolls(true);
+
+		layeredPane = new JLayeredPane();
+		tabbedPane.addTab("Sitio", null, layeredPane, null);
+
+		cmbSitio = new JComboBox();
+		cmbSitio.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				getSitio(ruta, cmbSitio.getSelectedItem().toString(), UPMElegido);
+			}
+		});
+
+		cmbSitio.setForeground(Color.ORANGE);
+		cmbSitio.setModel(new DefaultComboBoxModel(new String[] { "1", "2", "3", "4" }));
+
+		JLabel lblSitio = new JLabel("Sitio");
+		lblSitio.setFont(new Font("Dialog", Font.BOLD, 15));
+		lblSitio.setForeground(Color.ORANGE);
+
+		chckbxSealGps = new JCheckBox("Se\u00F1al GPS");
+
+		JLabel lblCoordenadasLatitud = new JLabel("Coordenadas latitud");
+
+		txtLatitud = new JTextField();
+		txtLatitud.setFont(new Font("Dialog", Font.PLAIN, 12));
+		txtLatitud.setColumns(10);
+
+		txtLongitud = new JTextField();
+		txtLongitud.setFont(new Font("Dialog", Font.PLAIN, 12));
+		txtLongitud.setColumns(10);
+
+		JLabel label = new JLabel("Coordenadas longitud");
+
+		JLabel lblEPresicin = new JLabel("E. presici\u00F3n");
+
+		txtErrorPresicion = new JTextField();
+		txtErrorPresicion.setFont(new Font("Dialog", Font.PLAIN, 12));
+		txtErrorPresicion.setColumns(10);
+
+		chckbxEvidenciaDeMuestreo = new JCheckBox("Evidencia de muestreo");
+
+		JLabel lblTipoInaccesibilidad = new JLabel("Tipo inaccesibilidad");
+
+		txtTipoInaccesibilidad = new JTextField();
+		txtTipoInaccesibilidad.setFont(new Font("Dialog", Font.PLAIN, 12));
+		txtTipoInaccesibilidad.setColumns(10);
+
+		chckbxAccesible = new JCheckBox("Accesible");
+		chckbxAccesible.setForeground(Color.ORANGE);
+		chckbxAccesible.setFont(new Font("Dialog", Font.BOLD, 15));
+
+		JSeparator separator_6 = new JSeparator();
+		separator_6.setOrientation(SwingConstants.VERTICAL);
+
+		JLabel lblAzimut = new JLabel("Azimut");
+
+		txtAzimut = new JTextField();
+		txtAzimut.setFont(new Font("Dialog", Font.PLAIN, 12));
+		txtAzimut.setColumns(10);
+
+		JLabel lblDistancia = new JLabel("Distancia");
+
+		txtDistancia = new JTextField();
+		txtDistancia.setFont(new Font("Dialog", Font.PLAIN, 12));
+		txtDistancia.setColumns(10);
+
+		JLabel lblExplicacion = new JLabel("Explicaci\u00F3n:");
+
+		JLabel lblDescripcion = new JLabel("Descripcion:");
+
+		txtDescripcionInaccesibilidad = new JTextField();
+		txtDescripcionInaccesibilidad.setFont(new Font("Dialog", Font.PLAIN, 12));
+		txtDescripcionInaccesibilidad.setColumns(10);
+
+		JLabel lblCoberturaForestal = new JLabel("Cobertura");
+
+		txtCobertura = new JTextField();
+		txtCobertura.setFont(new Font("Dialog", Font.PLAIN, 12));
+		txtCobertura.setColumns(10);
+
+		JLabel label_1 = new JLabel("Condici\u00F3n");
+
+		txtCondicion = new JTextField();
+		txtCondicion.setFont(new Font("Dialog", Font.PLAIN, 12));
+		txtCondicion.setColumns(10);
+
+		JLabel label_2 = new JLabel("Tipo de vegetaci\u00F3n");
+
+		txtTipoVegetacion = new JTextField();
+		txtTipoVegetacion.setFont(new Font("Dialog", Font.PLAIN, 12));
+		txtTipoVegetacion.setColumns(10);
+
+		JLabel lblFaseSucecional = new JLabel("Fase sucecional");
+
+		txtFaseSucecional = new JTextField();
+		txtFaseSucecional.setFont(new Font("Dialog", Font.PLAIN, 12));
+		txtFaseSucecional.setColumns(10);
+
+		chckbxArbolFuera = new JCheckBox("Arbol fuera");
+
+		chckbxEcotono = new JCheckBox("Ecotono");
+
+		JLabel label_3 = new JLabel("Condicion presente en campo");
+
+		JLabel label_4 = new JLabel("Observaciones:");
+
+		JLabel lblCueadrante = new JLabel("Cuadrante 1");
+
+		txtCuadrante1 = new JTextField();
+		txtCuadrante1.setFont(new Font("Dialog", Font.PLAIN, 12));
+		txtCuadrante1.setColumns(10);
+
+		txtCuadrante2 = new JTextField();
+		txtCuadrante2.setFont(new Font("Dialog", Font.PLAIN, 12));
+		txtCuadrante2.setColumns(10);
+
+		JLabel label_5 = new JLabel("Cuadrante 2");
+
+		txtCuadrante4 = new JTextField();
+		txtCuadrante4.setFont(new Font("Dialog", Font.PLAIN, 12));
+		txtCuadrante4.setColumns(10);
+
+		JLabel label_6 = new JLabel("Cuadrante 4");
+
+		JLabel label_7 = new JLabel("Cuadrante 3");
+
+		txtCuadrante3 = new JTextField();
+		txtCuadrante3.setFont(new Font("Dialog", Font.PLAIN, 12));
+		txtCuadrante3.setColumns(10);
+
+		JLabel label_8 = new JLabel("Distancia 1");
+
+		txtDistancia1 = new JTextField();
+		txtDistancia1.setFont(new Font("Dialog", Font.PLAIN, 12));
+		txtDistancia1.setColumns(10);
+
+		txtDistancia2 = new JTextField();
+		txtDistancia2.setFont(new Font("Dialog", Font.PLAIN, 12));
+		txtDistancia2.setColumns(10);
+
+		JLabel label_9 = new JLabel("Distancia 2");
+
+		JLabel label_10 = new JLabel("Distancia 3");
+
+		txtDistancia3 = new JTextField();
+		txtDistancia3.setFont(new Font("Dialog", Font.PLAIN, 12));
+		txtDistancia3.setColumns(10);
+
+		txtDistancia4 = new JTextField();
+		txtDistancia4.setFont(new Font("Dialog", Font.PLAIN, 12));
+		txtDistancia4.setColumns(10);
+
+		JLabel label_11 = new JLabel("Distancia 4");
+
+		scrollPane_3 = new JScrollPane();
+
+		scrollPane_4 = new JScrollPane();
+
+		scrollPane_5 = new JScrollPane();
+
+		txtAExplicacionInaccesibilidad = new JTextArea();
+		txtAExplicacionInaccesibilidad.setFont(new Font("Dialog", Font.PLAIN, 12));
+		scrollPane_5.setViewportView(txtAExplicacionInaccesibilidad);
+
+		txtAObservaciones = new JTextArea();
+		txtAObservaciones.setFont(new Font("Dialog", Font.PLAIN, 12));
+		scrollPane_4.setViewportView(txtAObservaciones);
+
+		txtACondicionPresente = new JTextArea();
+		txtACondicionPresente.setFont(new Font("Dialog", Font.PLAIN, 12));
+		scrollPane_3.setViewportView(txtACondicionPresente);
+		GroupLayout gl_layeredPane = new GroupLayout(layeredPane);
+		gl_layeredPane.setHorizontalGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
+				.addGroup(Alignment.TRAILING, gl_layeredPane.createSequentialGroup().addGap(386)
+						.addComponent(lblSitio, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE).addGap(18)
+						.addComponent(cmbSitio, GroupLayout.PREFERRED_SIZE, 52, GroupLayout.PREFERRED_SIZE).addGap(78)
+						.addComponent(chckbxAccesible, GroupLayout.PREFERRED_SIZE, 116, GroupLayout.PREFERRED_SIZE)
+						.addGap(40))
+				.addGroup(gl_layeredPane.createSequentialGroup().addGap(12).addComponent(chckbxSealGps).addGap(52)
+						.addComponent(chckbxEvidenciaDeMuestreo).addGap(168).addComponent(lblCoordenadasLatitud)
+						.addGap(12).addComponent(txtLatitud, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE))
+				.addGroup(gl_layeredPane.createSequentialGroup().addGap(12)
+						.addComponent(lblAzimut, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE).addGap(18)
+						.addComponent(txtAzimut, GroupLayout.PREFERRED_SIZE, 66, GroupLayout.PREFERRED_SIZE).addGap(34)
+						.addComponent(lblDistancia, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE)
+						.addGap(18)
+						.addComponent(txtDistancia, GroupLayout.PREFERRED_SIZE, 52, GroupLayout.PREFERRED_SIZE)
+						.addGap(158)
+						.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING).addComponent(label)
+								.addGroup(gl_layeredPane.createSequentialGroup().addGap(58).addComponent(lblEPresicin)))
+						.addGap(12)
+						.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
+								.addComponent(txtLongitud, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE)
+								.addComponent(txtErrorPresicion, GroupLayout.PREFERRED_SIZE, 40,
+										GroupLayout.PREFERRED_SIZE)))
+				.addGroup(gl_layeredPane.createSequentialGroup().addGap(27)
+						.addComponent(lblCoberturaForestal, GroupLayout.PREFERRED_SIZE, 66, GroupLayout.PREFERRED_SIZE)
+						.addGap(7)
+						.addComponent(txtCobertura, GroupLayout.PREFERRED_SIZE, 216, GroupLayout.PREFERRED_SIZE))
+				.addGroup(gl_layeredPane.createSequentialGroup().addGap(27).addGroup(gl_layeredPane
+						.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_layeredPane.createSequentialGroup()
+								.addComponent(label_1, GroupLayout.PREFERRED_SIZE, 66, GroupLayout.PREFERRED_SIZE)
+								.addGap(7).addComponent(txtCondicion, GroupLayout.PREFERRED_SIZE, 216,
+										GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_layeredPane.createSequentialGroup()
+								.addComponent(label_2, GroupLayout.PREFERRED_SIZE, 122, GroupLayout.PREFERRED_SIZE)
+								.addGap(9).addComponent(txtTipoVegetacion, GroupLayout.PREFERRED_SIZE, 158,
+										GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_layeredPane.createSequentialGroup()
+								.addComponent(lblFaseSucecional, GroupLayout.PREFERRED_SIZE, 122,
+										GroupLayout.PREFERRED_SIZE)
+								.addGap(9).addComponent(txtFaseSucecional, GroupLayout.PREFERRED_SIZE, 158,
+										GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_layeredPane.createSequentialGroup()
+								.addComponent(chckbxArbolFuera, GroupLayout.PREFERRED_SIZE, 116,
+										GroupLayout.PREFERRED_SIZE)
+								.addGap(57).addComponent(chckbxEcotono, GroupLayout.PREFERRED_SIZE, 116,
+										GroupLayout.PREFERRED_SIZE))
+						.addComponent(label_3, GroupLayout.PREFERRED_SIZE, 289, GroupLayout.PREFERRED_SIZE)
+						.addGroup(gl_layeredPane.createSequentialGroup()
+								.addComponent(scrollPane_3, GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE).addGap(7))
+						.addComponent(label_4, GroupLayout.PREFERRED_SIZE, 289, GroupLayout.PREFERRED_SIZE)
+						.addGroup(gl_layeredPane.createSequentialGroup()
+								.addComponent(scrollPane_4, GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE).addGap(7))
+						.addGroup(gl_layeredPane.createSequentialGroup()
+								.addComponent(lblCueadrante, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE)
+								.addGap(3)
+								.addComponent(txtCuadrante1, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE)
+								.addGap(31)
+								.addComponent(label_8, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE)
+								.addGap(3).addComponent(txtDistancia1, GroupLayout.PREFERRED_SIZE, 55,
+										GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_layeredPane.createSequentialGroup()
+								.addComponent(label_5, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE)
+								.addGap(3)
+								.addComponent(txtCuadrante2, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE)
+								.addGap(31)
+								.addComponent(label_9, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE)
+								.addGap(3).addComponent(txtDistancia2, GroupLayout.PREFERRED_SIZE, 55,
+										GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_layeredPane.createSequentialGroup()
+								.addComponent(label_7, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE)
+								.addGap(3)
+								.addComponent(txtCuadrante3, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE)
+								.addGap(31)
+								.addComponent(label_10, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE)
+								.addGap(3).addComponent(txtDistancia3, GroupLayout.PREFERRED_SIZE, 55,
+										GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_layeredPane.createSequentialGroup()
+								.addComponent(label_6, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE)
+								.addGap(3)
+								.addComponent(txtCuadrante4, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE)
+								.addGap(31)
+								.addComponent(label_11, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE)
+								.addGap(3).addComponent(txtDistancia4, GroupLayout.PREFERRED_SIZE, 55,
+										GroupLayout.PREFERRED_SIZE)))
+						.addGap(60)
+						.addComponent(separator_6, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+						.addGap(28)
+						.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_layeredPane.createSequentialGroup().addGap(4).addComponent(
+										lblTipoInaccesibilidad, GroupLayout.PREFERRED_SIZE, 216,
+										GroupLayout.PREFERRED_SIZE))
+								.addGroup(gl_layeredPane.createSequentialGroup().addGap(4).addComponent(
+										txtTipoInaccesibilidad, GroupLayout.PREFERRED_SIZE, 216,
+										GroupLayout.PREFERRED_SIZE))
+								.addGroup(gl_layeredPane.createSequentialGroup().addGap(4).addComponent(lblDescripcion,
+										GroupLayout.PREFERRED_SIZE, 216, GroupLayout.PREFERRED_SIZE))
+								.addGroup(gl_layeredPane.createSequentialGroup().addGap(4).addComponent(
+										txtDescripcionInaccesibilidad, GroupLayout.PREFERRED_SIZE, 216,
+										GroupLayout.PREFERRED_SIZE))
+								.addComponent(lblExplicacion, GroupLayout.PREFERRED_SIZE, 274,
+										GroupLayout.PREFERRED_SIZE)
+								.addComponent(scrollPane_5, GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE))
+						.addGap(12)));
+		gl_layeredPane.setVerticalGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING).addGroup(gl_layeredPane
+				.createSequentialGroup().addGap(8)
+				.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_layeredPane.createSequentialGroup().addGap(4).addComponent(lblSitio,
+								GroupLayout.PREFERRED_SIZE, 16, GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(cmbSitio,
+								GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE))
+						.addComponent(chckbxAccesible, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE))
+				.addGap(26)
+				.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(chckbxSealGps))
+						.addGroup(gl_layeredPane.createSequentialGroup().addGap(2)
+								.addComponent(chckbxEvidenciaDeMuestreo))
+						.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(lblCoordenadasLatitud))
+						.addComponent(txtLatitud, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE))
+				.addGap(4)
+				.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_layeredPane.createSequentialGroup().addGap(16).addComponent(lblAzimut))
+						.addGroup(gl_layeredPane.createSequentialGroup().addGap(14).addComponent(txtAzimut,
+								GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_layeredPane.createSequentialGroup().addGap(16).addComponent(lblDistancia))
+						.addGroup(gl_layeredPane.createSequentialGroup().addGap(14).addComponent(txtDistancia,
+								GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_layeredPane.createSequentialGroup().addComponent(label).addGap(18)
+								.addComponent(lblEPresicin))
+						.addGroup(gl_layeredPane.createSequentialGroup()
+								.addComponent(txtLongitud, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE)
+								.addGap(12).addComponent(txtErrorPresicion, GroupLayout.PREFERRED_SIZE,
+										GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+				.addGap(22)
+				.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(lblCoberturaForestal))
+						.addComponent(txtCobertura, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE))
+				.addGap(5)
+				.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING).addGroup(gl_layeredPane
+						.createSequentialGroup().addGap(5)
+						.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(label_1))
+								.addComponent(txtCondicion, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE))
+						.addGap(12)
+						.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(label_2))
+								.addComponent(txtTipoVegetacion, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE))
+						.addGap(10)
+						.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_layeredPane.createSequentialGroup().addGap(2)
+										.addComponent(lblFaseSucecional))
+								.addComponent(txtFaseSucecional, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE))
+						.addGap(32)
+						.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING).addComponent(chckbxArbolFuera)
+								.addComponent(chckbxEcotono))
+						.addGap(18).addComponent(label_3).addGap(6)
+						.addComponent(scrollPane_3, GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE).addGap(12)
+						.addComponent(label_4).addGap(6)
+						.addComponent(scrollPane_4, GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE).addGap(31)
+						.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(lblCueadrante))
+								.addComponent(txtCuadrante1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE)
+								.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(label_8))
+								.addComponent(txtDistancia1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE))
+						.addGap(5)
+						.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(label_5))
+								.addComponent(txtCuadrante2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE)
+								.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(label_9))
+								.addComponent(txtDistancia2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE))
+						.addGap(6)
+						.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(label_7))
+								.addComponent(txtCuadrante3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE)
+								.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(label_10))
+								.addComponent(txtDistancia3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE))
+						.addGap(5)
+						.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(label_6))
+								.addComponent(txtCuadrante4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE)
+								.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(label_11))
+								.addComponent(txtDistancia4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE))
+						.addGap(47))
+						.addComponent(separator_6, GroupLayout.PREFERRED_SIZE, 611, GroupLayout.PREFERRED_SIZE)
+						.addGroup(gl_layeredPane.createSequentialGroup().addGap(7).addComponent(lblTipoInaccesibilidad)
+								.addGap(12)
+								.addComponent(txtTipoInaccesibilidad, GroupLayout.PREFERRED_SIZE,
+										GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addGap(12).addComponent(lblDescripcion).addGap(3)
+								.addComponent(txtDescripcionInaccesibilidad, GroupLayout.PREFERRED_SIZE,
+										GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addGap(77).addComponent(lblExplicacion).addGap(6)
+								.addComponent(scrollPane_5, GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
+								.addGap(216)))));
+		layeredPane.setLayout(gl_layeredPane);
 
 		JLayeredPane layeredPaneArbolado = new JLayeredPane();
 		layeredPaneArbolado.setAutoscrolls(true);
@@ -487,79 +947,61 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		layeredPaneSotobosque.setLayout(gl_layeredPaneSotobosque);
 
 		scrollPaneInforSitio = new JScrollPane();
+		scrollPaneInforSitio.setBounds(12, 76, 399, 124);
 		scrollPaneInforSitio.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		scrollPaneInforSitio.setBackground(Color.WHITE);
 
 		tblInformacionSItio = new JTable();
 		scrollPaneInforSitio.setViewportView(tblInformacionSItio);
 
-		lblInformacinDeSitios = new JLabel("Informaci\u00F3n de sitios");
+		lblInformacinDeSitios = new JLabel("Informaci\u00F3n general de sitios");
+		lblInformacinDeSitios.setBounds(0, 38, 411, 20);
 		lblInformacinDeSitios.setHorizontalAlignment(SwingConstants.CENTER);
 		lblInformacinDeSitios.setFont(new Font("Dialog", Font.BOLD, 16));
 
-		scrollPaneTipoVegetacionPorSitio = new JScrollPane();
-		scrollPaneTipoVegetacionPorSitio.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		scrollPaneTipoVegetacionPorSitio.setBackground(Color.WHITE);
-
-		tblVegetacionPorSitio = new JTable();
-		tblVegetacionPorSitio.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
-		tblVegetacionPorSitio.setBackground(new Color(51, 51, 51));
-		tblVegetacionPorSitio.setFont(new Font("Dialog", Font.PLAIN, 14));
-		tblVegetacionPorSitio.setRowHeight(21);
-		tblVegetacionPorSitio.setRowMargin(3);
-		tblVegetacionPorSitio.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
-		tblVegetacionPorSitio.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-		tblVegetacionPorSitio.setModel(new DefaultTableModel(new Object[][] {}, new String[] {}));
-		scrollPaneTipoVegetacionPorSitio.setViewportView(tblVegetacionPorSitio);
-
-		JLabel lblTipoDeVetacion = new JLabel("Tipo de vetacion por sitio en arbolado");
-		lblTipoDeVetacion.setFont(new Font("Dialog", Font.BOLD, 16));
-		lblTipoDeVetacion.setHorizontalAlignment(SwingConstants.CENTER);
-
-		JButton btnVerEnMapa = new JButton("Ver en mapa");
+		btnVerEnMapa = new JButton("Ver en mapa");
+		btnVerEnMapa.setBounds(196, 746, 88, 24);
+		btnVerEnMapa.setEnabled(false);
 		btnVerEnMapa.setMnemonic('v');
 		btnVerEnMapa.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
 					String UPM_earth = lsUPM.getSelectedValue();
-					Runtime.getRuntime()
-							.exec(new String[] {
-									googleEarth,
-									path + "\\doc.kml" });
+					Runtime.getRuntime().exec(new String[] { googleEarth, path + "\\doc.kml" });
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
+
 					e.printStackTrace();
 				}
 			}
 		});
-		GroupLayout gl_panel_2 = new GroupLayout(panel_2);
-		gl_panel_2.setHorizontalGroup(gl_panel_2.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel_2.createSequentialGroup().addGroup(gl_panel_2.createParallelGroup(Alignment.TRAILING)
-						.addGroup(gl_panel_2.createSequentialGroup().addGap(0).addComponent(lblInformacinDeSitios,
-								GroupLayout.DEFAULT_SIZE, 413, Short.MAX_VALUE))
-						.addGroup(gl_panel_2.createSequentialGroup().addContainerGap()
-								.addGroup(gl_panel_2.createParallelGroup(Alignment.LEADING)
-										.addComponent(scrollPaneInforSitio, Alignment.TRAILING,
-												GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE)
-										.addComponent(lblTipoDeVetacion, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE,
-												403, Short.MAX_VALUE)
-										.addComponent(scrollPaneTipoVegetacionPorSitio, GroupLayout.DEFAULT_SIZE, 403,
-												Short.MAX_VALUE))))
-						.addContainerGap())
-				.addGroup(Alignment.TRAILING, gl_panel_2.createSequentialGroup().addContainerGap(205, Short.MAX_VALUE)
-						.addComponent(btnVerEnMapa).addGap(139)));
-		gl_panel_2.setVerticalGroup(gl_panel_2.createParallelGroup(Alignment.LEADING).addGroup(gl_panel_2
-				.createSequentialGroup().addGap(38)
-				.addComponent(lblInformacinDeSitios, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
-				.addGap(18)
-				.addComponent(scrollPaneInforSitio, GroupLayout.PREFERRED_SIZE, 135, GroupLayout.PREFERRED_SIZE)
-				.addGap(103).addComponent(lblTipoDeVetacion, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
-				.addGap(18)
-				.addComponent(scrollPaneTipoVegetacionPorSitio, GroupLayout.PREFERRED_SIZE, 167,
-						GroupLayout.PREFERRED_SIZE)
-				.addPreferredGap(ComponentPlacement.RELATED, 227, Short.MAX_VALUE).addComponent(btnVerEnMapa)
-				.addGap(60)));
-		panel_2.setLayout(gl_panel_2);
+		panel_2.setLayout(null);
+
+		lblS1 = new JLabel("");
+		lblS1.setBorder(null);
+		lblS1.setBounds(189, 432, 95, 95);
+		lblS1.setPreferredSize(new Dimension(42, 16));
+		panel_2.add(lblS1);
+		panel_2.add(btnVerEnMapa);
+		panel_2.add(scrollPaneInforSitio);
+		panel_2.add(lblInformacinDeSitios);
+
+		lblS3 = new JLabel("");
+		lblS3.setPreferredSize(new Dimension(42, 16));
+		lblS3.setBorder(null);
+		lblS3.setBounds(285, 532, 95, 95);
+		panel_2.add(lblS3);
+
+		lblS4 = new JLabel("");
+		lblS4.setPreferredSize(new Dimension(42, 16));
+		lblS4.setBorder(null);
+		lblS4.setBounds(95, 532, 95, 95);
+		panel_2.add(lblS4);
+
+		lblS_2 = new JLabel("");
+		lblS_2.setPreferredSize(new Dimension(42, 16));
+		lblS_2.setBorder(null);
+		lblS_2.setBounds(189, 301, 95, 95);
+		panel_2.add(lblS_2);
 		getContentPane().setLayout(groupLayout);
 		// scrollPaneEast.setViewportView(scrollPaneInforSitio);
 
@@ -586,7 +1028,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 				+ X + "," + Y
 				+ ",0</coordinates> 		</Point> <NetworkLink>     <name>Circle generator radius 4 meters</name>     <snippet></snippet>     <description><![CDATA[Circle auto-refreshes itself whenever the view changes.<P> To change circle options visit <a href=\"http://kml4earth.appspot.com/circlegen.html?auto=1\">web site</a>.<P> Powered by <a href=\"http://kml4earth.appspot.com/\">Kml4Earth</a>]]></description>     <Link>       <href>https://kml4earth.appspot.com:443/circle.gsp?color=ff00ff00&amp;width=2</href>       <viewRefreshMode>onStop</viewRefreshMode>       <viewRefreshTime>2</viewRefreshTime>       <viewFormat>LookAt=[lookatLon],[lookatLat]&amp;LonLat=[lookatTerrainLon],[lookatTerrainLat]</viewFormat>       <httpQuery>meters=8.0&amp;desc=radius+4+meters</httpQuery>     </Link>   </NetworkLink>   \r\n"
 				+ "	</Placemark> </Document> </kml>";
-		//System.out.println(kml);
+		// System.out.println(kml);
 		Writer writer = null;
 
 		try {
@@ -620,21 +1062,20 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 			e.printStackTrace();
 		}
 	}
-	
-	
+
 	public void getGoogleEarth(String ruta) {
 		String query = "SELECT google_earth FROM configUserAbies";
-		
+
 		this.baseDatosConfig = ConfigUserConnection.getConnection(ruta);
-		//System.out.println(ruta);
+		// System.out.println(ruta);
 		try {
 			sqlConfig = baseDatosConfig.createStatement();
 			ResultSet rsConfig = sqlConfig.executeQuery(query);
 
 			while (rsConfig.next()) {
-				googleEarth=rsConfig.getString("google_earth");
+				googleEarth = rsConfig.getString("google_earth");
 			}
-			//System.out.println("Inf_CONG googleEarth="+googleEarth);
+			// System.out.println("Inf_CONG googleEarth="+googleEarth);
 			baseDatosConfig.close();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -726,35 +1167,6 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		}
 	}
 
-	public void getVegetacionPorSitio(String ruta, int upmid) {
-		String query = "SELECT DISTINCT sitio.SitioID, sitio.Sitio, claveSerieV.TipoVegetacion, faseSucecional.Clave  AS FaseSucecional, arbolado.Consecutivo as No_registros, arbolado.NoIndividuo AS Individuo FROM TAXONOMIA_Arbolado arbolado LEFT JOIN SITIOS_Sitio sitio ON sitio.SitioID=arbolado.SitioID and sitio.UPMID=arbolado.UPMID LEFT JOIN CAT_ClaveSerieV claveSerieV ON claveSerieV.ClaveSerieVID = sitio.ClaveSerieV LEFT JOIN CAT_FaseSucecional faseSucecional on faseSucecional.FaseSucecionalID =sitio.FaseSucecional WHERE arbolado.UPMID="
-				+ upmid + " GROUP BY arbolado.UPMID, arbolado.SitioID ORDER BY arbolado.UPMID  ";
-		// System.out.println(query);
-		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
-		try {
-			sqlExterno = baseDatosExterna.createStatement();
-			ResultSet rsExterno = sqlExterno.executeQuery(query);
-			if (vegetacionPorSitioModel.getRowCount() > 0) {
-				for (int i = vegetacionPorSitioModel.getRowCount() - 1; i > -1; i--) {
-					vegetacionPorSitioModel.removeRow(i);
-				}
-			}
-			while (rsExterno.next()) {
-
-				vegetacionPorSitioModel.addRow(new Object[] { rsExterno.getString("Sitio"),
-						rsExterno.getString("TipoVegetacion"), rsExterno.getString("FaseSucecional"),
-						rsExterno.getString("No_registros"), rsExterno.getString("Individuo") });
-			}
-			baseDatosExterna.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		tblVegetacionPorSitio.setModel(vegetacionPorSitioModel);
-		alignCellsTables(vegetacionPorSitioModel, tblVegetacionPorSitio);
-
-	}
-
 	public void getEspeciesPorSitioArbolado(String ruta, int upmid) {
 		String query = "SELECT  DISTINCT sitio.sitio, printf('%s %s %s', genero.Nombre, especie.Nombre, infraespecie.Nombre) as Entidad, formaVida.Descripcion AS FormaVida FROM TAXONOMIA_Arbolado arbolado JOIN SITIOS_Sitio sitio ON sitio.SitioID=arbolado.SitioID LEFT JOIN CAT_ClaveSerieV claveSerieV ON claveSerieV.ClaveSerieVID = sitio.ClaveSerieV and sitio.UPMID=arbolado.UPMID LEFT JOIN CAT_FaseSucecional faseSucecional on faseSucecional.FaseSucecionalID =sitio.FaseSucecional LEFT JOIN CAT_FamiliaEspecie familia ON arbolado.FamiliaID = familia.FamiliaID  LEFT JOIN CAT_Genero genero ON arbolado.GeneroID = genero.GeneroID  LEFT JOIN CAT_Especie especie ON arbolado.EspecieID = especie.EspecieID  LEFT JOIN CAT_Infraespecie infraespecie ON arbolado.InfraespecieID = infraespecie.InfraespecieID  LEFT JOIN CAT_TipoFormaVidaArbolado formaVida ON arbolado.FormaVidaID = formaVida.FormaVidaID  WHERE /*arbolado.CondicionID!=2 and*/ arbolado.UPMID="
 				+ upmid + " GROUP BY arbolado.UPMID, arbolado.SitioID, arbolado.ArboladoID ORDER BY sitio.sitio ";
@@ -797,14 +1209,14 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		try {
 			sqlExterno = baseDatosExterna.createStatement();
 			ResultSet rsExterno = sqlExterno.executeQuery(query);
-			if (especiesPorSitioArboladoModel.getRowCount() > 0) {
-				for (int i = especiesPorSitioArboladoModel.getRowCount() - 1; i > -1; i--) {
-					especiesPorSitioArboladoModel.removeRow(i);
+			if (especiesPorSitioSotobosqueModel.getRowCount() > 0) {
+				for (int i = especiesPorSitioSotobosqueModel.getRowCount() - 1; i > -1; i--) {
+					especiesPorSitioSotobosqueModel.removeRow(i);
 				}
 			}
 			while (rsExterno.next()) {
 
-				especiesPorSitioArboladoModel.addRow(new Object[] { rsExterno.getString("sitio"),
+				especiesPorSitioSotobosqueModel.addRow(new Object[] { rsExterno.getString("sitio"),
 						rsExterno.getString("Entidad"), rsExterno.getString("Vigor") });
 			}
 			baseDatosExterna.close();
@@ -812,7 +1224,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 			e.printStackTrace();
 		}
 
-		tblEspeciesPorSitioSotobosque.setModel(especiesPorSitioArboladoModel);
+		tblEspeciesPorSitioSotobosque.setModel(especiesPorSitioSotobosqueModel);
 		DefaultTableCellRenderer cellRenderedCenter = new DefaultTableCellRenderer();
 
 		cellRenderedCenter.setHorizontalAlignment(SwingConstants.CENTER);
@@ -862,13 +1274,38 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 
 	}
 
-	public void getInformacionSitio(String ruta, int upmid) {
-		String query = "SELECT sitio.SitioID, sitio.Sitio, CASE sitio.SitioAccesible WHEN 1 THEN 'SI' WHEN 0 THEN 'NO' END SitioAccesible, tipoInaccesibilidad.Tipo AS TipoInaccesibilidad, tipoInaccesibilidad.Descripcion AS DescripcionInaccesibilidad, claveSerieV.Clave, faseSucecional.Clave  AS FaseSucecional from SITIOS_Sitio sitio LEFT JOIN CAT_ClaveSerieV claveSerieV ON claveSerieV.ClaveSerieVID = sitio.ClaveSerieV LEFT JOIN CAT_FaseSucecional faseSucecional on faseSucecional.FaseSucecionalID =sitio.FaseSucecional LEFT JOIN CAT_TipoInaccesibilidad tipoInaccesibilidad ON tipoInaccesibilidad.TipoInaccesibilidadID=sitio.TipoInaccesibilidad WHERE sitio.UPMID="
+	public String getSitioAccesible(String ruta, String sitio, String UPMID) {
+		String sitio_accesible = "";
+		String query = " SELECT CASE sitio.SitioAccesible WHEN 1 THEN 'SI' WHEN 0 THEN 'NO' END SitioAccesible FROM SITIOS_Sitio sitio WHERE sitio.Sitio="
+				+ sitio + " AND sitio.UPMID=" + UPMID;
+		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
+		try {
+			sqlExterno = baseDatosExterna.createStatement();
+			// System.out.println(query);
+			ResultSet rsExterno = sqlExterno.executeQuery(query);
+			if (informacionSitioModel.getRowCount() > 0) {
+				for (int i = informacionSitioModel.getRowCount() - 1; i > -1; i--) {
+					informacionSitioModel.removeRow(i);
+				}
+			}
+			while (rsExterno.next()) {
+				sitio_accesible = rsExterno.getString("SitioAccesible");
+			}
+			baseDatosExterna.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return sitio_accesible;
+	}
+
+	public void getInformacionGralSitio(String ruta, int upmid) {
+		String query = "SELECT sitio.SitioID, sitio.Sitio, CASE sitio.SitioAccesible WHEN 1 THEN 'SI' WHEN 0 THEN 'NO' END SitioAccesible, tipoInaccesibilidad.Tipo AS TipoInaccesibilidad, tipoInaccesibilidad.Descripcion AS DescripcionInaccesibilidad, claveSerieV.Clave, faseSucecional.Clave  AS FaseSucecional,  arbolado.Consecutivo as No_registros, arbolado.NoIndividuo AS Individuo  from SITIOS_Sitio sitio LEFT JOIN TAXONOMIA_Arbolado arbolado ON sitio.SitioID=arbolado.SitioID and sitio.UPMID=arbolado.UPMID  LEFT JOIN CAT_ClaveSerieV claveSerieV ON claveSerieV.ClaveSerieVID = sitio.ClaveSerieV LEFT JOIN CAT_FaseSucecional faseSucecional on faseSucecional.FaseSucecionalID =sitio.FaseSucecional LEFT JOIN CAT_TipoInaccesibilidad tipoInaccesibilidad ON tipoInaccesibilidad.TipoInaccesibilidadID=sitio.TipoInaccesibilidad WHERE sitio.UPMID="
 				+ upmid + " GROUP BY sitio.UPMID, sitio.SitioID ORDER BY sitio.sitio ";
 
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
 		try {
 			sqlExterno = baseDatosExterna.createStatement();
+			// System.out.println(query);
 			ResultSet rsExterno = sqlExterno.executeQuery(query);
 			if (informacionSitioModel.getRowCount() > 0) {
 				for (int i = informacionSitioModel.getRowCount() - 1; i > -1; i--) {
@@ -879,7 +1316,8 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 				informacionSitioModel.addRow(new Object[] { rsExterno.getString("Sitio"),
 						rsExterno.getString("SitioAccesible"), rsExterno.getString("TipoInaccesibilidad"),
 						rsExterno.getString("DescripcionInaccesibilidad"), rsExterno.getString("Clave"),
-						rsExterno.getString("FaseSucecional") });
+						rsExterno.getString("FaseSucecional"), rsExterno.getString("No_registros"),
+						rsExterno.getString("Individuo") });
 			}
 			baseDatosExterna.close();
 		} catch (Exception e) {
@@ -889,4 +1327,51 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		tblInformacionSItio.setModel(informacionSitioModel);
 		alignCellsTables(informacionSitioModel, tblInformacionSItio);
 	}
+
+	public void getSitio(String ruta, String sitio, String UPMID) {
+		String query = "SELECT sitio.Sitio, sitio.SenialGPS SenialGPS, sitio.GradosLongitud || ' '||sitio.MinutosLongitud || ' '||sitio.SegundosLongitud||' ' as CoordenadasLongitud, sitio.GradosLatitud || ' '||sitio.MinutosLatitud || ' '||sitio.SegundosLatitud||' ' as CoordenadasLatitud, sitio.ErrorPresicion, sitio.EvidenciaMuestreo EvidenciaMuestreo, sitio.Azimut, sitio.Distancia, sitio.SitioAccesible SitioAccesible, tipoInaccesibilidad.Tipo AS TipoInaccesibilidad, tipoInaccesibilidad.Descripcion AS DescripcionInaccesibilidad, sitio.ExplicacionInaccesibilidad, CASE claveSerieV.EsForestal WHEN 1 THEN 'FORESTAL' WHEN 0 THEN 'NO FORESTAL' END CoberturaForestal, CASE sitio.Condicion WHEN 1 THEN 'PRIMARIO' WHEN 0 THEN 'SECUNDARIA' END Condicion, claveSerieV.Clave, faseSucecional.Clave  AS FaseSucecional, sitio.ArbolFuera ArbolFuera, sitio.CondicionEcotono CondicionEcotono, sitio.Ecotono, sitio.CondicionPresenteCampo, sitio.Observaciones, sitio.HipsometroBrujula, sitio.CintaClinometroBrujula, sitio.Cuadrante1, sitio.Cuadrante2, sitio.Cuadrante3, sitio.Cuadrante4, sitio.Distancia1, sitio.Distancia2, sitio.Distancia3, sitio.Distancia4 from SITIOS_Sitio sitio LEFT JOIN UPM_UPM upm ON upm.UPMID=sitio.UPMID LEFT JOIN UPM_MallaPuntos upmMalla ON upmMalla.UPMID=upm.UPMID LEFT JOIN CAT_ClaveSerieV claveSerieV ON claveSerieV.ClaveSerieVID = sitio.ClaveSerieV LEFT JOIN CAT_FaseSucecional faseSucecional on faseSucecional.FaseSucecionalID =sitio.FaseSucecional LEFT JOIN CAT_TipoExposicion exposicionUPM ON exposicionUPM.ExposicionID =upm.ExposicionID LEFT JOIN CAT_TipoFisiografia fisiografia ON fisiografia.FisiografiaID=upm.FisiografiaID LEFT JOIN CAT_TipoInaccesibilidad tipoInaccesibilidad ON tipoInaccesibilidad.TipoInaccesibilidadID=sitio.TipoInaccesibilidad WHERE sitio.UPMID="
+				+ UPMID + " AND sitio.Sitio=" + sitio + " GROUP BY sitio.UPMID, sitio.SitioID ORDER BY sitio.UPMID ";
+		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
+		try {
+			sqlExterno = baseDatosExterna.createStatement();
+			// System.out.println(query);
+			ResultSet rsExterno = sqlExterno.executeQuery(query);
+
+			while (rsExterno.next()) {
+
+				txtLongitud.setText(rsExterno.getString("CoordenadasLongitud"));
+				txtLatitud.setText(rsExterno.getString("CoordenadasLatitud"));
+				txtErrorPresicion.setText(rsExterno.getString("ErrorPresicion"));
+				txtAzimut.setText(rsExterno.getString("Azimut"));
+				txtDistancia.setText(rsExterno.getString("Distancia"));
+				txtTipoInaccesibilidad.setText(rsExterno.getString("TipoInaccesibilidad"));
+				txtDescripcionInaccesibilidad.setText(rsExterno.getString("DescripcionInaccesibilidad"));
+				txtAExplicacionInaccesibilidad.setText(rsExterno.getString("ExplicacionInaccesibilidad"));
+				txtTipoVegetacion.setText(rsExterno.getString("Clave"));
+				txtFaseSucecional.setText(rsExterno.getString("FaseSucecional"));
+				txtACondicionPresente.setText(rsExterno.getString("CondicionPresenteCampo"));
+				txtAObservaciones.setText(rsExterno.getString("Observaciones"));
+				txtCuadrante1.setText(rsExterno.getString("Cuadrante1"));
+				txtCuadrante2.setText(rsExterno.getString("Cuadrante2"));
+				txtCuadrante3.setText(rsExterno.getString("Cuadrante3"));
+				txtCuadrante4.setText(rsExterno.getString("Cuadrante4"));
+				txtDistancia1.setText(rsExterno.getString("Distancia1"));
+				txtDistancia2.setText(rsExterno.getString("Distancia2"));
+				txtDistancia3.setText(rsExterno.getString("Distancia3"));
+				txtDistancia4.setText(rsExterno.getString("Distancia4"));
+				txtCobertura.setText(rsExterno.getString("CoberturaForestal"));
+				txtCondicion.setText(rsExterno.getString("Condicion"));
+
+				chckbxSealGps.setSelected(rsExterno.getBoolean("SenialGPS"));
+				chckbxEvidenciaDeMuestreo.setSelected(rsExterno.getBoolean("EvidenciaMuestreo"));
+				chckbxAccesible.setSelected(rsExterno.getBoolean("SitioAccesible"));
+				chckbxArbolFuera.setSelected(rsExterno.getBoolean("ArbolFuera"));
+				chckbxEcotono.setSelected(rsExterno.getBoolean("Ecotono"));
+			}
+			baseDatosExterna.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 }// Final
