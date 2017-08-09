@@ -81,7 +81,7 @@ public class Index extends JFrame {
 	private JMenu mnConfiguracin;
 	private Component horizontalStrut_2;
 	private JMenuItem mntmGoogleEarth;
-	String google_earth="";
+	String google_earth = "";
 
 	/**
 	 * Launch the application.
@@ -113,7 +113,7 @@ public class Index extends JFrame {
 		ConfigUserConnection.getConnection(configUser);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Index.class.getResource("/Icons/g5296.png")));
 		setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
-		setTitle("Abies (V_1.5.2)");
+		setTitle("Abies (V_1.5.3)");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1366, 847);
 		contentPane = new JPanel();
@@ -341,8 +341,7 @@ public class Index extends JFrame {
 		mntmGoogleEarth.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				getConfigGoogleEarth(configUser);
-				
-				
+
 			}
 		});
 		mnConfiguracin.add(mntmGoogleEarth);
@@ -430,9 +429,9 @@ public class Index extends JFrame {
 	}
 
 	public void setGoogleEarth(String ruta, String ruta_earth) {
-		String query = "UPDATE configUserAbies SET google_earth='" + ruta_earth+"'";
+		String query = "UPDATE configUserAbies SET google_earth='" + ruta_earth + "'";
 		Connection configConnection = ConfigUserConnection.getConnection(ruta);
-		//System.out.println("RutaSetGoogle="+ruta_earth);
+		// System.out.println("RutaSetGoogle="+ruta_earth);
 		try {
 			java.sql.Statement st = configConnection.createStatement();
 			st.executeUpdate(query);
@@ -443,14 +442,15 @@ public class Index extends JFrame {
 		}
 
 	}
+
 	public void getConfigGoogleEarth(String configUser) {
 		JFileChooser chooser = new JFileChooser("C:\\");
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("Google earth", "exe");
 		chooser.setFileFilter(filter);
-		
+
 		int returnVal = chooser.showOpenDialog(this);
-		if(returnVal == JFileChooser.APPROVE_OPTION) {
-		   
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+
 			File file = chooser.getSelectedFile();
 			google_earth = file.getAbsolutePath();
 			setGoogleEarth(configUser, google_earth);

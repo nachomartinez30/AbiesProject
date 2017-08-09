@@ -228,6 +228,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 								new ImageIcon(FrmInformacionPorUPM.class.getResource("/Icons/sitio_inaccesible.png")));
 					}
 					getSitio(ruta, cmbSitio.getSelectedItem().toString(), UPMElegido);
+					cmbSitio.setSelectedIndex(0);
 					getInformacionGralSitio(ruta, upmInt);
 
 					btnVerEnMapa.setEnabled(true);
