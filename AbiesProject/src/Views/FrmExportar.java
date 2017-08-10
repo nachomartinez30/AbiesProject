@@ -77,6 +77,9 @@ public class FrmExportar extends JInternalFrame {
 	private JCheckBox chckbxRepobladoVm;
 
 	public FrmExportar(String ruta) {
+		setFrameIcon(null);
+		setTitle("CVS");
+		setIconifiable(true);
 		setClosable(true);
 		this.ruta = ruta;
 		setBounds(100, 100, 450, 543);

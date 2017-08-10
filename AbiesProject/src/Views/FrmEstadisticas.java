@@ -88,6 +88,7 @@ public class FrmEstadisticas extends JInternalFrame {
 	private JTable tblCoberturaPorUpm;
 
 	public FrmEstadisticas(String ruta) {
+		setIconifiable(true);
 		setClosable(true);
 		setMaximizable(true);
 		setResizable(true);

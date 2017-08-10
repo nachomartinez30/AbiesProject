@@ -40,6 +40,7 @@ public class FrmCalidad extends JInternalFrame {
 	private JButton btnDistribucin;
 
 	public FrmCalidad(String ruta) {
+		setIconifiable(true);
 		this.ruta = ruta;
 		setResizable(true);
 		setMaximizable(true);

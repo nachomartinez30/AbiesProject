@@ -55,6 +55,8 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
 import java.awt.Dimension;
 import javax.swing.JTextArea;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 public class FrmInformacionPorUPM extends JInternalFrame {
 
@@ -152,6 +154,8 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 	private JTextArea txtAExplicacionInaccesibilidad;
 
 	public FrmInformacionPorUPM(String ruta, JDesktopPane desktopPanelCentral) {
+		setTitle("Informacion por UPM");
+		setIconifiable(true);
 		getGoogleEarth(configUser);
 		setFrameIcon(null);
 		setMaximizable(true);
@@ -272,10 +276,22 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		JLabel lblCoordenadasLatitud = new JLabel("Coordenadas latitud");
 
 		txtLatitud = new JTextField();
+		txtLatitud.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent arg0) {
+				txtLatitud.selectAll();
+			}
+		});
 		txtLatitud.setFont(new Font("Dialog", Font.PLAIN, 12));
 		txtLatitud.setColumns(10);
 
 		txtLongitud = new JTextField();
+		txtLongitud.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent arg0) {
+				txtLongitud.selectAll();
+			}
+		});
 		txtLongitud.setFont(new Font("Dialog", Font.PLAIN, 12));
 		txtLongitud.setColumns(10);
 
@@ -284,6 +300,12 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		JLabel lblEPresicin = new JLabel("E. presici\u00F3n");
 
 		txtErrorPresicion = new JTextField();
+		txtErrorPresicion.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent arg0) {
+				txtErrorPresicion.selectAll();
+			}
+		});
 		txtErrorPresicion.setFont(new Font("Dialog", Font.PLAIN, 12));
 		txtErrorPresicion.setColumns(10);
 
@@ -292,6 +314,12 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		JLabel lblTipoInaccesibilidad = new JLabel("Tipo inaccesibilidad");
 
 		txtTipoInaccesibilidad = new JTextField();
+		txtTipoInaccesibilidad.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent arg0) {
+				txtTipoInaccesibilidad.selectAll();
+			}
+		});
 		txtTipoInaccesibilidad.setFont(new Font("Dialog", Font.PLAIN, 12));
 		txtTipoInaccesibilidad.setColumns(10);
 
@@ -305,12 +333,24 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		JLabel lblAzimut = new JLabel("Azimut");
 
 		txtAzimut = new JTextField();
+		txtAzimut.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent arg0) {
+				txtAzimut.selectAll();
+			}
+		});
 		txtAzimut.setFont(new Font("Dialog", Font.PLAIN, 12));
 		txtAzimut.setColumns(10);
 
 		JLabel lblDistancia = new JLabel("Distancia");
 
 		txtDistancia = new JTextField();
+		txtDistancia.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent arg0) {
+				txtDistancia.selectAll();
+			}
+		});
 		txtDistancia.setFont(new Font("Dialog", Font.PLAIN, 12));
 		txtDistancia.setColumns(10);
 
@@ -319,30 +359,60 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		JLabel lblDescripcion = new JLabel("Descripcion:");
 
 		txtDescripcionInaccesibilidad = new JTextField();
+		txtDescripcionInaccesibilidad.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent arg0) {
+				txtDescripcionInaccesibilidad.selectAll();
+			}
+		});
 		txtDescripcionInaccesibilidad.setFont(new Font("Dialog", Font.PLAIN, 12));
 		txtDescripcionInaccesibilidad.setColumns(10);
 
 		JLabel lblCoberturaForestal = new JLabel("Cobertura");
 
 		txtCobertura = new JTextField();
+		txtCobertura.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent arg0) {
+			txtCobertura.selectAll();
+			}
+		});
 		txtCobertura.setFont(new Font("Dialog", Font.PLAIN, 12));
 		txtCobertura.setColumns(10);
 
 		JLabel label_1 = new JLabel("Condici\u00F3n");
 
 		txtCondicion = new JTextField();
+		txtCondicion.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent arg0) {
+				txtCondicion.selectAll();
+			}
+		});
 		txtCondicion.setFont(new Font("Dialog", Font.PLAIN, 12));
 		txtCondicion.setColumns(10);
 
 		JLabel label_2 = new JLabel("Tipo de vegetaci\u00F3n");
 
 		txtTipoVegetacion = new JTextField();
+		txtTipoVegetacion.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent arg0) {
+			txtTipoVegetacion.selectAll();
+			}
+		});
 		txtTipoVegetacion.setFont(new Font("Dialog", Font.PLAIN, 12));
 		txtTipoVegetacion.setColumns(10);
 
 		JLabel lblFaseSucecional = new JLabel("Fase sucecional");
 
 		txtFaseSucecional = new JTextField();
+		txtFaseSucecional.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent arg0) {
+				txtFaseSucecional.selectAll();
+			}
+		});
 		txtFaseSucecional.setFont(new Font("Dialog", Font.PLAIN, 12));
 		txtFaseSucecional.setColumns(10);
 
@@ -357,16 +427,34 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		JLabel lblCueadrante = new JLabel("Cuadrante 1");
 
 		txtCuadrante1 = new JTextField();
+		txtCuadrante1.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent arg0) {
+			txtCuadrante1.selectAll();
+			}
+		});
 		txtCuadrante1.setFont(new Font("Dialog", Font.PLAIN, 12));
 		txtCuadrante1.setColumns(10);
 
 		txtCuadrante2 = new JTextField();
+		txtCuadrante2.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent arg0) {
+				txtCuadrante2.selectAll();
+			}
+		});
 		txtCuadrante2.setFont(new Font("Dialog", Font.PLAIN, 12));
 		txtCuadrante2.setColumns(10);
 
 		JLabel label_5 = new JLabel("Cuadrante 2");
 
 		txtCuadrante4 = new JTextField();
+		txtCuadrante4.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent arg0) {
+				txtCuadrante4.selectAll();
+			}
+		});
 		txtCuadrante4.setFont(new Font("Dialog", Font.PLAIN, 12));
 		txtCuadrante4.setColumns(10);
 
@@ -375,16 +463,34 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		JLabel label_7 = new JLabel("Cuadrante 3");
 
 		txtCuadrante3 = new JTextField();
+		txtCuadrante3.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent arg0) {
+				txtCuadrante3.selectAll();
+			}
+		});
 		txtCuadrante3.setFont(new Font("Dialog", Font.PLAIN, 12));
 		txtCuadrante3.setColumns(10);
 
 		JLabel label_8 = new JLabel("Distancia 1");
 
 		txtDistancia1 = new JTextField();
+		txtDistancia1.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent arg0) {
+				txtDistancia1.selectAll();
+			}
+		});
 		txtDistancia1.setFont(new Font("Dialog", Font.PLAIN, 12));
 		txtDistancia1.setColumns(10);
 
 		txtDistancia2 = new JTextField();
+		txtDistancia2.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent arg0) {
+				txtDistancia2.selectAll();
+			}
+		});
 		txtDistancia2.setFont(new Font("Dialog", Font.PLAIN, 12));
 		txtDistancia2.setColumns(10);
 
@@ -393,10 +499,22 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		JLabel label_10 = new JLabel("Distancia 3");
 
 		txtDistancia3 = new JTextField();
+		txtDistancia3.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent arg0) {
+				txtDistancia3.selectAll();
+			}
+		});
 		txtDistancia3.setFont(new Font("Dialog", Font.PLAIN, 12));
 		txtDistancia3.setColumns(10);
 
 		txtDistancia4 = new JTextField();
+		txtDistancia4.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent arg0) {
+				txtDistancia4.selectAll();
+			}
+		});
 		txtDistancia4.setFont(new Font("Dialog", Font.PLAIN, 12));
 		txtDistancia4.setColumns(10);
 
@@ -409,14 +527,32 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		scrollPane_5 = new JScrollPane();
 
 		txtAExplicacionInaccesibilidad = new JTextArea();
+		txtAExplicacionInaccesibilidad.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent arg0) {
+				txtAExplicacionInaccesibilidad.selectAll();
+			}
+		});
 		txtAExplicacionInaccesibilidad.setFont(new Font("Dialog", Font.PLAIN, 12));
 		scrollPane_5.setViewportView(txtAExplicacionInaccesibilidad);
 
 		txtAObservaciones = new JTextArea();
+		txtAObservaciones.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent arg0) {
+				txtAObservaciones.selectAll();
+			}
+		});
 		txtAObservaciones.setFont(new Font("Dialog", Font.PLAIN, 12));
 		scrollPane_4.setViewportView(txtAObservaciones);
 
 		txtACondicionPresente = new JTextArea();
+		txtACondicionPresente.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent arg0) {
+				txtACondicionPresente.selectAll();
+			}
+		});
 		txtACondicionPresente.setFont(new Font("Dialog", Font.PLAIN, 12));
 		scrollPane_3.setViewportView(txtACondicionPresente);
 		GroupLayout gl_layeredPane = new GroupLayout(layeredPane);
@@ -1005,7 +1141,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		panel_2.add(lblS_2);
 		getContentPane().setLayout(groupLayout);
 		// scrollPaneEast.setViewportView(scrollPaneInforSitio);
-
+		
 	}
 
 	public void createKml() {

@@ -377,6 +377,7 @@ public class Index extends JFrame {
 				.addGroup(gl_desktopPanelCentral.createSequentialGroup()
 						.addComponent(lblBackground, GroupLayout.DEFAULT_SIZE, 705, Short.MAX_VALUE).addGap(64)));
 		desktopPanelCentral.setLayout(gl_desktopPanelCentral);
+		
 
 		getUserConfigs(configUser);
 	}
