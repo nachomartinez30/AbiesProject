@@ -374,7 +374,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		txtCobertura.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusGained(FocusEvent arg0) {
-			txtCobertura.selectAll();
+				txtCobertura.selectAll();
 			}
 		});
 		txtCobertura.setFont(new Font("Dialog", Font.PLAIN, 12));
@@ -398,7 +398,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		txtTipoVegetacion.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusGained(FocusEvent arg0) {
-			txtTipoVegetacion.selectAll();
+				txtTipoVegetacion.selectAll();
 			}
 		});
 		txtTipoVegetacion.setFont(new Font("Dialog", Font.PLAIN, 12));
@@ -430,7 +430,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		txtCuadrante1.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusGained(FocusEvent arg0) {
-			txtCuadrante1.selectAll();
+				txtCuadrante1.selectAll();
 			}
 		});
 		txtCuadrante1.setFont(new Font("Dialog", Font.PLAIN, 12));
@@ -1141,7 +1141,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		panel_2.add(lblS_2);
 		getContentPane().setLayout(groupLayout);
 		// scrollPaneEast.setViewportView(scrollPaneInforSitio);
-		
+
 	}
 
 	public void createKml() {
