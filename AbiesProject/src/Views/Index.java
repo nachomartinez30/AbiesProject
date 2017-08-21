@@ -82,6 +82,8 @@ public class Index extends JFrame {
 	private Component horizontalStrut_2;
 	private JMenuItem mntmGoogleEarth;
 	String google_earth = "";
+	private JMenu mnHerramientas;
+	private JMenuItem mntmConversorXy;
 
 	/**
 	 * Launch the application.
@@ -333,6 +335,19 @@ public class Index extends JFrame {
 
 		Component horizontalStrut_1 = Box.createHorizontalStrut(20);
 		menuBar.add(horizontalStrut_1);
+		
+		mnHerramientas = new JMenu("Herramientas");
+		mnHerramientas.setMnemonic('h');
+		menuBar.add(mnHerramientas);
+		
+		mntmConversorXy = new JMenuItem("Conversor X,Y");
+		mntmConversorXy.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				FrmConversor conversor = new FrmConversor();
+				conversor.setVisible(true);
+			}
+		});
+		mnHerramientas.add(mntmConversorXy);
 
 		mnConfiguracin = new JMenu("Configuraci\u00F3n");
 		menuBar.add(mnConfiguracin);

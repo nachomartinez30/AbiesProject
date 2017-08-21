@@ -68,6 +68,7 @@ public class DlogSitiosPorClinometro extends JFrame {
 			getContentPane().add(scrollPane, BorderLayout.CENTER);
 			{
 				tblClinoHipso = new JTable();
+				tblClinoHipso.setAutoCreateRowSorter(true);
 				tblClinoHipso.setColumnSelectionAllowed(true);
 				tblClinoHipso.setCellSelectionEnabled(true);
 				tblClinoHipso.setFillsViewportHeight(true);
