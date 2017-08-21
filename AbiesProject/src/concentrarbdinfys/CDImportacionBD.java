@@ -21,6 +21,7 @@ public class CDImportacionBD {
 	private String queryDelete;
 	private Connection baseDatosLocal;
 	private Connection baseDatosExterna;
+	public LocalConnection local;
 	private Statement sqlExterno;
 	private Statement sqlLocal;
 	private int upmIDExterno;
