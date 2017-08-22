@@ -45,6 +45,7 @@ public class FrmDistribucionEspecies extends JInternalFrame {
 		scrollPane = new JScrollPane();
 
 		tblDistribuciones = new JTable();
+		tblDistribuciones.setAutoCreateRowSorter(true);
 		scrollPane.setViewportView(tblDistribuciones);
 
 		scrollPane_1 = new JScrollPane();
@@ -77,6 +78,7 @@ public class FrmDistribucionEspecies extends JInternalFrame {
 						.addComponent(scrollPane_1, GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE).addGap(29)));
 		
 		tblException = new JTable();
+		tblException.setAutoCreateRowSorter(true);
 		scrollPane_1.setViewportView(tblException);
 		panel.setLayout(gl_panel);
 

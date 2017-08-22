@@ -21,7 +21,7 @@ public class ProgressCoordenateDiff extends SwingWorker<Integer, String> {
 	JFrame calidad;
 	JProgressBar barraProgreso;
 	public String ruta;
-	Ruta ruta_class = new Ruta();
+
 
 	public ProgressCoordenateDiff(JProgressBar barraProgreso, String ruta, JTable table) {
 		super();
@@ -72,7 +72,7 @@ public class ProgressCoordenateDiff extends SwingWorker<Integer, String> {
 				diferencia = Math.round(diferenciaDistancia(lat_teo_flot, long_teo_flot, lat_cap_flot, long_cap_flot));
 				if (diferencia > 12.55) {
 					CoordenadasModel.addRow(new Object[] { UPMID, lat_teo_string, "-" + long_teo_string, lat_cap_string,
-							long_cap_string, tipo_upm, incial_remplazo, erro_presicion, diferencia });
+							long_cap_string, tipo_upm, incial_remplazo, erro_presicion, (int) diferencia });
 				}
 
 			}

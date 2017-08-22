@@ -37,6 +37,7 @@ public class FrmDiferenciaCoordenadas extends JInternalFrame {
 		JScrollPane scrollPane = new JScrollPane();
 		
 		tblResultadosCoordenadas = new JTable();
+		tblResultadosCoordenadas.setAutoCreateRowSorter(true);
 		tblResultadosCoordenadas.setCellSelectionEnabled(true);
 		tblResultadosCoordenadas.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
 		tblResultadosCoordenadas.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);

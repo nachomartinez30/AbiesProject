@@ -57,9 +57,11 @@ import java.awt.Dimension;
 import javax.swing.JTextArea;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class FrmInformacionPorUPM extends JInternalFrame {
-
+	boolean accesible_sitio_1, accesible_sitio_2, accesible_sitio_3, accesible_sitio_4;
 	String googleEarth;
 	String UPMElegido, sitio_1, sitio_2, sitio_3, sitio_4;
 	private String configUser = "/ConfigUser.db";
@@ -153,6 +155,8 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 	private JScrollPane scrollPane_5;
 	private JTextArea txtAExplicacionInaccesibilidad;
 
+	String X_sitio_1, Y_sitio_1, X_sitio_2, Y_sitio_2, X_sitio_3, Y_sitio_3, X_sitio_4, Y_sitio_4;
+
 	public FrmInformacionPorUPM(String ruta, JDesktopPane desktopPanelCentral) {
 		setTitle("Informacion por UPM");
 		setIconifiable(true);
@@ -169,6 +173,68 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		JScrollPane scrollPane = new JScrollPane();
 
 		lsUPM = new JList(upmTotal);
+		lsUPM.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
+					arg0.consume();
+					UPMElegido = lsUPM.getSelectedValue();
+					upmInt = Integer.parseInt(UPMElegido);
+
+					lblUPM.setText(UPMElegido);
+
+					getRegistrosTotales(ruta, upmInt);
+					getIndividuosTotales(ruta, upmInt);
+					getInformacionUPM(ruta, upmInt);
+					getEspeciesPorSitioArbolado(ruta, upmInt);
+					getEspeciesPorSitioSotobosque(ruta, upmInt);
+					getEspeciesPorSitioRepoblado(ruta, upmInt);
+					getCoordenadasSitios(ruta, "1", UPMElegido);
+					getCoordenadasSitios(ruta, "2", UPMElegido);
+					getCoordenadasSitios(ruta, "3", UPMElegido);
+					getCoordenadasSitios(ruta, "4", UPMElegido);
+					createKml();
+					sitio_1 = getSitioAccesible(ruta, "1", UPMElegido);
+					sitio_2 = getSitioAccesible(ruta, "2", UPMElegido);
+					sitio_3 = getSitioAccesible(ruta, "3", UPMElegido);
+					sitio_4 = getSitioAccesible(ruta, "4", UPMElegido);
+
+					if (sitio_1.equals("SI")) {
+						lblS1.setIcon(
+								new ImageIcon(FrmInformacionPorUPM.class.getResource("/Icons/sitio_accesible.png")));
+					} else {
+						lblS1.setIcon(
+								new ImageIcon(FrmInformacionPorUPM.class.getResource("/Icons/sitio_inaccesible.png")));
+					}
+					if (sitio_2.equals("SI")) {
+						lblS_2.setIcon(
+								new ImageIcon(FrmInformacionPorUPM.class.getResource("/Icons/sitio_accesible.png")));
+					} else {
+						lblS_2.setIcon(
+								new ImageIcon(FrmInformacionPorUPM.class.getResource("/Icons/sitio_inaccesible.png")));
+					}
+					if (sitio_3.equals("SI")) {
+						lblS3.setIcon(
+								new ImageIcon(FrmInformacionPorUPM.class.getResource("/Icons/sitio_accesible.png")));
+					} else {
+						lblS3.setIcon(
+								new ImageIcon(FrmInformacionPorUPM.class.getResource("/Icons/sitio_inaccesible.png")));
+					}
+					if (sitio_4.equals("SI")) {
+						lblS4.setIcon(
+								new ImageIcon(FrmInformacionPorUPM.class.getResource("/Icons/sitio_accesible.png")));
+					} else {
+						lblS4.setIcon(
+								new ImageIcon(FrmInformacionPorUPM.class.getResource("/Icons/sitio_inaccesible.png")));
+					}
+					getSitio(ruta, cmbSitio.getSelectedItem().toString(), UPMElegido);
+					cmbSitio.setSelectedIndex(0);
+					getInformacionGralSitio(ruta, upmInt);
+
+					btnVerEnMapa.setEnabled(true);
+				}
+			}
+		});
 		lsUPM.setModel(new AbstractListModel() {
 			String[] values = new String[] {};
 
@@ -197,6 +263,10 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 					getEspeciesPorSitioArbolado(ruta, upmInt);
 					getEspeciesPorSitioSotobosque(ruta, upmInt);
 					getEspeciesPorSitioRepoblado(ruta, upmInt);
+					getCoordenadasSitios(ruta, "1", UPMElegido);
+					getCoordenadasSitios(ruta, "2", UPMElegido);
+					getCoordenadasSitios(ruta, "3", UPMElegido);
+					getCoordenadasSitios(ruta, "4", UPMElegido);
 					createKml();
 					sitio_1 = getSitioAccesible(ruta, "1", UPMElegido);
 					sitio_2 = getSitioAccesible(ruta, "2", UPMElegido);
@@ -253,6 +323,324 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 
 		JTabbedPane tabbedPane = new JTabbedPane(SwingConstants.TOP);
 		tabbedPane.setAutoscrolls(true);
+
+		JLayeredPane layeredPaneArbolado = new JLayeredPane();
+		layeredPaneArbolado.setAutoscrolls(true);
+		tabbedPane.addTab("Arbolado", null, layeredPaneArbolado, null);
+
+		JLabel lblNewLabel_2 = new JLabel("No. Registros totales:");
+
+		txtRegistrosTotales = new JTextField();
+		txtRegistrosTotales.setHorizontalAlignment(SwingConstants.CENTER);
+		txtRegistrosTotales.setColumns(10);
+
+		JLabel lblNoIndividuosTotales = new JLabel("No. Individuos totales:");
+
+		txtIndividuosTotales = new JTextField();
+		txtIndividuosTotales.setHorizontalAlignment(SwingConstants.CENTER);
+		txtIndividuosTotales.setColumns(10);
+
+		scrollPaneEspeciesPorSitio = new JScrollPane();
+		scrollPaneEspeciesPorSitio.setBackground(Color.WHITE);
+		scrollPaneEspeciesPorSitio.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+
+		tblEspeciesPorSitioArbolado = new JTable();
+		tblEspeciesPorSitioArbolado.setAutoCreateRowSorter(true);
+		tblEspeciesPorSitioArbolado.setBackground(Color.DARK_GRAY);
+		tblEspeciesPorSitioArbolado.setFont(new Font("Dialog", Font.PLAIN, 14));
+		tblEspeciesPorSitioArbolado.setRowHeight(21);
+		tblEspeciesPorSitioArbolado.setRowMargin(3);
+		tblEspeciesPorSitioArbolado.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+		tblEspeciesPorSitioArbolado.setModel(new DefaultTableModel(new Object[][] {}, new String[] {}));
+		scrollPaneEspeciesPorSitio.setViewportView(tblEspeciesPorSitioArbolado);
+
+		JLabel lblEspeciesPorSitio = new JLabel("Especies por sitio");
+		lblEspeciesPorSitio.setFont(new Font("Dialog", Font.BOLD, 16));
+		lblEspeciesPorSitio.setHorizontalAlignment(SwingConstants.CENTER);
+
+		btnGraficas = new JButton("Gr\u00E1ficas");
+		btnGraficas.setMnemonic('g');
+		btnGraficas.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				FrmGraficasArbolado graficasArb = new FrmGraficasArbolado(ruta);
+				graficasArb.setUpmid(upmInt);
+				if (graficasArb.isVisible() == false) {
+					graficasArb.setVisible(true);
+					desktopPanelCentral.add(graficasArb);
+					graficasArb.generateBarChartDiametrosNormales(ruta, upmInt);
+					graficasArb.generateBarChartAlturasTotales(ruta, upmInt);
+				}
+
+				if (graficasArb.isBackgroundSet()) {
+					graficasArb.moveToFront();
+				}
+			}
+		});
+		GroupLayout gl_layeredPaneArbolado = new GroupLayout(layeredPaneArbolado);
+		gl_layeredPaneArbolado.setHorizontalGroup(gl_layeredPaneArbolado.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_layeredPaneArbolado.createSequentialGroup().addContainerGap().addGroup(
+						gl_layeredPaneArbolado.createParallelGroup(Alignment.LEADING).addGroup(gl_layeredPaneArbolado
+								.createParallelGroup(Alignment.LEADING)
+								.addGroup(Alignment.TRAILING,
+										gl_layeredPaneArbolado.createSequentialGroup()
+												.addComponent(btnGraficas, GroupLayout.PREFERRED_SIZE, 82,
+														GroupLayout.PREFERRED_SIZE)
+												.addContainerGap())
+								.addGroup(Alignment.TRAILING,
+										gl_layeredPaneArbolado.createSequentialGroup()
+												.addComponent(scrollPaneEspeciesPorSitio, GroupLayout.DEFAULT_SIZE, 650,
+														Short.MAX_VALUE)
+												.addContainerGap())
+								.addGroup(gl_layeredPaneArbolado.createSequentialGroup()
+										.addComponent(lblEspeciesPorSitio, GroupLayout.DEFAULT_SIZE, 650,
+												Short.MAX_VALUE)
+										.addContainerGap()))
+								.addGroup(Alignment.TRAILING, gl_layeredPaneArbolado.createSequentialGroup()
+										.addGroup(gl_layeredPaneArbolado.createParallelGroup(Alignment.LEADING)
+												.addComponent(lblNewLabel_2, GroupLayout.PREFERRED_SIZE, 132,
+														GroupLayout.PREFERRED_SIZE)
+												.addComponent(lblNoIndividuosTotales, GroupLayout.PREFERRED_SIZE, 132,
+														GroupLayout.PREFERRED_SIZE))
+										.addGap(6)
+										.addGroup(gl_layeredPaneArbolado.createParallelGroup(Alignment.LEADING)
+												.addComponent(txtRegistrosTotales, GroupLayout.PREFERRED_SIZE, 67,
+														GroupLayout.PREFERRED_SIZE)
+												.addComponent(txtIndividuosTotales, GroupLayout.PREFERRED_SIZE, 67,
+														GroupLayout.PREFERRED_SIZE))
+										.addContainerGap()))));
+		gl_layeredPaneArbolado.setVerticalGroup(gl_layeredPaneArbolado.createParallelGroup(Alignment.LEADING).addGroup(
+				gl_layeredPaneArbolado.createSequentialGroup().addContainerGap().addGroup(gl_layeredPaneArbolado
+						.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_layeredPaneArbolado.createSequentialGroup()
+								.addComponent(lblNewLabel_2, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
+								.addGap(12).addComponent(lblNoIndividuosTotales, GroupLayout.PREFERRED_SIZE, 20,
+										GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_layeredPaneArbolado.createSequentialGroup()
+								.addComponent(txtRegistrosTotales, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE)
+								.addGap(12).addComponent(txtIndividuosTotales, GroupLayout.PREFERRED_SIZE,
+										GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+						.addGap(18)
+						.addComponent(lblEspeciesPorSitio, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(scrollPaneEspeciesPorSitio, GroupLayout.DEFAULT_SIZE, 626, Short.MAX_VALUE)
+						.addGap(18).addComponent(btnGraficas).addContainerGap()));
+		layeredPaneArbolado.setLayout(gl_layeredPaneArbolado);
+
+		JPanel panel = new JPanel();
+
+		JLabel lblEstado = new JLabel("Estado:");
+		lblEstado.setFont(new Font("Dialog", Font.PLAIN, 14));
+		lblEstado.setHorizontalAlignment(SwingConstants.LEFT);
+
+		lblEstadoResp = new JLabel("...");
+		lblEstadoResp.setForeground(Color.ORANGE);
+		lblEstadoResp.setAlignmentX(Component.CENTER_ALIGNMENT);
+		lblEstadoResp.setFont(new Font("Dialog", Font.BOLD | Font.ITALIC, 12));
+
+		JLabel lblNewLabel = new JLabel("Municipio:");
+		lblNewLabel.setFont(new Font("Dialog", Font.PLAIN, 14));
+		lblNewLabel.setHorizontalAlignment(SwingConstants.LEFT);
+
+		lblMunicipioResp = new JLabel("...");
+		lblMunicipioResp.setForeground(Color.ORANGE);
+		lblMunicipioResp.setAlignmentX(Component.CENTER_ALIGNMENT);
+		lblMunicipioResp.setFont(new Font("Dialog", Font.BOLD | Font.ITALIC, 12));
+
+		JLabel lblAltitud = new JLabel("Altitud:");
+		lblAltitud.setFont(new Font("Dialog", Font.PLAIN, 14));
+		lblAltitud.setHorizontalAlignment(SwingConstants.LEFT);
+
+		lblAltitudResp = new JLabel("...");
+		lblAltitudResp.setForeground(Color.ORANGE);
+		lblAltitudResp.setAlignmentX(Component.CENTER_ALIGNMENT);
+		lblAltitudResp.setFont(new Font("Dialog", Font.BOLD | Font.ITALIC, 12));
+
+		JLabel lblPendRepresentativa = new JLabel("Pend. Representativa:");
+		lblPendRepresentativa.setFont(new Font("Dialog", Font.PLAIN, 14));
+		lblPendRepresentativa.setHorizontalAlignment(SwingConstants.LEFT);
+
+		lblPendienteRepresentativaResp = new JLabel("...");
+		lblPendienteRepresentativaResp.setForeground(Color.ORANGE);
+		lblPendienteRepresentativaResp.setAlignmentX(Component.CENTER_ALIGNMENT);
+		lblPendienteRepresentativaResp.setFont(new Font("Dialog", Font.BOLD | Font.ITALIC, 12));
+
+		JLabel lblExposicin = new JLabel("Exposici\u00F3n:");
+		lblExposicin.setFont(new Font("Dialog", Font.PLAIN, 14));
+		lblExposicin.setHorizontalAlignment(SwingConstants.LEFT);
+
+		lblExposicionResp = new JLabel("...");
+		lblExposicionResp.setForeground(Color.ORANGE);
+		lblExposicionResp.setAlignmentX(Component.CENTER_ALIGNMENT);
+		lblExposicionResp.setFont(new Font("Dialog", Font.BOLD | Font.ITALIC, 12));
+
+		JLabel lblNewLabel_1 = new JLabel("Fisiograf\u00EDa");
+		lblNewLabel_1.setFont(new Font("Dialog", Font.PLAIN, 14));
+		lblNewLabel_1.setHorizontalAlignment(SwingConstants.LEFT);
+
+		lblFisiografiaResp = new JLabel("...");
+		lblFisiografiaResp.setForeground(Color.ORANGE);
+		lblFisiografiaResp.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		lblFisiografiaResp.setFont(new Font("Dialog", Font.BOLD | Font.ITALIC, 12));
+		panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+
+		JLabel lblUpm = new JLabel("UPM:");
+		lblUpm.setFont(new Font("Dialog", Font.PLAIN, 14));
+		panel.add(lblUpm);
+
+		lblUPM = new JLabel("...");
+		lblUPM.setForeground(Color.ORANGE);
+		lblUPM.setFont(new Font("Dialog", Font.BOLD | Font.ITALIC, 12));
+		panel.add(lblUPM);
+
+		JSeparator separator_5 = new JSeparator();
+		panel.add(separator_5);
+		panel.add(lblEstado);
+		panel.add(lblEstadoResp);
+
+		JSeparator separator = new JSeparator();
+		panel.add(separator);
+		panel.add(lblNewLabel);
+		panel.add(lblMunicipioResp);
+
+		JSeparator separator_1 = new JSeparator();
+		panel.add(separator_1);
+		panel.add(lblAltitud);
+		panel.add(lblAltitudResp);
+
+		JSeparator separator_2 = new JSeparator();
+		panel.add(separator_2);
+		panel.add(lblPendRepresentativa);
+		panel.add(lblPendienteRepresentativaResp);
+
+		JSeparator separator_3 = new JSeparator();
+		panel.add(separator_3);
+		panel.add(lblExposicin);
+		panel.add(lblExposicionResp);
+
+		JSeparator separator_4 = new JSeparator();
+		panel.add(separator_4);
+		panel.add(lblNewLabel_1);
+		panel.add(lblFisiografiaResp);
+
+		JLabel label_18 = new JLabel("Accesible");
+		label_18.setHorizontalAlignment(SwingConstants.LEFT);
+		label_18.setFont(new Font("Dialog", Font.PLAIN, 14));
+		panel.add(label_18);
+
+		lblAccesible = new JLabel("...");
+		lblAccesible.setForeground(Color.ORANGE);
+		lblAccesible.setFont(new Font("Dialog", Font.BOLD | Font.ITALIC, 12));
+		lblAccesible.setAlignmentX(1.0f);
+		panel.add(lblAccesible);
+
+		lbl_25 = new JLabel("Tipo:");
+		lbl_25.setHorizontalAlignment(SwingConstants.LEFT);
+		lbl_25.setFont(new Font("Dialog", Font.PLAIN, 14));
+		panel.add(lbl_25);
+
+		lblTipo = new JLabel("...");
+		lblTipo.setForeground(Color.ORANGE);
+		lblTipo.setFont(new Font("Dialog", Font.BOLD | Font.ITALIC, 12));
+		lblTipo.setAlignmentX(1.0f);
+		panel.add(lblTipo);
+
+		lsUPM.setListData(upmTotal);
+
+		JPanel panel_2 = new JPanel();
+		GroupLayout groupLayout = new GroupLayout(getContentPane());
+		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
+						.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 118, GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(ComponentPlacement.UNRELATED)
+						.addComponent(tabbedPane, GroupLayout.DEFAULT_SIZE, 676, Short.MAX_VALUE)
+						.addPreferredGap(ComponentPlacement.UNRELATED)
+						.addComponent(panel_2, GroupLayout.PREFERRED_SIZE, 423, GroupLayout.PREFERRED_SIZE).addGap(9))
+				.addComponent(panel, GroupLayout.DEFAULT_SIZE, 1250, Short.MAX_VALUE));
+		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout
+				.createSequentialGroup()
+				.addComponent(panel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+				.addPreferredGap(ComponentPlacement.RELATED)
+				.addGroup(groupLayout.createParallelGroup(Alignment.LEADING).addComponent(tabbedPane)
+						.addComponent(panel_2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(scrollPane))
+				.addGap(0)));
+
+		JLayeredPane layeredPaneSotobosque = new JLayeredPane();
+		tabbedPane.addTab("Repoblado/Sotobosque", null, layeredPaneSotobosque, null);
+
+		JScrollPane scrollPane_1 = new JScrollPane();
+		scrollPane_1.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		scrollPane_1.setBackground(Color.WHITE);
+
+		btnGraficasSotobosqueRepoblado = new JButton("Gr\u00E1ficas");
+		btnGraficasSotobosqueRepoblado.setMnemonic('g');
+		btnGraficasSotobosqueRepoblado.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				FrmGraficasSotobosqueRepoblado graficasRepobladoSotobosque = new FrmGraficasSotobosqueRepoblado(ruta);
+				graficasRepobladoSotobosque.setUpmid(upmInt);
+				if (graficasRepobladoSotobosque.isVisible() == false) {
+					graficasRepobladoSotobosque.setVisible(true);
+					desktopPanelCentral.add(graficasRepobladoSotobosque);
+					graficasRepobladoSotobosque.generarBarChartFrecuenciasRepoblado(ruta, upmInt);
+					graficasRepobladoSotobosque.generarBarChartFrecuenciasSotbosque(ruta, upmInt);
+				}
+
+				if (graficasRepobladoSotobosque.isBackgroundSet()) {
+					graficasRepobladoSotobosque.moveToFront();
+				}
+			}
+		});
+
+		JLabel lblEspeciesPorSitio_1 = new JLabel("Especies por sitio Sotobosque");
+		lblEspeciesPorSitio_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblEspeciesPorSitio_1.setFont(new Font("Dialog", Font.BOLD, 16));
+
+		tblEspeciesPorSitioSotobosque = new JTable();
+		tblEspeciesPorSitioSotobosque.setAutoCreateRowSorter(true);
+		tblEspeciesPorSitioSotobosque.setFont(new Font("Dialog", Font.PLAIN, 14));
+		tblEspeciesPorSitioSotobosque.setBackground(Color.DARK_GRAY);
+		tblEspeciesPorSitioSotobosque.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+		scrollPane_1.setViewportView(tblEspeciesPorSitioSotobosque);
+
+		JScrollPane scrollPane_2 = new JScrollPane();
+		scrollPane_2.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		scrollPane_2.setBackground(Color.WHITE);
+
+		JLabel lblEspeciesPorSitio_2 = new JLabel("Especies por sitio Repoblado");
+		lblEspeciesPorSitio_2.setHorizontalAlignment(SwingConstants.CENTER);
+		lblEspeciesPorSitio_2.setFont(new Font("Dialog", Font.BOLD, 16));
+		GroupLayout gl_layeredPaneSotobosque = new GroupLayout(layeredPaneSotobosque);
+		gl_layeredPaneSotobosque.setHorizontalGroup(gl_layeredPaneSotobosque.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_layeredPaneSotobosque.createSequentialGroup().addGap(12)
+						.addComponent(lblEspeciesPorSitio_1, GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE).addGap(12))
+				.addGroup(gl_layeredPaneSotobosque.createSequentialGroup().addGap(12)
+						.addComponent(scrollPane_1, GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE).addGap(12))
+				.addGroup(gl_layeredPaneSotobosque.createSequentialGroup().addGap(12)
+						.addComponent(lblEspeciesPorSitio_2, GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE).addGap(12))
+				.addGroup(gl_layeredPaneSotobosque.createSequentialGroup().addGap(12)
+						.addComponent(scrollPane_2, GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE).addGap(12))
+				.addGroup(Alignment.TRAILING,
+						gl_layeredPaneSotobosque.createSequentialGroup().addGap(580)
+								.addComponent(btnGraficasSotobosqueRepoblado, GroupLayout.PREFERRED_SIZE, 82,
+										GroupLayout.PREFERRED_SIZE)
+								.addGap(12)));
+		gl_layeredPaneSotobosque.setVerticalGroup(gl_layeredPaneSotobosque.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_layeredPaneSotobosque.createSequentialGroup().addGap(29)
+						.addComponent(lblEspeciesPorSitio_1, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
+						.addGap(6).addComponent(scrollPane_1, GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE).addGap(12)
+						.addComponent(lblEspeciesPorSitio_2, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
+						.addGap(12).addComponent(scrollPane_2, GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
+						.addGap(28).addComponent(btnGraficasSotobosqueRepoblado).addGap(11)));
+
+		tblEspeciesPorSitioRepoblado = new JTable();
+		tblEspeciesPorSitioRepoblado.setAutoCreateRowSorter(true);
+		tblEspeciesPorSitioRepoblado.setBackground(Color.DARK_GRAY);
+		tblEspeciesPorSitioRepoblado.setFont(new Font("Dialog", Font.PLAIN, 14));
+		tblEspeciesPorSitioRepoblado.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+		scrollPane_2.setViewportView(tblEspeciesPorSitioRepoblado);
+		layeredPaneSotobosque.setLayout(gl_layeredPaneSotobosque);
 
 		layeredPane = new JLayeredPane();
 		tabbedPane.addTab("Sitio", null, layeredPane, null);
@@ -768,321 +1156,6 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 								.addGap(216)))));
 		layeredPane.setLayout(gl_layeredPane);
 
-		JLayeredPane layeredPaneArbolado = new JLayeredPane();
-		layeredPaneArbolado.setAutoscrolls(true);
-		tabbedPane.addTab("Arbolado", null, layeredPaneArbolado, null);
-
-		JLabel lblNewLabel_2 = new JLabel("No. Registros totales:");
-
-		txtRegistrosTotales = new JTextField();
-		txtRegistrosTotales.setHorizontalAlignment(SwingConstants.CENTER);
-		txtRegistrosTotales.setColumns(10);
-
-		JLabel lblNoIndividuosTotales = new JLabel("No. Individuos totales:");
-
-		txtIndividuosTotales = new JTextField();
-		txtIndividuosTotales.setHorizontalAlignment(SwingConstants.CENTER);
-		txtIndividuosTotales.setColumns(10);
-
-		scrollPaneEspeciesPorSitio = new JScrollPane();
-		scrollPaneEspeciesPorSitio.setBackground(Color.WHITE);
-		scrollPaneEspeciesPorSitio.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-
-		tblEspeciesPorSitioArbolado = new JTable();
-		tblEspeciesPorSitioArbolado.setBackground(Color.DARK_GRAY);
-		tblEspeciesPorSitioArbolado.setFont(new Font("Dialog", Font.PLAIN, 14));
-		tblEspeciesPorSitioArbolado.setRowHeight(21);
-		tblEspeciesPorSitioArbolado.setRowMargin(3);
-		tblEspeciesPorSitioArbolado.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
-		tblEspeciesPorSitioArbolado.setModel(new DefaultTableModel(new Object[][] {}, new String[] {}));
-		scrollPaneEspeciesPorSitio.setViewportView(tblEspeciesPorSitioArbolado);
-
-		JLabel lblEspeciesPorSitio = new JLabel("Especies por sitio");
-		lblEspeciesPorSitio.setFont(new Font("Dialog", Font.BOLD, 16));
-		lblEspeciesPorSitio.setHorizontalAlignment(SwingConstants.CENTER);
-
-		btnGraficas = new JButton("Gr\u00E1ficas");
-		btnGraficas.setMnemonic('g');
-		btnGraficas.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				FrmGraficasArbolado graficasArb = new FrmGraficasArbolado(ruta);
-				graficasArb.setUpmid(upmInt);
-				if (graficasArb.isVisible() == false) {
-					graficasArb.setVisible(true);
-					desktopPanelCentral.add(graficasArb);
-					graficasArb.generateBarChartDiametrosNormales(ruta, upmInt);
-					graficasArb.generateBarChartAlturasTotales(ruta, upmInt);
-				}
-
-				if (graficasArb.isBackgroundSet()) {
-					graficasArb.moveToFront();
-				}
-			}
-		});
-		GroupLayout gl_layeredPaneArbolado = new GroupLayout(layeredPaneArbolado);
-		gl_layeredPaneArbolado.setHorizontalGroup(gl_layeredPaneArbolado.createParallelGroup(Alignment.TRAILING)
-				.addGroup(gl_layeredPaneArbolado.createSequentialGroup().addContainerGap().addGroup(
-						gl_layeredPaneArbolado.createParallelGroup(Alignment.LEADING).addGroup(gl_layeredPaneArbolado
-								.createParallelGroup(Alignment.LEADING)
-								.addGroup(Alignment.TRAILING,
-										gl_layeredPaneArbolado.createSequentialGroup()
-												.addComponent(btnGraficas, GroupLayout.PREFERRED_SIZE, 82,
-														GroupLayout.PREFERRED_SIZE)
-												.addContainerGap())
-								.addGroup(Alignment.TRAILING,
-										gl_layeredPaneArbolado.createSequentialGroup()
-												.addComponent(scrollPaneEspeciesPorSitio, GroupLayout.DEFAULT_SIZE, 650,
-														Short.MAX_VALUE)
-												.addContainerGap())
-								.addGroup(gl_layeredPaneArbolado.createSequentialGroup()
-										.addComponent(lblEspeciesPorSitio, GroupLayout.DEFAULT_SIZE, 650,
-												Short.MAX_VALUE)
-										.addContainerGap()))
-								.addGroup(Alignment.TRAILING, gl_layeredPaneArbolado.createSequentialGroup()
-										.addGroup(gl_layeredPaneArbolado.createParallelGroup(Alignment.LEADING)
-												.addComponent(lblNewLabel_2, GroupLayout.PREFERRED_SIZE, 132,
-														GroupLayout.PREFERRED_SIZE)
-												.addComponent(lblNoIndividuosTotales, GroupLayout.PREFERRED_SIZE, 132,
-														GroupLayout.PREFERRED_SIZE))
-										.addGap(6)
-										.addGroup(gl_layeredPaneArbolado.createParallelGroup(Alignment.LEADING)
-												.addComponent(txtRegistrosTotales, GroupLayout.PREFERRED_SIZE, 67,
-														GroupLayout.PREFERRED_SIZE)
-												.addComponent(txtIndividuosTotales, GroupLayout.PREFERRED_SIZE, 67,
-														GroupLayout.PREFERRED_SIZE))
-										.addContainerGap()))));
-		gl_layeredPaneArbolado.setVerticalGroup(gl_layeredPaneArbolado.createParallelGroup(Alignment.LEADING).addGroup(
-				gl_layeredPaneArbolado.createSequentialGroup().addContainerGap().addGroup(gl_layeredPaneArbolado
-						.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_layeredPaneArbolado.createSequentialGroup()
-								.addComponent(lblNewLabel_2, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
-								.addGap(12).addComponent(lblNoIndividuosTotales, GroupLayout.PREFERRED_SIZE, 20,
-										GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_layeredPaneArbolado.createSequentialGroup()
-								.addComponent(txtRegistrosTotales, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
-								.addGap(12).addComponent(txtIndividuosTotales, GroupLayout.PREFERRED_SIZE,
-										GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
-						.addGap(18)
-						.addComponent(lblEspeciesPorSitio, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(scrollPaneEspeciesPorSitio, GroupLayout.DEFAULT_SIZE, 626, Short.MAX_VALUE)
-						.addGap(18).addComponent(btnGraficas).addContainerGap()));
-		layeredPaneArbolado.setLayout(gl_layeredPaneArbolado);
-
-		JPanel panel = new JPanel();
-
-		JLabel lblEstado = new JLabel("Estado:");
-		lblEstado.setFont(new Font("Dialog", Font.PLAIN, 14));
-		lblEstado.setHorizontalAlignment(SwingConstants.LEFT);
-
-		lblEstadoResp = new JLabel("...");
-		lblEstadoResp.setForeground(Color.ORANGE);
-		lblEstadoResp.setAlignmentX(Component.CENTER_ALIGNMENT);
-		lblEstadoResp.setFont(new Font("Dialog", Font.BOLD | Font.ITALIC, 12));
-
-		JLabel lblNewLabel = new JLabel("Municipio:");
-		lblNewLabel.setFont(new Font("Dialog", Font.PLAIN, 14));
-		lblNewLabel.setHorizontalAlignment(SwingConstants.LEFT);
-
-		lblMunicipioResp = new JLabel("...");
-		lblMunicipioResp.setForeground(Color.ORANGE);
-		lblMunicipioResp.setAlignmentX(Component.CENTER_ALIGNMENT);
-		lblMunicipioResp.setFont(new Font("Dialog", Font.BOLD | Font.ITALIC, 12));
-
-		JLabel lblAltitud = new JLabel("Altitud:");
-		lblAltitud.setFont(new Font("Dialog", Font.PLAIN, 14));
-		lblAltitud.setHorizontalAlignment(SwingConstants.LEFT);
-
-		lblAltitudResp = new JLabel("...");
-		lblAltitudResp.setForeground(Color.ORANGE);
-		lblAltitudResp.setAlignmentX(Component.CENTER_ALIGNMENT);
-		lblAltitudResp.setFont(new Font("Dialog", Font.BOLD | Font.ITALIC, 12));
-
-		JLabel lblPendRepresentativa = new JLabel("Pend. Representativa:");
-		lblPendRepresentativa.setFont(new Font("Dialog", Font.PLAIN, 14));
-		lblPendRepresentativa.setHorizontalAlignment(SwingConstants.LEFT);
-
-		lblPendienteRepresentativaResp = new JLabel("...");
-		lblPendienteRepresentativaResp.setForeground(Color.ORANGE);
-		lblPendienteRepresentativaResp.setAlignmentX(Component.CENTER_ALIGNMENT);
-		lblPendienteRepresentativaResp.setFont(new Font("Dialog", Font.BOLD | Font.ITALIC, 12));
-
-		JLabel lblExposicin = new JLabel("Exposici\u00F3n:");
-		lblExposicin.setFont(new Font("Dialog", Font.PLAIN, 14));
-		lblExposicin.setHorizontalAlignment(SwingConstants.LEFT);
-
-		lblExposicionResp = new JLabel("...");
-		lblExposicionResp.setForeground(Color.ORANGE);
-		lblExposicionResp.setAlignmentX(Component.CENTER_ALIGNMENT);
-		lblExposicionResp.setFont(new Font("Dialog", Font.BOLD | Font.ITALIC, 12));
-
-		JLabel lblNewLabel_1 = new JLabel("Fisiograf\u00EDa");
-		lblNewLabel_1.setFont(new Font("Dialog", Font.PLAIN, 14));
-		lblNewLabel_1.setHorizontalAlignment(SwingConstants.LEFT);
-
-		lblFisiografiaResp = new JLabel("...");
-		lblFisiografiaResp.setForeground(Color.ORANGE);
-		lblFisiografiaResp.setAlignmentX(Component.RIGHT_ALIGNMENT);
-		lblFisiografiaResp.setFont(new Font("Dialog", Font.BOLD | Font.ITALIC, 12));
-		panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-
-		JLabel lblUpm = new JLabel("UPM:");
-		lblUpm.setFont(new Font("Dialog", Font.PLAIN, 14));
-		panel.add(lblUpm);
-
-		lblUPM = new JLabel("...");
-		lblUPM.setForeground(Color.ORANGE);
-		lblUPM.setFont(new Font("Dialog", Font.BOLD | Font.ITALIC, 12));
-		panel.add(lblUPM);
-
-		JSeparator separator_5 = new JSeparator();
-		panel.add(separator_5);
-		panel.add(lblEstado);
-		panel.add(lblEstadoResp);
-
-		JSeparator separator = new JSeparator();
-		panel.add(separator);
-		panel.add(lblNewLabel);
-		panel.add(lblMunicipioResp);
-
-		JSeparator separator_1 = new JSeparator();
-		panel.add(separator_1);
-		panel.add(lblAltitud);
-		panel.add(lblAltitudResp);
-
-		JSeparator separator_2 = new JSeparator();
-		panel.add(separator_2);
-		panel.add(lblPendRepresentativa);
-		panel.add(lblPendienteRepresentativaResp);
-
-		JSeparator separator_3 = new JSeparator();
-		panel.add(separator_3);
-		panel.add(lblExposicin);
-		panel.add(lblExposicionResp);
-
-		JSeparator separator_4 = new JSeparator();
-		panel.add(separator_4);
-		panel.add(lblNewLabel_1);
-		panel.add(lblFisiografiaResp);
-
-		JLabel label_18 = new JLabel("Accesible");
-		label_18.setHorizontalAlignment(SwingConstants.LEFT);
-		label_18.setFont(new Font("Dialog", Font.PLAIN, 14));
-		panel.add(label_18);
-
-		lblAccesible = new JLabel("...");
-		lblAccesible.setForeground(Color.ORANGE);
-		lblAccesible.setFont(new Font("Dialog", Font.BOLD | Font.ITALIC, 12));
-		lblAccesible.setAlignmentX(1.0f);
-		panel.add(lblAccesible);
-
-		lbl_25 = new JLabel("Tipo:");
-		lbl_25.setHorizontalAlignment(SwingConstants.LEFT);
-		lbl_25.setFont(new Font("Dialog", Font.PLAIN, 14));
-		panel.add(lbl_25);
-
-		lblTipo = new JLabel("...");
-		lblTipo.setForeground(Color.ORANGE);
-		lblTipo.setFont(new Font("Dialog", Font.BOLD | Font.ITALIC, 12));
-		lblTipo.setAlignmentX(1.0f);
-		panel.add(lblTipo);
-
-		lsUPM.setListData(upmTotal);
-
-		JPanel panel_2 = new JPanel();
-		GroupLayout groupLayout = new GroupLayout(getContentPane());
-		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-						.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 118, GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.UNRELATED)
-						.addComponent(tabbedPane, GroupLayout.DEFAULT_SIZE, 676, Short.MAX_VALUE)
-						.addPreferredGap(ComponentPlacement.UNRELATED)
-						.addComponent(panel_2, GroupLayout.PREFERRED_SIZE, 423, GroupLayout.PREFERRED_SIZE).addGap(9))
-				.addComponent(panel, GroupLayout.DEFAULT_SIZE, 1250, Short.MAX_VALUE));
-		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout
-				.createSequentialGroup()
-				.addComponent(panel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-				.addPreferredGap(ComponentPlacement.RELATED)
-				.addGroup(groupLayout.createParallelGroup(Alignment.LEADING).addComponent(tabbedPane)
-						.addComponent(panel_2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(scrollPane))
-				.addGap(0)));
-
-		JLayeredPane layeredPaneSotobosque = new JLayeredPane();
-		tabbedPane.addTab("Repoblado/Sotobosque", null, layeredPaneSotobosque, null);
-
-		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		scrollPane_1.setBackground(Color.WHITE);
-
-		btnGraficasSotobosqueRepoblado = new JButton("Gr\u00E1ficas");
-		btnGraficasSotobosqueRepoblado.setMnemonic('g');
-		btnGraficasSotobosqueRepoblado.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				FrmGraficasSotobosqueRepoblado graficasRepobladoSotobosque = new FrmGraficasSotobosqueRepoblado(ruta);
-				graficasRepobladoSotobosque.setUpmid(upmInt);
-				if (graficasRepobladoSotobosque.isVisible() == false) {
-					graficasRepobladoSotobosque.setVisible(true);
-					desktopPanelCentral.add(graficasRepobladoSotobosque);
-					graficasRepobladoSotobosque.generarBarChartFrecuenciasRepoblado(ruta, upmInt);
-					graficasRepobladoSotobosque.generarBarChartFrecuenciasSotbosque(ruta, upmInt);
-				}
-
-				if (graficasRepobladoSotobosque.isBackgroundSet()) {
-					graficasRepobladoSotobosque.moveToFront();
-				}
-			}
-		});
-
-		JLabel lblEspeciesPorSitio_1 = new JLabel("Especies por sitio Sotobosque");
-		lblEspeciesPorSitio_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblEspeciesPorSitio_1.setFont(new Font("Dialog", Font.BOLD, 16));
-
-		tblEspeciesPorSitioSotobosque = new JTable();
-		tblEspeciesPorSitioSotobosque.setFont(new Font("Dialog", Font.PLAIN, 14));
-		tblEspeciesPorSitioSotobosque.setBackground(Color.DARK_GRAY);
-		tblEspeciesPorSitioSotobosque.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
-		scrollPane_1.setViewportView(tblEspeciesPorSitioSotobosque);
-
-		JScrollPane scrollPane_2 = new JScrollPane();
-		scrollPane_2.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		scrollPane_2.setBackground(Color.WHITE);
-
-		JLabel lblEspeciesPorSitio_2 = new JLabel("Especies por sitio Repoblado");
-		lblEspeciesPorSitio_2.setHorizontalAlignment(SwingConstants.CENTER);
-		lblEspeciesPorSitio_2.setFont(new Font("Dialog", Font.BOLD, 16));
-		GroupLayout gl_layeredPaneSotobosque = new GroupLayout(layeredPaneSotobosque);
-		gl_layeredPaneSotobosque.setHorizontalGroup(gl_layeredPaneSotobosque.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_layeredPaneSotobosque.createSequentialGroup().addGap(12)
-						.addComponent(lblEspeciesPorSitio_1, GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE).addGap(12))
-				.addGroup(gl_layeredPaneSotobosque.createSequentialGroup().addGap(12)
-						.addComponent(scrollPane_1, GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE).addGap(12))
-				.addGroup(gl_layeredPaneSotobosque.createSequentialGroup().addGap(12)
-						.addComponent(lblEspeciesPorSitio_2, GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE).addGap(12))
-				.addGroup(gl_layeredPaneSotobosque.createSequentialGroup().addGap(12)
-						.addComponent(scrollPane_2, GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE).addGap(12))
-				.addGroup(Alignment.TRAILING,
-						gl_layeredPaneSotobosque.createSequentialGroup().addGap(580)
-								.addComponent(btnGraficasSotobosqueRepoblado, GroupLayout.PREFERRED_SIZE, 82,
-										GroupLayout.PREFERRED_SIZE)
-								.addGap(12)));
-		gl_layeredPaneSotobosque.setVerticalGroup(gl_layeredPaneSotobosque.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_layeredPaneSotobosque.createSequentialGroup().addGap(29)
-						.addComponent(lblEspeciesPorSitio_1, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
-						.addGap(6).addComponent(scrollPane_1, GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE).addGap(12)
-						.addComponent(lblEspeciesPorSitio_2, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
-						.addGap(12).addComponent(scrollPane_2, GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
-						.addGap(28).addComponent(btnGraficasSotobosqueRepoblado).addGap(11)));
-
-		tblEspeciesPorSitioRepoblado = new JTable();
-		tblEspeciesPorSitioRepoblado.setBackground(Color.DARK_GRAY);
-		tblEspeciesPorSitioRepoblado.setFont(new Font("Dialog", Font.PLAIN, 14));
-		tblEspeciesPorSitioRepoblado.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
-		scrollPane_2.setViewportView(tblEspeciesPorSitioRepoblado);
-		layeredPaneSotobosque.setLayout(gl_layeredPaneSotobosque);
-
 		scrollPaneInforSitio = new JScrollPane();
 		scrollPaneInforSitio.setBounds(12, 76, 399, 124);
 		scrollPaneInforSitio.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
@@ -1164,8 +1237,28 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 				+ "</td> </tr> </table> </td> </tr> </table> </body> </html>]]></description> 		<styleUrl>#IconStyle04018</styleUrl> 		<gx:balloonVisibility>1</gx:balloonVisibility> 		<Point> 			<coordinates>"
 				+ X + "," + Y
 				+ ",0</coordinates> 		</Point> <NetworkLink>     <name>Circle generator radius 4 meters</name>     <snippet></snippet>     <description><![CDATA[Circle auto-refreshes itself whenever the view changes.<P> To change circle options visit <a href=\"http://kml4earth.appspot.com/circlegen.html?auto=1\">web site</a>.<P> Powered by <a href=\"http://kml4earth.appspot.com/\">Kml4Earth</a>]]></description>     <Link>       <href>https://kml4earth.appspot.com:443/circle.gsp?color=ff00ff00&amp;width=2</href>       <viewRefreshMode>onStop</viewRefreshMode>       <viewRefreshTime>2</viewRefreshTime>       <viewFormat>LookAt=[lookatLon],[lookatLat]&amp;LonLat=[lookatTerrainLon],[lookatTerrainLat]</viewFormat>       <httpQuery>meters=8.0&amp;desc=radius+4+meters</httpQuery>     </Link>   </NetworkLink>   \r\n"
-				+ "	</Placemark> </Document> </kml>";
-		// System.out.println(kml);
+				+ "</Placemark>" + "<Folder>";
+
+		if (accesible_sitio_1 == true) {
+			kml = kml + "<Placemark>" + "<name>Sitio 1</name>" + "<Point>" + "<coordinates>" + X_sitio_1 + ","
+					+ Y_sitio_1 + ",0</coordinates>" + "</Point>" + "</Placemark>";
+		}
+
+		if (accesible_sitio_2 == true) {
+			kml = kml + "<Placemark>" + "<name>Sitio 2</name>" + "<Point>" + "<coordinates>" + X_sitio_2 + ","
+					+ Y_sitio_2 + ",0</coordinates>" + "</Point>" + "</Placemark>";
+		}
+		if (accesible_sitio_3 == true) {
+			kml = kml + "<Placemark>" + "<name>Sitio 3</name>" + "<Point>" + "<coordinates>" + X_sitio_3 + ","
+					+ Y_sitio_3 + ",0</coordinates>" + "</Point>" + "</Placemark>";
+		}
+		if (accesible_sitio_4 == true) {
+			kml = kml + "<Placemark>" + "<name>Sitio 4</name>" + "<Point>" + "<coordinates>" + X_sitio_4 + ","
+					+ Y_sitio_4 + ",0</coordinates>" + "</Point>" + "</Placemark>";
+		}
+		kml = kml + "</Folder> </Document>" + "</kml>";
+
+		//System.out.println("KML\n" + kml);
 		Writer writer = null;
 
 		try {
@@ -1173,12 +1266,13 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path + "\\doc.kml"), "utf-8"));
 			writer.write(kml);
 		} catch (IOException ex) {
-			// report
+			ex.printStackTrace();
 		} finally {
 			try {
 				writer.close();
 			} catch (Exception ex) {
-				/* ignore */}
+				ex.printStackTrace();
+			}
 		}
 
 	}
@@ -1450,6 +1544,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 				}
 			}
 			while (rsExterno.next()) {
+
 				informacionSitioModel.addRow(new Object[] { rsExterno.getString("Sitio"),
 						rsExterno.getString("SitioAccesible"), rsExterno.getString("TipoInaccesibilidad"),
 						rsExterno.getString("DescripcionInaccesibilidad"), rsExterno.getString("Clave"),
@@ -1500,10 +1595,86 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 				txtCondicion.setText(rsExterno.getString("Condicion"));
 
 				chckbxSealGps.setSelected(rsExterno.getBoolean("SenialGPS"));
+				if (chckbxSealGps.isSelected() == true) {
+					txtAzimut.setText("");
+					txtAzimut.setEnabled(false);
+					txtDistancia.setText("");
+					txtDistancia.setEnabled(false);
+				} else {
+					txtAzimut.setEnabled(true);
+					txtDistancia.setEnabled(true);
+				}
 				chckbxEvidenciaDeMuestreo.setSelected(rsExterno.getBoolean("EvidenciaMuestreo"));
 				chckbxAccesible.setSelected(rsExterno.getBoolean("SitioAccesible"));
 				chckbxArbolFuera.setSelected(rsExterno.getBoolean("ArbolFuera"));
 				chckbxEcotono.setSelected(rsExterno.getBoolean("Ecotono"));
+			}
+			baseDatosExterna.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void getCoordenadasSitios(String ruta, String sitio, String UPMID) {
+		String query = "SELECT sitio.SitioAccesible,sitio.Sitio, sitio.GradosLongitud || '°'||sitio.MinutosLongitud || '´'||sitio.SegundosLongitud||'´´' as CoordenadasLongitud, sitio.GradosLatitud || '°'||sitio.MinutosLatitud || '´'||sitio.SegundosLatitud||'´´' as CoordenadasLatitud, -1 * ((-1 * sitio.GradosLongitud) + (sitio.MinutosLongitud / 60.0) +  (sitio.SegundosLongitud / 3600.0)) AS X, sitio.GradosLatitud + (sitio.MinutosLatitud / 60.0) +  (sitio.SegundosLatitud / 3600.0) AS Y from  SITIOS_Sitio sitio where sitio.UPMID="
+				+ UPMID + " and sitio.Sitio=" + sitio;
+		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
+		try {
+			sqlExterno = baseDatosExterna.createStatement();
+			// System.out.println(query);
+			ResultSet rsExterno = sqlExterno.executeQuery(query);
+
+			while (rsExterno.next()) {
+				switch (sitio) {
+				case "1":
+					accesible_sitio_1 = rsExterno.getBoolean("SitioAccesible");
+					X_sitio_1 = rsExterno.getString("X");
+					if (X_sitio_1.equals("0")) {
+						X_sitio_1 = "";
+					}
+					Y_sitio_1 = rsExterno.getString("Y");
+					if (Y_sitio_1.equals("0")) {
+						Y_sitio_1 = "";
+					}
+					break;
+				case "2":
+					accesible_sitio_2 = rsExterno.getBoolean("SitioAccesible");
+					X_sitio_2 = rsExterno.getString("X");
+					if (X_sitio_2.equals("0")) {
+						X_sitio_2 = "";
+					}
+					Y_sitio_2 = rsExterno.getString("Y");
+					if (Y_sitio_2.equals("0")) {
+						Y_sitio_2 = "";
+					}
+					break;
+				case "3":
+					accesible_sitio_3 = rsExterno.getBoolean("SitioAccesible");
+					X_sitio_3 = rsExterno.getString("X");
+					if (X_sitio_3.equals("0")) {
+						X_sitio_3 = "";
+					}
+					Y_sitio_3 = rsExterno.getString("Y");
+					if (Y_sitio_3.equals("0")) {
+						Y_sitio_3 = "";
+					}
+					break;
+				case "4":
+					accesible_sitio_4 = rsExterno.getBoolean("SitioAccesible");
+					X_sitio_4 = rsExterno.getString("X");
+					if (X_sitio_4.equals("0")) {
+						X_sitio_4 = "";
+					}
+					Y_sitio_4 = rsExterno.getString("Y");
+					if (Y_sitio_4.equals("0")) {
+						Y_sitio_4 = "";
+					}
+					break;
+				default:
+					System.err.println("error al obtener coordenadas");
+					break;
+				}
+
 			}
 			baseDatosExterna.close();
 		} catch (Exception e) {

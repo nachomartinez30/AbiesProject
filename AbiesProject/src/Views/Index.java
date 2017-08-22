@@ -18,7 +18,6 @@ import java.awt.GridLayout;
 import javax.swing.JCheckBoxMenuItem;
 import Database.ConfigUserConnection;
 import Database.ExternalConnection;
-import Database.Ruta;
 
 import javax.swing.Box;
 import javax.swing.JLabel;
@@ -56,7 +55,7 @@ public class Index extends JFrame {
 	private JTable table;
 	public String ruta = "";
 
-	Ruta ruta_class = new Ruta();
+
 	private String configUser = "/ConfigUser.db";
 	private String background = "/Icons/";
 	private boolean leftPanel = true;
@@ -84,6 +83,7 @@ public class Index extends JFrame {
 	String google_earth = "";
 	private JMenu mnHerramientas;
 	private JMenuItem mntmConversorXy;
+	private Component horizontalStrut_3;
 
 	/**
 	 * Launch the application.
@@ -323,7 +323,7 @@ public class Index extends JFrame {
 		});
 		mnVentana.add(mntmCambiarFondo);
 
-		JMenuItem mntmFondoHoja = new JMenuItem("Fondo hoja");
+		JMenuItem mntmFondoHoja = new JMenuItem("Fondo cono");
 		mntmFondoHoja.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -343,11 +343,14 @@ public class Index extends JFrame {
 		mntmConversorXy = new JMenuItem("Conversor X,Y");
 		mntmConversorXy.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				FrmConversor conversor = new FrmConversor();
+				FrmConversorCoordenadas conversor = new FrmConversorCoordenadas();
 				conversor.setVisible(true);
 			}
 		});
 		mnHerramientas.add(mntmConversorXy);
+		
+		horizontalStrut_3 = Box.createHorizontalStrut(20);
+		menuBar.add(horizontalStrut_3);
 
 		mnConfiguracin = new JMenu("Configuraci\u00F3n");
 		menuBar.add(mnConfiguracin);
@@ -410,7 +413,6 @@ public class Index extends JFrame {
 		try {
 			File baseDatos = fcBaseDatos.getSelectedFile();
 			ruta = baseDatos.getAbsolutePath();
-			ruta_class.setRuta(baseDatos.getAbsolutePath());
 			int tamanio = ruta.length();
 			int cadena = tamanio - 4;
 			String extension = ruta.substring(cadena, tamanio);

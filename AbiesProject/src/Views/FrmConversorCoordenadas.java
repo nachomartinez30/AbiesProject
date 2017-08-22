@@ -40,7 +40,7 @@ import java.awt.event.FocusEvent;
 import java.awt.Cursor;
 import javax.swing.ListSelectionModel;
 
-public class FrmConversor extends JFrame {
+public class FrmConversorCoordenadas extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField txtLatDecimal;
@@ -65,9 +65,9 @@ public class FrmConversor extends JFrame {
 	public DefaultTableModel coordenadasModelLimpio = new DefaultTableModel();
 
 	
-	public FrmConversor() {
+	public FrmConversorCoordenadas() {
 		setTitle("Conversor coordenadas");
-		setIconImage(Toolkit.getDefaultToolkit().getImage(FrmConversor.class.getResource("/Icons/g5296.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(FrmConversorCoordenadas.class.getResource("/Icons/g5296.png")));
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 476, 582);
 		contentPane = new JPanel();
@@ -357,16 +357,16 @@ public class FrmConversor extends JFrame {
 					.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
 						.addComponent(rdbtnGeograficas, GroupLayout.PREFERRED_SIZE, 106, GroupLayout.PREFERRED_SIZE)
 						.addComponent(rdbtnDecimales, GroupLayout.PREFERRED_SIZE, 106, GroupLayout.PREFERRED_SIZE))
-					.addGap(18)
-					.addGroup(gl_panel_1.createParallelGroup(Alignment.TRAILING)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
+						.addGroup(Alignment.TRAILING, gl_panel_1.createSequentialGroup()
+							.addComponent(txtRuta, GroupLayout.DEFAULT_SIZE, 251, Short.MAX_VALUE)
+							.addGap(11)
+							.addComponent(btnAdjuntar)
+							.addGap(12))
 						.addGroup(gl_panel_1.createSequentialGroup()
 							.addComponent(chckbxAdjuntarArchivo)
-							.addGap(126))
-						.addGroup(gl_panel_1.createSequentialGroup()
-							.addComponent(txtRuta, GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-							.addGap(11)))
-					.addComponent(btnAdjuntar)
-					.addGap(12))
+							.addContainerGap())))
 				.addGroup(gl_panel_1.createSequentialGroup()
 					.addGap(8)
 					.addComponent(separator, GroupLayout.DEFAULT_SIZE, 436, Short.MAX_VALUE)
@@ -426,7 +426,7 @@ public class FrmConversor extends JFrame {
 						.addGroup(gl_panel_1.createSequentialGroup()
 							.addGap(7)
 							.addComponent(chckbxAdjuntarArchivo)
-							.addGap(7)
+							.addPreferredGap(ComponentPlacement.UNRELATED)
 							.addComponent(txtRuta, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 						.addGroup(gl_panel_1.createSequentialGroup()
 							.addGap(36)
