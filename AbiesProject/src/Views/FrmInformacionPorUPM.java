@@ -158,6 +158,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 	String X_sitio_1, Y_sitio_1, X_sitio_2, Y_sitio_2, X_sitio_3, Y_sitio_3, X_sitio_4, Y_sitio_4;
 
 	public FrmInformacionPorUPM(String ruta, JDesktopPane desktopPanelCentral) {
+		setMinimumSize(new Dimension(1309, 888));
 		setTitle("Informacion por UPM");
 		setIconifiable(true);
 		getGoogleEarth(configUser);
@@ -168,7 +169,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		this.desktopPanelCentral = desktopPanelCentral;
 		this.ruta = ruta;
 		setUpmsTotales(ruta);
-		setBounds(100, 100, 1316, 895);
+		setBounds(100, 100, 1309, 888);
 
 		JScrollPane scrollPane = new JScrollPane();
 
@@ -323,6 +324,520 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 
 		JTabbedPane tabbedPane = new JTabbedPane(SwingConstants.TOP);
 		tabbedPane.setAutoscrolls(true);
+		
+				layeredPane = new JLayeredPane();
+				tabbedPane.addTab("Sitio", null, layeredPane, null);
+				
+						cmbSitio = new JComboBox();
+						cmbSitio.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent arg0) {
+								getSitio(ruta, cmbSitio.getSelectedItem().toString(), UPMElegido);
+							}
+						});
+						
+								cmbSitio.setForeground(Color.ORANGE);
+								cmbSitio.setModel(new DefaultComboBoxModel(new String[] { "1", "2", "3", "4" }));
+								
+										JLabel lblSitio = new JLabel("Sitio");
+										lblSitio.setFont(new Font("Dialog", Font.BOLD, 15));
+										lblSitio.setForeground(Color.ORANGE);
+										
+												chckbxSealGps = new JCheckBox("Se\u00F1al GPS");
+												
+														JLabel lblCoordenadasLatitud = new JLabel("Coordenadas latitud");
+														
+																txtLatitud = new JTextField();
+																txtLatitud.addFocusListener(new FocusAdapter() {
+																	@Override
+																	public void focusGained(FocusEvent arg0) {
+																		txtLatitud.selectAll();
+																	}
+																});
+																txtLatitud.setFont(new Font("Dialog", Font.PLAIN, 12));
+																txtLatitud.setColumns(10);
+																
+																		txtLongitud = new JTextField();
+																		txtLongitud.addFocusListener(new FocusAdapter() {
+																			@Override
+																			public void focusGained(FocusEvent arg0) {
+																				txtLongitud.selectAll();
+																			}
+																		});
+																		txtLongitud.setFont(new Font("Dialog", Font.PLAIN, 12));
+																		txtLongitud.setColumns(10);
+																		
+																				JLabel label = new JLabel("Coordenadas longitud");
+																				
+																						JLabel lblEPresicin = new JLabel("E. presici\u00F3n");
+																						
+																								txtErrorPresicion = new JTextField();
+																								txtErrorPresicion.addFocusListener(new FocusAdapter() {
+																									@Override
+																									public void focusGained(FocusEvent arg0) {
+																										txtErrorPresicion.selectAll();
+																									}
+																								});
+																								txtErrorPresicion.setFont(new Font("Dialog", Font.PLAIN, 12));
+																								txtErrorPresicion.setColumns(10);
+																								
+																										chckbxEvidenciaDeMuestreo = new JCheckBox("Evidencia de muestreo");
+																										
+																												JLabel lblTipoInaccesibilidad = new JLabel("Tipo inaccesibilidad");
+																												
+																														txtTipoInaccesibilidad = new JTextField();
+																														txtTipoInaccesibilidad.addFocusListener(new FocusAdapter() {
+																															@Override
+																															public void focusGained(FocusEvent arg0) {
+																																txtTipoInaccesibilidad.selectAll();
+																															}
+																														});
+																														txtTipoInaccesibilidad.setFont(new Font("Dialog", Font.PLAIN, 12));
+																														txtTipoInaccesibilidad.setColumns(10);
+																														
+																																chckbxAccesible = new JCheckBox("Accesible");
+																																chckbxAccesible.setForeground(Color.ORANGE);
+																																chckbxAccesible.setFont(new Font("Dialog", Font.BOLD, 15));
+																																
+																																		JSeparator separator_6 = new JSeparator();
+																																		separator_6.setOrientation(SwingConstants.VERTICAL);
+																																		
+																																				JLabel lblAzimut = new JLabel("Azimut");
+																																				
+																																						txtAzimut = new JTextField();
+																																						txtAzimut.addFocusListener(new FocusAdapter() {
+																																							@Override
+																																							public void focusGained(FocusEvent arg0) {
+																																								txtAzimut.selectAll();
+																																							}
+																																						});
+																																						txtAzimut.setFont(new Font("Dialog", Font.PLAIN, 12));
+																																						txtAzimut.setColumns(10);
+																																						
+																																								JLabel lblDistancia = new JLabel("Distancia");
+																																								
+																																										txtDistancia = new JTextField();
+																																										txtDistancia.addFocusListener(new FocusAdapter() {
+																																											@Override
+																																											public void focusGained(FocusEvent arg0) {
+																																												txtDistancia.selectAll();
+																																											}
+																																										});
+																																										txtDistancia.setFont(new Font("Dialog", Font.PLAIN, 12));
+																																										txtDistancia.setColumns(10);
+																																										
+																																												JLabel lblExplicacion = new JLabel("Explicaci\u00F3n:");
+																																												
+																																														JLabel lblDescripcion = new JLabel("Descripcion:");
+																																														
+																																																txtDescripcionInaccesibilidad = new JTextField();
+																																																txtDescripcionInaccesibilidad.addFocusListener(new FocusAdapter() {
+																																																	@Override
+																																																	public void focusGained(FocusEvent arg0) {
+																																																		txtDescripcionInaccesibilidad.selectAll();
+																																																	}
+																																																});
+																																																txtDescripcionInaccesibilidad.setFont(new Font("Dialog", Font.PLAIN, 12));
+																																																txtDescripcionInaccesibilidad.setColumns(10);
+																																																
+																																																		JLabel lblCoberturaForestal = new JLabel("Cobertura");
+																																																		
+																																																				txtCobertura = new JTextField();
+																																																				txtCobertura.addFocusListener(new FocusAdapter() {
+																																																					@Override
+																																																					public void focusGained(FocusEvent arg0) {
+																																																						txtCobertura.selectAll();
+																																																					}
+																																																				});
+																																																				txtCobertura.setFont(new Font("Dialog", Font.PLAIN, 12));
+																																																				txtCobertura.setColumns(10);
+																																																				
+																																																						JLabel label_1 = new JLabel("Condici\u00F3n");
+																																																						
+																																																								txtCondicion = new JTextField();
+																																																								txtCondicion.addFocusListener(new FocusAdapter() {
+																																																									@Override
+																																																									public void focusGained(FocusEvent arg0) {
+																																																										txtCondicion.selectAll();
+																																																									}
+																																																								});
+																																																								txtCondicion.setFont(new Font("Dialog", Font.PLAIN, 12));
+																																																								txtCondicion.setColumns(10);
+																																																								
+																																																										JLabel label_2 = new JLabel("Tipo de vegetaci\u00F3n");
+																																																										
+																																																												txtTipoVegetacion = new JTextField();
+																																																												txtTipoVegetacion.addFocusListener(new FocusAdapter() {
+																																																													@Override
+																																																													public void focusGained(FocusEvent arg0) {
+																																																														txtTipoVegetacion.selectAll();
+																																																													}
+																																																												});
+																																																												txtTipoVegetacion.setFont(new Font("Dialog", Font.PLAIN, 12));
+																																																												txtTipoVegetacion.setColumns(10);
+																																																												
+																																																														JLabel lblFaseSucecional = new JLabel("Fase sucecional");
+																																																														
+																																																																txtFaseSucecional = new JTextField();
+																																																																txtFaseSucecional.addFocusListener(new FocusAdapter() {
+																																																																	@Override
+																																																																	public void focusGained(FocusEvent arg0) {
+																																																																		txtFaseSucecional.selectAll();
+																																																																	}
+																																																																});
+																																																																txtFaseSucecional.setFont(new Font("Dialog", Font.PLAIN, 12));
+																																																																txtFaseSucecional.setColumns(10);
+																																																																
+																																																																		chckbxArbolFuera = new JCheckBox("Arbol fuera");
+																																																																		
+																																																																				chckbxEcotono = new JCheckBox("Ecotono");
+																																																																				
+																																																																						JLabel label_3 = new JLabel("Condicion presente en campo");
+																																																																						
+																																																																								JLabel label_4 = new JLabel("Observaciones:");
+																																																																								
+																																																																										JLabel lblCueadrante = new JLabel("Cuadrante 1");
+																																																																										
+																																																																												txtCuadrante1 = new JTextField();
+																																																																												txtCuadrante1.addFocusListener(new FocusAdapter() {
+																																																																													@Override
+																																																																													public void focusGained(FocusEvent arg0) {
+																																																																														txtCuadrante1.selectAll();
+																																																																													}
+																																																																												});
+																																																																												txtCuadrante1.setFont(new Font("Dialog", Font.PLAIN, 12));
+																																																																												txtCuadrante1.setColumns(10);
+																																																																												
+																																																																														txtCuadrante2 = new JTextField();
+																																																																														txtCuadrante2.addFocusListener(new FocusAdapter() {
+																																																																															@Override
+																																																																															public void focusGained(FocusEvent arg0) {
+																																																																																txtCuadrante2.selectAll();
+																																																																															}
+																																																																														});
+																																																																														txtCuadrante2.setFont(new Font("Dialog", Font.PLAIN, 12));
+																																																																														txtCuadrante2.setColumns(10);
+																																																																														
+																																																																																JLabel label_5 = new JLabel("Cuadrante 2");
+																																																																																
+																																																																																		txtCuadrante4 = new JTextField();
+																																																																																		txtCuadrante4.addFocusListener(new FocusAdapter() {
+																																																																																			@Override
+																																																																																			public void focusGained(FocusEvent arg0) {
+																																																																																				txtCuadrante4.selectAll();
+																																																																																			}
+																																																																																		});
+																																																																																		txtCuadrante4.setFont(new Font("Dialog", Font.PLAIN, 12));
+																																																																																		txtCuadrante4.setColumns(10);
+																																																																																		
+																																																																																				JLabel label_6 = new JLabel("Cuadrante 4");
+																																																																																				
+																																																																																						JLabel label_7 = new JLabel("Cuadrante 3");
+																																																																																						
+																																																																																								txtCuadrante3 = new JTextField();
+																																																																																								txtCuadrante3.addFocusListener(new FocusAdapter() {
+																																																																																									@Override
+																																																																																									public void focusGained(FocusEvent arg0) {
+																																																																																										txtCuadrante3.selectAll();
+																																																																																									}
+																																																																																								});
+																																																																																								txtCuadrante3.setFont(new Font("Dialog", Font.PLAIN, 12));
+																																																																																								txtCuadrante3.setColumns(10);
+																																																																																								
+																																																																																										JLabel label_8 = new JLabel("Distancia 1");
+																																																																																										
+																																																																																												txtDistancia1 = new JTextField();
+																																																																																												txtDistancia1.addFocusListener(new FocusAdapter() {
+																																																																																													@Override
+																																																																																													public void focusGained(FocusEvent arg0) {
+																																																																																														txtDistancia1.selectAll();
+																																																																																													}
+																																																																																												});
+																																																																																												txtDistancia1.setFont(new Font("Dialog", Font.PLAIN, 12));
+																																																																																												txtDistancia1.setColumns(10);
+																																																																																												
+																																																																																														txtDistancia2 = new JTextField();
+																																																																																														txtDistancia2.addFocusListener(new FocusAdapter() {
+																																																																																															@Override
+																																																																																															public void focusGained(FocusEvent arg0) {
+																																																																																																txtDistancia2.selectAll();
+																																																																																															}
+																																																																																														});
+																																																																																														txtDistancia2.setFont(new Font("Dialog", Font.PLAIN, 12));
+																																																																																														txtDistancia2.setColumns(10);
+																																																																																														
+																																																																																																JLabel label_9 = new JLabel("Distancia 2");
+																																																																																																
+																																																																																																		JLabel label_10 = new JLabel("Distancia 3");
+																																																																																																		
+																																																																																																				txtDistancia3 = new JTextField();
+																																																																																																				txtDistancia3.addFocusListener(new FocusAdapter() {
+																																																																																																					@Override
+																																																																																																					public void focusGained(FocusEvent arg0) {
+																																																																																																						txtDistancia3.selectAll();
+																																																																																																					}
+																																																																																																				});
+																																																																																																				txtDistancia3.setFont(new Font("Dialog", Font.PLAIN, 12));
+																																																																																																				txtDistancia3.setColumns(10);
+																																																																																																				
+																																																																																																						txtDistancia4 = new JTextField();
+																																																																																																						txtDistancia4.addFocusListener(new FocusAdapter() {
+																																																																																																							@Override
+																																																																																																							public void focusGained(FocusEvent arg0) {
+																																																																																																								txtDistancia4.selectAll();
+																																																																																																							}
+																																																																																																						});
+																																																																																																						txtDistancia4.setFont(new Font("Dialog", Font.PLAIN, 12));
+																																																																																																						txtDistancia4.setColumns(10);
+																																																																																																						
+																																																																																																								JLabel label_11 = new JLabel("Distancia 4");
+																																																																																																								
+																																																																																																										scrollPane_3 = new JScrollPane();
+																																																																																																										
+																																																																																																												scrollPane_4 = new JScrollPane();
+																																																																																																												
+																																																																																																														scrollPane_5 = new JScrollPane();
+																																																																																																														
+																																																																																																																txtAExplicacionInaccesibilidad = new JTextArea();
+																																																																																																																txtAExplicacionInaccesibilidad.addFocusListener(new FocusAdapter() {
+																																																																																																																	@Override
+																																																																																																																	public void focusGained(FocusEvent arg0) {
+																																																																																																																		txtAExplicacionInaccesibilidad.selectAll();
+																																																																																																																	}
+																																																																																																																});
+																																																																																																																txtAExplicacionInaccesibilidad.setFont(new Font("Dialog", Font.PLAIN, 12));
+																																																																																																																scrollPane_5.setViewportView(txtAExplicacionInaccesibilidad);
+																																																																																																																
+																																																																																																																		txtAObservaciones = new JTextArea();
+																																																																																																																		txtAObservaciones.addFocusListener(new FocusAdapter() {
+																																																																																																																			@Override
+																																																																																																																			public void focusGained(FocusEvent arg0) {
+																																																																																																																				txtAObservaciones.selectAll();
+																																																																																																																			}
+																																																																																																																		});
+																																																																																																																		txtAObservaciones.setFont(new Font("Dialog", Font.PLAIN, 12));
+																																																																																																																		scrollPane_4.setViewportView(txtAObservaciones);
+																																																																																																																		
+																																																																																																																				txtACondicionPresente = new JTextArea();
+																																																																																																																				txtACondicionPresente.addFocusListener(new FocusAdapter() {
+																																																																																																																					@Override
+																																																																																																																					public void focusGained(FocusEvent arg0) {
+																																																																																																																						txtACondicionPresente.selectAll();
+																																																																																																																					}
+																																																																																																																				});
+																																																																																																																				txtACondicionPresente.setFont(new Font("Dialog", Font.PLAIN, 12));
+																																																																																																																				scrollPane_3.setViewportView(txtACondicionPresente);
+																																																																																																																				GroupLayout gl_layeredPane = new GroupLayout(layeredPane);
+																																																																																																																				gl_layeredPane.setHorizontalGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
+																																																																																																																						.addGroup(Alignment.TRAILING, gl_layeredPane.createSequentialGroup().addGap(386)
+																																																																																																																								.addComponent(lblSitio, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE).addGap(18)
+																																																																																																																								.addComponent(cmbSitio, GroupLayout.PREFERRED_SIZE, 52, GroupLayout.PREFERRED_SIZE).addGap(78)
+																																																																																																																								.addComponent(chckbxAccesible, GroupLayout.PREFERRED_SIZE, 116, GroupLayout.PREFERRED_SIZE)
+																																																																																																																								.addGap(40))
+																																																																																																																						.addGroup(gl_layeredPane.createSequentialGroup().addGap(12).addComponent(chckbxSealGps).addGap(52)
+																																																																																																																								.addComponent(chckbxEvidenciaDeMuestreo).addGap(168).addComponent(lblCoordenadasLatitud)
+																																																																																																																								.addGap(12).addComponent(txtLatitud, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+																																																																																																																										GroupLayout.PREFERRED_SIZE))
+																																																																																																																						.addGroup(gl_layeredPane.createSequentialGroup().addGap(12)
+																																																																																																																								.addComponent(lblAzimut, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE).addGap(18)
+																																																																																																																								.addComponent(txtAzimut, GroupLayout.PREFERRED_SIZE, 66, GroupLayout.PREFERRED_SIZE).addGap(34)
+																																																																																																																								.addComponent(lblDistancia, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE)
+																																																																																																																								.addGap(18)
+																																																																																																																								.addComponent(txtDistancia, GroupLayout.PREFERRED_SIZE, 52, GroupLayout.PREFERRED_SIZE)
+																																																																																																																								.addGap(158)
+																																																																																																																								.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING).addComponent(label)
+																																																																																																																										.addGroup(gl_layeredPane.createSequentialGroup().addGap(58).addComponent(lblEPresicin)))
+																																																																																																																								.addGap(12)
+																																																																																																																								.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
+																																																																																																																										.addComponent(txtLongitud, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+																																																																																																																												GroupLayout.PREFERRED_SIZE)
+																																																																																																																										.addComponent(txtErrorPresicion, GroupLayout.PREFERRED_SIZE, 40,
+																																																																																																																												GroupLayout.PREFERRED_SIZE)))
+																																																																																																																						.addGroup(gl_layeredPane.createSequentialGroup().addGap(27)
+																																																																																																																								.addComponent(lblCoberturaForestal, GroupLayout.PREFERRED_SIZE, 66, GroupLayout.PREFERRED_SIZE)
+																																																																																																																								.addGap(7)
+																																																																																																																								.addComponent(txtCobertura, GroupLayout.PREFERRED_SIZE, 216, GroupLayout.PREFERRED_SIZE))
+																																																																																																																						.addGroup(gl_layeredPane.createSequentialGroup().addGap(27).addGroup(gl_layeredPane
+																																																																																																																								.createParallelGroup(Alignment.LEADING)
+																																																																																																																								.addGroup(gl_layeredPane.createSequentialGroup()
+																																																																																																																										.addComponent(label_1, GroupLayout.PREFERRED_SIZE, 66, GroupLayout.PREFERRED_SIZE)
+																																																																																																																										.addGap(7).addComponent(txtCondicion, GroupLayout.PREFERRED_SIZE, 216,
+																																																																																																																												GroupLayout.PREFERRED_SIZE))
+																																																																																																																								.addGroup(gl_layeredPane.createSequentialGroup()
+																																																																																																																										.addComponent(label_2, GroupLayout.PREFERRED_SIZE, 122, GroupLayout.PREFERRED_SIZE)
+																																																																																																																										.addGap(9).addComponent(txtTipoVegetacion, GroupLayout.PREFERRED_SIZE, 158,
+																																																																																																																												GroupLayout.PREFERRED_SIZE))
+																																																																																																																								.addGroup(gl_layeredPane.createSequentialGroup()
+																																																																																																																										.addComponent(lblFaseSucecional, GroupLayout.PREFERRED_SIZE, 122,
+																																																																																																																												GroupLayout.PREFERRED_SIZE)
+																																																																																																																										.addGap(9).addComponent(txtFaseSucecional, GroupLayout.PREFERRED_SIZE, 158,
+																																																																																																																												GroupLayout.PREFERRED_SIZE))
+																																																																																																																								.addGroup(gl_layeredPane.createSequentialGroup()
+																																																																																																																										.addComponent(chckbxArbolFuera, GroupLayout.PREFERRED_SIZE, 116,
+																																																																																																																												GroupLayout.PREFERRED_SIZE)
+																																																																																																																										.addGap(57).addComponent(chckbxEcotono, GroupLayout.PREFERRED_SIZE, 116,
+																																																																																																																												GroupLayout.PREFERRED_SIZE))
+																																																																																																																								.addComponent(label_3, GroupLayout.PREFERRED_SIZE, 289, GroupLayout.PREFERRED_SIZE)
+																																																																																																																								.addGroup(gl_layeredPane.createSequentialGroup()
+																																																																																																																										.addComponent(scrollPane_3, GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE).addGap(7))
+																																																																																																																								.addComponent(label_4, GroupLayout.PREFERRED_SIZE, 289, GroupLayout.PREFERRED_SIZE)
+																																																																																																																								.addGroup(gl_layeredPane.createSequentialGroup()
+																																																																																																																										.addComponent(scrollPane_4, GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE).addGap(7))
+																																																																																																																								.addGroup(gl_layeredPane.createSequentialGroup()
+																																																																																																																										.addComponent(lblCueadrante, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE)
+																																																																																																																										.addGap(3)
+																																																																																																																										.addComponent(txtCuadrante1, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE)
+																																																																																																																										.addGap(31)
+																																																																																																																										.addComponent(label_8, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE)
+																																																																																																																										.addGap(3).addComponent(txtDistancia1, GroupLayout.PREFERRED_SIZE, 55,
+																																																																																																																												GroupLayout.PREFERRED_SIZE))
+																																																																																																																								.addGroup(gl_layeredPane.createSequentialGroup()
+																																																																																																																										.addComponent(label_5, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE)
+																																																																																																																										.addGap(3)
+																																																																																																																										.addComponent(txtCuadrante2, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE)
+																																																																																																																										.addGap(31)
+																																																																																																																										.addComponent(label_9, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE)
+																																																																																																																										.addGap(3).addComponent(txtDistancia2, GroupLayout.PREFERRED_SIZE, 55,
+																																																																																																																												GroupLayout.PREFERRED_SIZE))
+																																																																																																																								.addGroup(gl_layeredPane.createSequentialGroup()
+																																																																																																																										.addComponent(label_7, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE)
+																																																																																																																										.addGap(3)
+																																																																																																																										.addComponent(txtCuadrante3, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE)
+																																																																																																																										.addGap(31)
+																																																																																																																										.addComponent(label_10, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE)
+																																																																																																																										.addGap(3).addComponent(txtDistancia3, GroupLayout.PREFERRED_SIZE, 55,
+																																																																																																																												GroupLayout.PREFERRED_SIZE))
+																																																																																																																								.addGroup(gl_layeredPane.createSequentialGroup()
+																																																																																																																										.addComponent(label_6, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE)
+																																																																																																																										.addGap(3)
+																																																																																																																										.addComponent(txtCuadrante4, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE)
+																																																																																																																										.addGap(31)
+																																																																																																																										.addComponent(label_11, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE)
+																																																																																																																										.addGap(3).addComponent(txtDistancia4, GroupLayout.PREFERRED_SIZE, 55,
+																																																																																																																												GroupLayout.PREFERRED_SIZE)))
+																																																																																																																								.addGap(60)
+																																																																																																																								.addComponent(separator_6, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+																																																																																																																								.addGap(28)
+																																																																																																																								.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
+																																																																																																																										.addGroup(gl_layeredPane.createSequentialGroup().addGap(4).addComponent(
+																																																																																																																												lblTipoInaccesibilidad, GroupLayout.PREFERRED_SIZE, 216,
+																																																																																																																												GroupLayout.PREFERRED_SIZE))
+																																																																																																																										.addGroup(gl_layeredPane.createSequentialGroup().addGap(4).addComponent(
+																																																																																																																												txtTipoInaccesibilidad, GroupLayout.PREFERRED_SIZE, 216,
+																																																																																																																												GroupLayout.PREFERRED_SIZE))
+																																																																																																																										.addGroup(gl_layeredPane.createSequentialGroup().addGap(4).addComponent(lblDescripcion,
+																																																																																																																												GroupLayout.PREFERRED_SIZE, 216, GroupLayout.PREFERRED_SIZE))
+																																																																																																																										.addGroup(gl_layeredPane.createSequentialGroup().addGap(4).addComponent(
+																																																																																																																												txtDescripcionInaccesibilidad, GroupLayout.PREFERRED_SIZE, 216,
+																																																																																																																												GroupLayout.PREFERRED_SIZE))
+																																																																																																																										.addComponent(lblExplicacion, GroupLayout.PREFERRED_SIZE, 274,
+																																																																																																																												GroupLayout.PREFERRED_SIZE)
+																																																																																																																										.addComponent(scrollPane_5, GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE))
+																																																																																																																								.addGap(12)));
+																																																																																																																				gl_layeredPane.setVerticalGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING).addGroup(gl_layeredPane
+																																																																																																																						.createSequentialGroup().addGap(8)
+																																																																																																																						.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
+																																																																																																																								.addGroup(gl_layeredPane.createSequentialGroup().addGap(4).addComponent(lblSitio,
+																																																																																																																										GroupLayout.PREFERRED_SIZE, 16, GroupLayout.PREFERRED_SIZE))
+																																																																																																																								.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(cmbSitio,
+																																																																																																																										GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE))
+																																																																																																																								.addComponent(chckbxAccesible, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE))
+																																																																																																																						.addGap(26)
+																																																																																																																						.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
+																																																																																																																								.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(chckbxSealGps))
+																																																																																																																								.addGroup(gl_layeredPane.createSequentialGroup().addGap(2)
+																																																																																																																										.addComponent(chckbxEvidenciaDeMuestreo))
+																																																																																																																								.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(lblCoordenadasLatitud))
+																																																																																																																								.addComponent(txtLatitud, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+																																																																																																																										GroupLayout.PREFERRED_SIZE))
+																																																																																																																						.addGap(4)
+																																																																																																																						.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
+																																																																																																																								.addGroup(gl_layeredPane.createSequentialGroup().addGap(16).addComponent(lblAzimut))
+																																																																																																																								.addGroup(gl_layeredPane.createSequentialGroup().addGap(14).addComponent(txtAzimut,
+																																																																																																																										GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+																																																																																																																								.addGroup(gl_layeredPane.createSequentialGroup().addGap(16).addComponent(lblDistancia))
+																																																																																																																								.addGroup(gl_layeredPane.createSequentialGroup().addGap(14).addComponent(txtDistancia,
+																																																																																																																										GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+																																																																																																																								.addGroup(gl_layeredPane.createSequentialGroup().addComponent(label).addGap(18)
+																																																																																																																										.addComponent(lblEPresicin))
+																																																																																																																								.addGroup(gl_layeredPane.createSequentialGroup()
+																																																																																																																										.addComponent(txtLongitud, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+																																																																																																																												GroupLayout.PREFERRED_SIZE)
+																																																																																																																										.addGap(12).addComponent(txtErrorPresicion, GroupLayout.PREFERRED_SIZE,
+																																																																																																																												GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+																																																																																																																						.addGap(22)
+																																																																																																																						.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
+																																																																																																																								.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(lblCoberturaForestal))
+																																																																																																																								.addComponent(txtCobertura, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+																																																																																																																										GroupLayout.PREFERRED_SIZE))
+																																																																																																																						.addGap(5)
+																																																																																																																						.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING).addGroup(gl_layeredPane
+																																																																																																																								.createSequentialGroup().addGap(5)
+																																																																																																																								.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
+																																																																																																																										.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(label_1))
+																																																																																																																										.addComponent(txtCondicion, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+																																																																																																																												GroupLayout.PREFERRED_SIZE))
+																																																																																																																								.addGap(12)
+																																																																																																																								.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
+																																																																																																																										.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(label_2))
+																																																																																																																										.addComponent(txtTipoVegetacion, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+																																																																																																																												GroupLayout.PREFERRED_SIZE))
+																																																																																																																								.addGap(10)
+																																																																																																																								.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
+																																																																																																																										.addGroup(gl_layeredPane.createSequentialGroup().addGap(2)
+																																																																																																																												.addComponent(lblFaseSucecional))
+																																																																																																																										.addComponent(txtFaseSucecional, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+																																																																																																																												GroupLayout.PREFERRED_SIZE))
+																																																																																																																								.addGap(32)
+																																																																																																																								.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING).addComponent(chckbxArbolFuera)
+																																																																																																																										.addComponent(chckbxEcotono))
+																																																																																																																								.addGap(18).addComponent(label_3).addGap(6)
+																																																																																																																								.addComponent(scrollPane_3, GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE).addGap(12)
+																																																																																																																								.addComponent(label_4).addGap(6)
+																																																																																																																								.addComponent(scrollPane_4, GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE).addGap(31)
+																																																																																																																								.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
+																																																																																																																										.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(lblCueadrante))
+																																																																																																																										.addComponent(txtCuadrante1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+																																																																																																																												GroupLayout.PREFERRED_SIZE)
+																																																																																																																										.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(label_8))
+																																																																																																																										.addComponent(txtDistancia1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+																																																																																																																												GroupLayout.PREFERRED_SIZE))
+																																																																																																																								.addGap(5)
+																																																																																																																								.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
+																																																																																																																										.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(label_5))
+																																																																																																																										.addComponent(txtCuadrante2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+																																																																																																																												GroupLayout.PREFERRED_SIZE)
+																																																																																																																										.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(label_9))
+																																																																																																																										.addComponent(txtDistancia2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+																																																																																																																												GroupLayout.PREFERRED_SIZE))
+																																																																																																																								.addGap(6)
+																																																																																																																								.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
+																																																																																																																										.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(label_7))
+																																																																																																																										.addComponent(txtCuadrante3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+																																																																																																																												GroupLayout.PREFERRED_SIZE)
+																																																																																																																										.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(label_10))
+																																																																																																																										.addComponent(txtDistancia3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+																																																																																																																												GroupLayout.PREFERRED_SIZE))
+																																																																																																																								.addGap(5)
+																																																																																																																								.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
+																																																																																																																										.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(label_6))
+																																																																																																																										.addComponent(txtCuadrante4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+																																																																																																																												GroupLayout.PREFERRED_SIZE)
+																																																																																																																										.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(label_11))
+																																																																																																																										.addComponent(txtDistancia4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+																																																																																																																												GroupLayout.PREFERRED_SIZE))
+																																																																																																																								.addGap(47))
+																																																																																																																								.addComponent(separator_6, GroupLayout.PREFERRED_SIZE, 611, GroupLayout.PREFERRED_SIZE)
+																																																																																																																								.addGroup(gl_layeredPane.createSequentialGroup().addGap(7).addComponent(lblTipoInaccesibilidad)
+																																																																																																																										.addGap(12)
+																																																																																																																										.addComponent(txtTipoInaccesibilidad, GroupLayout.PREFERRED_SIZE,
+																																																																																																																												GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+																																																																																																																										.addGap(12).addComponent(lblDescripcion).addGap(3)
+																																																																																																																										.addComponent(txtDescripcionInaccesibilidad, GroupLayout.PREFERRED_SIZE,
+																																																																																																																												GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+																																																																																																																										.addGap(77).addComponent(lblExplicacion).addGap(6)
+																																																																																																																										.addComponent(scrollPane_5, GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
+																																																																																																																										.addGap(216)))));
+																																																																																																																				layeredPane.setLayout(gl_layeredPane);
 
 		JLayeredPane layeredPaneArbolado = new JLayeredPane();
 		layeredPaneArbolado.setAutoscrolls(true);
@@ -642,520 +1157,6 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		scrollPane_2.setViewportView(tblEspeciesPorSitioRepoblado);
 		layeredPaneSotobosque.setLayout(gl_layeredPaneSotobosque);
 
-		layeredPane = new JLayeredPane();
-		tabbedPane.addTab("Sitio", null, layeredPane, null);
-
-		cmbSitio = new JComboBox();
-		cmbSitio.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				getSitio(ruta, cmbSitio.getSelectedItem().toString(), UPMElegido);
-			}
-		});
-
-		cmbSitio.setForeground(Color.ORANGE);
-		cmbSitio.setModel(new DefaultComboBoxModel(new String[] { "1", "2", "3", "4" }));
-
-		JLabel lblSitio = new JLabel("Sitio");
-		lblSitio.setFont(new Font("Dialog", Font.BOLD, 15));
-		lblSitio.setForeground(Color.ORANGE);
-
-		chckbxSealGps = new JCheckBox("Se\u00F1al GPS");
-
-		JLabel lblCoordenadasLatitud = new JLabel("Coordenadas latitud");
-
-		txtLatitud = new JTextField();
-		txtLatitud.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent arg0) {
-				txtLatitud.selectAll();
-			}
-		});
-		txtLatitud.setFont(new Font("Dialog", Font.PLAIN, 12));
-		txtLatitud.setColumns(10);
-
-		txtLongitud = new JTextField();
-		txtLongitud.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent arg0) {
-				txtLongitud.selectAll();
-			}
-		});
-		txtLongitud.setFont(new Font("Dialog", Font.PLAIN, 12));
-		txtLongitud.setColumns(10);
-
-		JLabel label = new JLabel("Coordenadas longitud");
-
-		JLabel lblEPresicin = new JLabel("E. presici\u00F3n");
-
-		txtErrorPresicion = new JTextField();
-		txtErrorPresicion.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent arg0) {
-				txtErrorPresicion.selectAll();
-			}
-		});
-		txtErrorPresicion.setFont(new Font("Dialog", Font.PLAIN, 12));
-		txtErrorPresicion.setColumns(10);
-
-		chckbxEvidenciaDeMuestreo = new JCheckBox("Evidencia de muestreo");
-
-		JLabel lblTipoInaccesibilidad = new JLabel("Tipo inaccesibilidad");
-
-		txtTipoInaccesibilidad = new JTextField();
-		txtTipoInaccesibilidad.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent arg0) {
-				txtTipoInaccesibilidad.selectAll();
-			}
-		});
-		txtTipoInaccesibilidad.setFont(new Font("Dialog", Font.PLAIN, 12));
-		txtTipoInaccesibilidad.setColumns(10);
-
-		chckbxAccesible = new JCheckBox("Accesible");
-		chckbxAccesible.setForeground(Color.ORANGE);
-		chckbxAccesible.setFont(new Font("Dialog", Font.BOLD, 15));
-
-		JSeparator separator_6 = new JSeparator();
-		separator_6.setOrientation(SwingConstants.VERTICAL);
-
-		JLabel lblAzimut = new JLabel("Azimut");
-
-		txtAzimut = new JTextField();
-		txtAzimut.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent arg0) {
-				txtAzimut.selectAll();
-			}
-		});
-		txtAzimut.setFont(new Font("Dialog", Font.PLAIN, 12));
-		txtAzimut.setColumns(10);
-
-		JLabel lblDistancia = new JLabel("Distancia");
-
-		txtDistancia = new JTextField();
-		txtDistancia.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent arg0) {
-				txtDistancia.selectAll();
-			}
-		});
-		txtDistancia.setFont(new Font("Dialog", Font.PLAIN, 12));
-		txtDistancia.setColumns(10);
-
-		JLabel lblExplicacion = new JLabel("Explicaci\u00F3n:");
-
-		JLabel lblDescripcion = new JLabel("Descripcion:");
-
-		txtDescripcionInaccesibilidad = new JTextField();
-		txtDescripcionInaccesibilidad.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent arg0) {
-				txtDescripcionInaccesibilidad.selectAll();
-			}
-		});
-		txtDescripcionInaccesibilidad.setFont(new Font("Dialog", Font.PLAIN, 12));
-		txtDescripcionInaccesibilidad.setColumns(10);
-
-		JLabel lblCoberturaForestal = new JLabel("Cobertura");
-
-		txtCobertura = new JTextField();
-		txtCobertura.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent arg0) {
-				txtCobertura.selectAll();
-			}
-		});
-		txtCobertura.setFont(new Font("Dialog", Font.PLAIN, 12));
-		txtCobertura.setColumns(10);
-
-		JLabel label_1 = new JLabel("Condici\u00F3n");
-
-		txtCondicion = new JTextField();
-		txtCondicion.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent arg0) {
-				txtCondicion.selectAll();
-			}
-		});
-		txtCondicion.setFont(new Font("Dialog", Font.PLAIN, 12));
-		txtCondicion.setColumns(10);
-
-		JLabel label_2 = new JLabel("Tipo de vegetaci\u00F3n");
-
-		txtTipoVegetacion = new JTextField();
-		txtTipoVegetacion.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent arg0) {
-				txtTipoVegetacion.selectAll();
-			}
-		});
-		txtTipoVegetacion.setFont(new Font("Dialog", Font.PLAIN, 12));
-		txtTipoVegetacion.setColumns(10);
-
-		JLabel lblFaseSucecional = new JLabel("Fase sucecional");
-
-		txtFaseSucecional = new JTextField();
-		txtFaseSucecional.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent arg0) {
-				txtFaseSucecional.selectAll();
-			}
-		});
-		txtFaseSucecional.setFont(new Font("Dialog", Font.PLAIN, 12));
-		txtFaseSucecional.setColumns(10);
-
-		chckbxArbolFuera = new JCheckBox("Arbol fuera");
-
-		chckbxEcotono = new JCheckBox("Ecotono");
-
-		JLabel label_3 = new JLabel("Condicion presente en campo");
-
-		JLabel label_4 = new JLabel("Observaciones:");
-
-		JLabel lblCueadrante = new JLabel("Cuadrante 1");
-
-		txtCuadrante1 = new JTextField();
-		txtCuadrante1.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent arg0) {
-				txtCuadrante1.selectAll();
-			}
-		});
-		txtCuadrante1.setFont(new Font("Dialog", Font.PLAIN, 12));
-		txtCuadrante1.setColumns(10);
-
-		txtCuadrante2 = new JTextField();
-		txtCuadrante2.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent arg0) {
-				txtCuadrante2.selectAll();
-			}
-		});
-		txtCuadrante2.setFont(new Font("Dialog", Font.PLAIN, 12));
-		txtCuadrante2.setColumns(10);
-
-		JLabel label_5 = new JLabel("Cuadrante 2");
-
-		txtCuadrante4 = new JTextField();
-		txtCuadrante4.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent arg0) {
-				txtCuadrante4.selectAll();
-			}
-		});
-		txtCuadrante4.setFont(new Font("Dialog", Font.PLAIN, 12));
-		txtCuadrante4.setColumns(10);
-
-		JLabel label_6 = new JLabel("Cuadrante 4");
-
-		JLabel label_7 = new JLabel("Cuadrante 3");
-
-		txtCuadrante3 = new JTextField();
-		txtCuadrante3.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent arg0) {
-				txtCuadrante3.selectAll();
-			}
-		});
-		txtCuadrante3.setFont(new Font("Dialog", Font.PLAIN, 12));
-		txtCuadrante3.setColumns(10);
-
-		JLabel label_8 = new JLabel("Distancia 1");
-
-		txtDistancia1 = new JTextField();
-		txtDistancia1.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent arg0) {
-				txtDistancia1.selectAll();
-			}
-		});
-		txtDistancia1.setFont(new Font("Dialog", Font.PLAIN, 12));
-		txtDistancia1.setColumns(10);
-
-		txtDistancia2 = new JTextField();
-		txtDistancia2.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent arg0) {
-				txtDistancia2.selectAll();
-			}
-		});
-		txtDistancia2.setFont(new Font("Dialog", Font.PLAIN, 12));
-		txtDistancia2.setColumns(10);
-
-		JLabel label_9 = new JLabel("Distancia 2");
-
-		JLabel label_10 = new JLabel("Distancia 3");
-
-		txtDistancia3 = new JTextField();
-		txtDistancia3.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent arg0) {
-				txtDistancia3.selectAll();
-			}
-		});
-		txtDistancia3.setFont(new Font("Dialog", Font.PLAIN, 12));
-		txtDistancia3.setColumns(10);
-
-		txtDistancia4 = new JTextField();
-		txtDistancia4.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent arg0) {
-				txtDistancia4.selectAll();
-			}
-		});
-		txtDistancia4.setFont(new Font("Dialog", Font.PLAIN, 12));
-		txtDistancia4.setColumns(10);
-
-		JLabel label_11 = new JLabel("Distancia 4");
-
-		scrollPane_3 = new JScrollPane();
-
-		scrollPane_4 = new JScrollPane();
-
-		scrollPane_5 = new JScrollPane();
-
-		txtAExplicacionInaccesibilidad = new JTextArea();
-		txtAExplicacionInaccesibilidad.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent arg0) {
-				txtAExplicacionInaccesibilidad.selectAll();
-			}
-		});
-		txtAExplicacionInaccesibilidad.setFont(new Font("Dialog", Font.PLAIN, 12));
-		scrollPane_5.setViewportView(txtAExplicacionInaccesibilidad);
-
-		txtAObservaciones = new JTextArea();
-		txtAObservaciones.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent arg0) {
-				txtAObservaciones.selectAll();
-			}
-		});
-		txtAObservaciones.setFont(new Font("Dialog", Font.PLAIN, 12));
-		scrollPane_4.setViewportView(txtAObservaciones);
-
-		txtACondicionPresente = new JTextArea();
-		txtACondicionPresente.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent arg0) {
-				txtACondicionPresente.selectAll();
-			}
-		});
-		txtACondicionPresente.setFont(new Font("Dialog", Font.PLAIN, 12));
-		scrollPane_3.setViewportView(txtACondicionPresente);
-		GroupLayout gl_layeredPane = new GroupLayout(layeredPane);
-		gl_layeredPane.setHorizontalGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
-				.addGroup(Alignment.TRAILING, gl_layeredPane.createSequentialGroup().addGap(386)
-						.addComponent(lblSitio, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE).addGap(18)
-						.addComponent(cmbSitio, GroupLayout.PREFERRED_SIZE, 52, GroupLayout.PREFERRED_SIZE).addGap(78)
-						.addComponent(chckbxAccesible, GroupLayout.PREFERRED_SIZE, 116, GroupLayout.PREFERRED_SIZE)
-						.addGap(40))
-				.addGroup(gl_layeredPane.createSequentialGroup().addGap(12).addComponent(chckbxSealGps).addGap(52)
-						.addComponent(chckbxEvidenciaDeMuestreo).addGap(168).addComponent(lblCoordenadasLatitud)
-						.addGap(12).addComponent(txtLatitud, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-								GroupLayout.PREFERRED_SIZE))
-				.addGroup(gl_layeredPane.createSequentialGroup().addGap(12)
-						.addComponent(lblAzimut, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE).addGap(18)
-						.addComponent(txtAzimut, GroupLayout.PREFERRED_SIZE, 66, GroupLayout.PREFERRED_SIZE).addGap(34)
-						.addComponent(lblDistancia, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE)
-						.addGap(18)
-						.addComponent(txtDistancia, GroupLayout.PREFERRED_SIZE, 52, GroupLayout.PREFERRED_SIZE)
-						.addGap(158)
-						.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING).addComponent(label)
-								.addGroup(gl_layeredPane.createSequentialGroup().addGap(58).addComponent(lblEPresicin)))
-						.addGap(12)
-						.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
-								.addComponent(txtLongitud, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
-								.addComponent(txtErrorPresicion, GroupLayout.PREFERRED_SIZE, 40,
-										GroupLayout.PREFERRED_SIZE)))
-				.addGroup(gl_layeredPane.createSequentialGroup().addGap(27)
-						.addComponent(lblCoberturaForestal, GroupLayout.PREFERRED_SIZE, 66, GroupLayout.PREFERRED_SIZE)
-						.addGap(7)
-						.addComponent(txtCobertura, GroupLayout.PREFERRED_SIZE, 216, GroupLayout.PREFERRED_SIZE))
-				.addGroup(gl_layeredPane.createSequentialGroup().addGap(27).addGroup(gl_layeredPane
-						.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_layeredPane.createSequentialGroup()
-								.addComponent(label_1, GroupLayout.PREFERRED_SIZE, 66, GroupLayout.PREFERRED_SIZE)
-								.addGap(7).addComponent(txtCondicion, GroupLayout.PREFERRED_SIZE, 216,
-										GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_layeredPane.createSequentialGroup()
-								.addComponent(label_2, GroupLayout.PREFERRED_SIZE, 122, GroupLayout.PREFERRED_SIZE)
-								.addGap(9).addComponent(txtTipoVegetacion, GroupLayout.PREFERRED_SIZE, 158,
-										GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_layeredPane.createSequentialGroup()
-								.addComponent(lblFaseSucecional, GroupLayout.PREFERRED_SIZE, 122,
-										GroupLayout.PREFERRED_SIZE)
-								.addGap(9).addComponent(txtFaseSucecional, GroupLayout.PREFERRED_SIZE, 158,
-										GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_layeredPane.createSequentialGroup()
-								.addComponent(chckbxArbolFuera, GroupLayout.PREFERRED_SIZE, 116,
-										GroupLayout.PREFERRED_SIZE)
-								.addGap(57).addComponent(chckbxEcotono, GroupLayout.PREFERRED_SIZE, 116,
-										GroupLayout.PREFERRED_SIZE))
-						.addComponent(label_3, GroupLayout.PREFERRED_SIZE, 289, GroupLayout.PREFERRED_SIZE)
-						.addGroup(gl_layeredPane.createSequentialGroup()
-								.addComponent(scrollPane_3, GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE).addGap(7))
-						.addComponent(label_4, GroupLayout.PREFERRED_SIZE, 289, GroupLayout.PREFERRED_SIZE)
-						.addGroup(gl_layeredPane.createSequentialGroup()
-								.addComponent(scrollPane_4, GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE).addGap(7))
-						.addGroup(gl_layeredPane.createSequentialGroup()
-								.addComponent(lblCueadrante, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE)
-								.addGap(3)
-								.addComponent(txtCuadrante1, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE)
-								.addGap(31)
-								.addComponent(label_8, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE)
-								.addGap(3).addComponent(txtDistancia1, GroupLayout.PREFERRED_SIZE, 55,
-										GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_layeredPane.createSequentialGroup()
-								.addComponent(label_5, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE)
-								.addGap(3)
-								.addComponent(txtCuadrante2, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE)
-								.addGap(31)
-								.addComponent(label_9, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE)
-								.addGap(3).addComponent(txtDistancia2, GroupLayout.PREFERRED_SIZE, 55,
-										GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_layeredPane.createSequentialGroup()
-								.addComponent(label_7, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE)
-								.addGap(3)
-								.addComponent(txtCuadrante3, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE)
-								.addGap(31)
-								.addComponent(label_10, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE)
-								.addGap(3).addComponent(txtDistancia3, GroupLayout.PREFERRED_SIZE, 55,
-										GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_layeredPane.createSequentialGroup()
-								.addComponent(label_6, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE)
-								.addGap(3)
-								.addComponent(txtCuadrante4, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE)
-								.addGap(31)
-								.addComponent(label_11, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE)
-								.addGap(3).addComponent(txtDistancia4, GroupLayout.PREFERRED_SIZE, 55,
-										GroupLayout.PREFERRED_SIZE)))
-						.addGap(60)
-						.addComponent(separator_6, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
-						.addGap(28)
-						.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
-								.addGroup(gl_layeredPane.createSequentialGroup().addGap(4).addComponent(
-										lblTipoInaccesibilidad, GroupLayout.PREFERRED_SIZE, 216,
-										GroupLayout.PREFERRED_SIZE))
-								.addGroup(gl_layeredPane.createSequentialGroup().addGap(4).addComponent(
-										txtTipoInaccesibilidad, GroupLayout.PREFERRED_SIZE, 216,
-										GroupLayout.PREFERRED_SIZE))
-								.addGroup(gl_layeredPane.createSequentialGroup().addGap(4).addComponent(lblDescripcion,
-										GroupLayout.PREFERRED_SIZE, 216, GroupLayout.PREFERRED_SIZE))
-								.addGroup(gl_layeredPane.createSequentialGroup().addGap(4).addComponent(
-										txtDescripcionInaccesibilidad, GroupLayout.PREFERRED_SIZE, 216,
-										GroupLayout.PREFERRED_SIZE))
-								.addComponent(lblExplicacion, GroupLayout.PREFERRED_SIZE, 274,
-										GroupLayout.PREFERRED_SIZE)
-								.addComponent(scrollPane_5, GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE))
-						.addGap(12)));
-		gl_layeredPane.setVerticalGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING).addGroup(gl_layeredPane
-				.createSequentialGroup().addGap(8)
-				.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_layeredPane.createSequentialGroup().addGap(4).addComponent(lblSitio,
-								GroupLayout.PREFERRED_SIZE, 16, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(cmbSitio,
-								GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE))
-						.addComponent(chckbxAccesible, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE))
-				.addGap(26)
-				.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(chckbxSealGps))
-						.addGroup(gl_layeredPane.createSequentialGroup().addGap(2)
-								.addComponent(chckbxEvidenciaDeMuestreo))
-						.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(lblCoordenadasLatitud))
-						.addComponent(txtLatitud, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-								GroupLayout.PREFERRED_SIZE))
-				.addGap(4)
-				.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_layeredPane.createSequentialGroup().addGap(16).addComponent(lblAzimut))
-						.addGroup(gl_layeredPane.createSequentialGroup().addGap(14).addComponent(txtAzimut,
-								GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_layeredPane.createSequentialGroup().addGap(16).addComponent(lblDistancia))
-						.addGroup(gl_layeredPane.createSequentialGroup().addGap(14).addComponent(txtDistancia,
-								GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_layeredPane.createSequentialGroup().addComponent(label).addGap(18)
-								.addComponent(lblEPresicin))
-						.addGroup(gl_layeredPane.createSequentialGroup()
-								.addComponent(txtLongitud, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
-								.addGap(12).addComponent(txtErrorPresicion, GroupLayout.PREFERRED_SIZE,
-										GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
-				.addGap(22)
-				.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(lblCoberturaForestal))
-						.addComponent(txtCobertura, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-								GroupLayout.PREFERRED_SIZE))
-				.addGap(5)
-				.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING).addGroup(gl_layeredPane
-						.createSequentialGroup().addGap(5)
-						.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
-								.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(label_1))
-								.addComponent(txtCondicion, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE))
-						.addGap(12)
-						.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
-								.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(label_2))
-								.addComponent(txtTipoVegetacion, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE))
-						.addGap(10)
-						.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
-								.addGroup(gl_layeredPane.createSequentialGroup().addGap(2)
-										.addComponent(lblFaseSucecional))
-								.addComponent(txtFaseSucecional, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE))
-						.addGap(32)
-						.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING).addComponent(chckbxArbolFuera)
-								.addComponent(chckbxEcotono))
-						.addGap(18).addComponent(label_3).addGap(6)
-						.addComponent(scrollPane_3, GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE).addGap(12)
-						.addComponent(label_4).addGap(6)
-						.addComponent(scrollPane_4, GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE).addGap(31)
-						.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
-								.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(lblCueadrante))
-								.addComponent(txtCuadrante1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
-								.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(label_8))
-								.addComponent(txtDistancia1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE))
-						.addGap(5)
-						.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
-								.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(label_5))
-								.addComponent(txtCuadrante2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
-								.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(label_9))
-								.addComponent(txtDistancia2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE))
-						.addGap(6)
-						.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
-								.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(label_7))
-								.addComponent(txtCuadrante3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
-								.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(label_10))
-								.addComponent(txtDistancia3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE))
-						.addGap(5)
-						.addGroup(gl_layeredPane.createParallelGroup(Alignment.LEADING)
-								.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(label_6))
-								.addComponent(txtCuadrante4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
-								.addGroup(gl_layeredPane.createSequentialGroup().addGap(2).addComponent(label_11))
-								.addComponent(txtDistancia4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE))
-						.addGap(47))
-						.addComponent(separator_6, GroupLayout.PREFERRED_SIZE, 611, GroupLayout.PREFERRED_SIZE)
-						.addGroup(gl_layeredPane.createSequentialGroup().addGap(7).addComponent(lblTipoInaccesibilidad)
-								.addGap(12)
-								.addComponent(txtTipoInaccesibilidad, GroupLayout.PREFERRED_SIZE,
-										GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addGap(12).addComponent(lblDescripcion).addGap(3)
-								.addComponent(txtDescripcionInaccesibilidad, GroupLayout.PREFERRED_SIZE,
-										GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addGap(77).addComponent(lblExplicacion).addGap(6)
-								.addComponent(scrollPane_5, GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
-								.addGap(216)))));
-		layeredPane.setLayout(gl_layeredPane);
-
 		scrollPaneInforSitio = new JScrollPane();
 		scrollPaneInforSitio.setBounds(12, 76, 399, 124);
 		scrollPaneInforSitio.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
@@ -1170,7 +1171,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		lblInformacinDeSitios.setFont(new Font("Dialog", Font.BOLD, 16));
 
 		btnVerEnMapa = new JButton("Ver en mapa");
-		btnVerEnMapa.setBounds(196, 746, 88, 24);
+		btnVerEnMapa.setBounds(12, 211, 88, 24);
 		btnVerEnMapa.setEnabled(false);
 		btnVerEnMapa.setMnemonic('v');
 		btnVerEnMapa.addActionListener(new ActionListener() {
@@ -1187,8 +1188,15 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		panel_2.setLayout(null);
 
 		lblS1 = new JLabel("");
+		lblS1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				getSitio(ruta, "1", UPMElegido);
+				cmbSitio.setSelectedItem("1");
+			}
+		});
 		lblS1.setBorder(null);
-		lblS1.setBounds(189, 432, 95, 95);
+		lblS1.setBounds(179, 342, 95, 95);
 		lblS1.setPreferredSize(new Dimension(42, 16));
 		panel_2.add(lblS1);
 		panel_2.add(btnVerEnMapa);
@@ -1196,21 +1204,42 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		panel_2.add(lblInformacinDeSitios);
 
 		lblS3 = new JLabel("");
+		lblS3.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				getSitio(ruta, "3", UPMElegido);
+				cmbSitio.setSelectedItem("3");
+			}
+		});
 		lblS3.setPreferredSize(new Dimension(42, 16));
 		lblS3.setBorder(null);
-		lblS3.setBounds(285, 532, 95, 95);
+		lblS3.setBounds(275, 442, 95, 95);
 		panel_2.add(lblS3);
 
 		lblS4 = new JLabel("");
+		lblS4.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				getSitio(ruta, "4", UPMElegido);
+				cmbSitio.setSelectedItem("4");
+			}
+		});
 		lblS4.setPreferredSize(new Dimension(42, 16));
 		lblS4.setBorder(null);
-		lblS4.setBounds(95, 532, 95, 95);
+		lblS4.setBounds(85, 442, 95, 95);
 		panel_2.add(lblS4);
 
 		lblS_2 = new JLabel("");
+		lblS_2.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				getSitio(ruta, "2", UPMElegido);
+				cmbSitio.setSelectedItem("2");
+			}
+		});
 		lblS_2.setPreferredSize(new Dimension(42, 16));
 		lblS_2.setBorder(null);
-		lblS_2.setBounds(189, 301, 95, 95);
+		lblS_2.setBounds(179, 211, 95, 95);
 		panel_2.add(lblS_2);
 		getContentPane().setLayout(groupLayout);
 		// scrollPaneEast.setViewportView(scrollPaneInforSitio);
@@ -1338,7 +1367,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 	public void getInformacionUPM(String ruta, int upmid) {
 		String query = "SELECT  upm.UPMID, upmMalla.Estado, upmMalla.Municipio, upm.Altitud, upm.PendienteRepresentativa, upmMalla.A, upmMalla.B, upmMalla.C, upmMalla.D, upmMalla.E, upmMalla.F, upmMalla.G, upmMalla.H, sitio.GradosLatitud + (sitio.MinutosLatitud / 60.0) +  (sitio.SegundosLatitud / 3600.0) AS Y, -1 * ((-1 * sitio.GradosLongitud) + (sitio.MinutosLongitud / 60.0) +  (sitio.SegundosLongitud / 3600.0)) AS X, CASE upm.Accesible WHEN 1 THEN 'SI' WHEN 2 THEN 'NO' END Accesible, tipoUPM.TipoUPM, exposicionUPM.Descripcion AS Exposicion, fisiografia.TipoFisiografia AS Fisiografia, upmMalla.Region FROM  UPM_UPM upm  JOIN UPM_MallaPuntos upmMalla ON upm.UPMID=upmMalla.UPMID JOIN sitios_Sitio sitio ON sitio.UPMID=upm.UPMID LEFT JOIN CAT_TipoUPM tipoUPM ON tipoUPM.TipoUPMID=upm.TipoUPMID  LEFT JOIN CAT_TipoExposicion exposicionUPM ON exposicionUPM.ExposicionID =upm.ExposicionID  LEFT JOIN CAT_TipoFisiografia fisiografia ON fisiografia.FisiografiaID=upm.FisiografiaID WHERE upm.UPMID="
 				+ upmid + " AND sitio.Sitio=1";
-
+		System.out.println("infor UPM\t"+query);
 		this.baseDatosExterna = ExternalConnection.getConnection(ruta);
 		try {
 			sqlExterno = baseDatosExterna.createStatement();
