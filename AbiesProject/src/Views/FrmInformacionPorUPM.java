@@ -1188,6 +1188,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		panel_2.setLayout(null);
 
 		lblS1 = new JLabel("");
+		lblS1.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		lblS1.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
@@ -1204,6 +1205,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		panel_2.add(lblInformacinDeSitios);
 
 		lblS3 = new JLabel("");
+		lblS3.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		lblS3.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
@@ -1217,6 +1219,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		panel_2.add(lblS3);
 
 		lblS4 = new JLabel("");
+		lblS4.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		lblS4.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
@@ -1230,6 +1233,7 @@ public class FrmInformacionPorUPM extends JInternalFrame {
 		panel_2.add(lblS4);
 
 		lblS_2 = new JLabel("");
+		lblS_2.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		lblS_2.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
