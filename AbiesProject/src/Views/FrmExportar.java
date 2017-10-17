@@ -21,6 +21,8 @@ import java.awt.Cursor;
 import java.awt.Font;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 import javax.swing.SwingConstants;
 import javax.swing.SwingWorker;
@@ -32,6 +34,7 @@ import Database.ExternalConnection;
 import Database.ProgressExport;
 
 import com.csvreader.CsvWriter;
+import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
 import com.toedter.calendar.JDateChooser;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
@@ -54,6 +57,7 @@ import java.io.IOException;
 import java.awt.event.ActionEvent;
 import javax.swing.Box;
 import java.awt.Color;
+import javax.swing.JTextArea;
 
 public class FrmExportar extends JInternalFrame {
 
@@ -61,6 +65,8 @@ public class FrmExportar extends JInternalFrame {
 	private JProgressBar pbProgresoExportacion;
 	public String ruta;
 	public String exportPath;
+	public ArrayList<String> listUpmsConsultar = new ArrayList<String>();
+	public ProgressExport progresoExportado;
 
 	private JLabel lblExportando;
 	private JCheckBox chckbxArbolado;
@@ -75,6 +81,8 @@ public class FrmExportar extends JInternalFrame {
 	private JCheckBox chckbxVegetacionMayorIndividual;
 	private JCheckBox chckbxVegetacionMenor;
 	private JCheckBox chckbxRepobladoVm;
+	private JCheckBox chckbxFiltrarPorUpm;
+	private JTextArea txtAUPMS;
 
 	public FrmExportar(String ruta) {
 		setFrameIcon(null);
@@ -82,14 +90,14 @@ public class FrmExportar extends JInternalFrame {
 		setIconifiable(true);
 		setClosable(true);
 		this.ruta = ruta;
-		setBounds(100, 100, 450, 543);
+		setBounds(100, 100, 585, 543);
 
 		JPanel panel = new JPanel();
 		getContentPane().add(panel, BorderLayout.CENTER);
 
 		btnExportar = new JButton("Exportar");
 		btnExportar.setMnemonic('e');
-		btnExportar.setBounds(353, 480, 80, 24);
+		btnExportar.setBounds(488, 480, 80, 24);
 		btnExportar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				openSaverDialog();
@@ -99,7 +107,7 @@ public class FrmExportar extends JInternalFrame {
 
 		pbProgresoExportacion = new JProgressBar();
 		pbProgresoExportacion.setForeground(Color.ORANGE);
-		pbProgresoExportacion.setBounds(12, 480, 330, 24);
+		pbProgresoExportacion.setBounds(12, 480, 465, 24);
 
 		lblExportando = new JLabel("Exportando:");
 		lblExportando.setBounds(12, 452, 330, 16);
@@ -111,7 +119,7 @@ public class FrmExportar extends JInternalFrame {
 		chckbxTodo = new JCheckBox("Todo");
 		chckbxTodo.setMnemonic('t');
 		chckbxTodo.setForeground(Color.ORANGE);
-		chckbxTodo.setBounds(353, 428, 80, 24);
+		chckbxTodo.setBounds(488, 444, 80, 24);
 		chckbxTodo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (chckbxTodo.isSelected() == true) {
@@ -179,7 +187,7 @@ public class FrmExportar extends JInternalFrame {
 		chckbxRepoblado = new JCheckBox("Repoblado");
 		chckbxRepoblado.setFont(new Font("Dialog", Font.PLAIN, 12));
 		verticalBox_1.add(chckbxRepoblado);
-		
+
 		chckbxRepobladoVm = new JCheckBox("Repoblado V.M.");
 		chckbxRepobladoVm.setFont(new Font("Dialog", Font.PLAIN, 12));
 		verticalBox_1.add(chckbxRepobladoVm);
@@ -212,6 +220,29 @@ public class FrmExportar extends JInternalFrame {
 		chckbxSitios.setFont(new Font("Dialog", Font.PLAIN, 12));
 		verticalBox_2.add(chckbxSitios);
 
+		chckbxFiltrarPorUpm = new JCheckBox("Filtrar por UPM");
+		chckbxFiltrarPorUpm.setMnemonic('U');
+		chckbxFiltrarPorUpm.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (chckbxFiltrarPorUpm.isSelected() == true) {
+					txtAUPMS.setEnabled(true);
+				} else {
+					txtAUPMS.setEnabled(false);
+					txtAUPMS.setText("");
+				}
+			}
+		});
+		chckbxFiltrarPorUpm.setBounds(400, 145, 143, 24);
+		panel.add(chckbxFiltrarPorUpm);
+
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(400, 167, 143, 183);
+		panel.add(scrollPane);
+
+		txtAUPMS = new JTextArea();
+		txtAUPMS.setEnabled(false);
+		scrollPane.setViewportView(txtAUPMS);
+
 	}
 
 	public void openSaverDialog() {
@@ -226,10 +257,10 @@ public class FrmExportar extends JInternalFrame {
 		try {
 			File f = fcBaseDatos.getSelectedFile();
 			exportPath = f.getAbsolutePath();
-			ProgressExport progresoExportado = new ProgressExport(pbProgresoExportacion, lblExportando, ruta,
-					exportPath, chckbxArbolado, chckbxSitios, chckbxUpms, chckbxRepoblado, chckbxSotobosque, chckbxTodo,
+			progresoExportado = new ProgressExport(pbProgresoExportacion, lblExportando, ruta, exportPath,
+					chckbxArbolado, chckbxSitios, chckbxUpms, chckbxRepoblado, chckbxSotobosque, chckbxTodo,
 					chckbxInlcuirCoordenadas, chckbxInlcuirProveedores, chckbxVegetacionMayorGregarios,
-					chckbxVegetacionMayorIndividual, chckbxVegetacionMenor,chckbxRepobladoVm, btnExportar);
+					chckbxVegetacionMayorIndividual, chckbxVegetacionMenor, chckbxRepobladoVm, btnExportar);
 
 			progresoExportado.addPropertyChangeListener(new PropertyChangeListener() {
 				@Override
@@ -257,8 +288,7 @@ public class FrmExportar extends JInternalFrame {
 			});
 
 			boolean coordenadas = chckbxInlcuirCoordenadas.isSelected(),
-					proveedores = chckbxInlcuirProveedores.isSelected();
-
+					proveedores = chckbxInlcuirProveedores.isSelected(), upms = chckbxFiltrarPorUpm.isSelected();
 
 			if (chckbxArbolado.isSelected() == true) {
 				progresoExportado.setCoordenadasGrl(coordenadas);
@@ -307,17 +337,34 @@ public class FrmExportar extends JInternalFrame {
 				progresoExportado.setProveedoresGrl(proveedores);
 				progresoExportado.setVegetacionMayorIndividual(true);
 			}
-			
+
 			if (chckbxRepobladoVm.isSelected() == true) {
 				progresoExportado.setCoordenadasGrl(coordenadas);
 				progresoExportado.setProveedoresGrl(proveedores);
 				progresoExportado.setRepobladoVM(true);
 			}
 
-			progresoExportado.execute();
+			if (upms == true) {
+				progresoExportado.setFiltroUPM(upms);
+				getUPMs(txtAUPMS.getText());
+			}
+			 progresoExportado.execute();
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+
+	public void getUPMs(String upms) {
+		StringTokenizer token = new StringTokenizer(upms);
+		String upmsAFiltrar = "";
+		listUpmsConsultar.clear();
+
+		while (token.hasMoreTokens()) {
+			upmsAFiltrar = token.nextToken().toString();
+			listUpmsConsultar.add(upmsAFiltrar);
+		}
+		progresoExportado.setListUpmsConsultar(listUpmsConsultar);
+	}
+
 }
