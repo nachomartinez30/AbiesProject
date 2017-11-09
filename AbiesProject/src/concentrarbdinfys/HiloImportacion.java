@@ -52,10 +52,11 @@ public class HiloImportacion extends SwingWorker<Integer, String> {
 			txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + baseDatos[i].getPath().toString());
 			txtUbicacion.setText(baseDatos[i].getPath().toString());
 			migrar(baseDatos[i].getPath().toString());
-
+			
 			i++;
 		}
 		pbExportacion.setIndeterminate(false);
+		JOptionPane.showMessageDialog(null, "Concentrado finalizado");
 		chckbxContinuarSinRepetidos.setEnabled(true);
 		btnBuscar.setEnabled(true);
 		return 0;
@@ -101,193 +102,205 @@ public class HiloImportacion extends SwingWorker<Integer, String> {
 				}
 			}
 			
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
-		bdImportar.importarUPM_UPM(pathUbicacion); // 1
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
-		bdImportar.arregloRepetidos.clear();
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("UPMs");
+	        bdImportar.importarUPM_UPM(pathUbicacion); // 1
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
 
-		lblEstatus.setText("Importando Contacto...");
-		bdImportar.importarUPMContacto(pathUbicacion); // 2
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Contacto");
+	        bdImportar.importarUPMContacto(pathUbicacion); // 2
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
 
-		lblEstatus.setText("Importando PC...");
-		bdImportar.importarPC(pathUbicacion); // 3
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Punto de control");
+	        bdImportar.importarPC(pathUbicacion); // 3
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
 
-		lblEstatus.setText("Importando Información de accesibilidad del PC...");
-		bdImportar.importarAccesibilidadPC(pathUbicacion); // 4
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Accesibilidad Punto de control");
+	        bdImportar.importarAccesibilidadPC(pathUbicacion); // 4
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
 
-		lblEstatus.setText("Importando Epífitas...");
-		bdImportar.importarUPMEpifitas(pathUbicacion); // 5
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Epifitas");
+	        bdImportar.importarUPMEpifitas(pathUbicacion); // 5
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
 
-		lblEstatus.setText("Importando Información de sitios...");
-		bdImportar.importarSitios(pathUbicacion); // 6
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Sitios");
+	        bdImportar.importarSitios(pathUbicacion); // 6
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
 
-		lblEstatus.setText("Importando Cobertura de suelo de sitio...");
-		bdImportar.importarSitiosCoberturaSuelo(pathUbicacion); // 7
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
-		// System.err.println("Entro a Cobertura Suelo");
+	        lblEstatus.setText("Sitios Cobertura Suelo");
+	        bdImportar.importarSitiosCoberturaSuelo(pathUbicacion); // 7
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        // System.err.println("Entro a Cobertura Suelo");
 
-		lblEstatus.setText("Importando Fotografía hemisferica...");
-		bdImportar.importarFotografiaHemisferica(pathUbicacion); // 8
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Fotografia Hemisferica");
+	        bdImportar.importarFotografiaHemisferica(pathUbicacion); // 8
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
 
-		lblEstatus.setText("Importando Información de transponder...");
-		bdImportar.importarTransponder(pathUbicacion); // 9
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Transponder");
+	        bdImportar.importarTransponder(pathUbicacion); // 9
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
 
-		lblEstatus.setText("Importando Parámetros físico químicos...");
-		bdImportar.importarParametrosFisicoQuimicos(pathUbicacion); // 10
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Parametros Fisico Quimicos");
+	        bdImportar.importarParametrosFisicoQuimicos(pathUbicacion); // 10
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
 
-		lblEstatus.setText("Importando Información de suelo...");
-		bdImportar.importarSueloInformacion(pathUbicacion); // 11
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
-		lblEstatus.setText("Importando varillas de erosión...");
-		bdImportar.importarSueloVarillasErosion(pathUbicacion); // 12
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
-		lblEstatus.setText("Importando cobertura del suelo...");
-		bdImportar.importarSueloCobertura(pathUbicacion); // 13
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Suelo Informacion");
+	        bdImportar.importarSueloInformacion(pathUbicacion); // 11
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Suelo Varillas Erosion");
+	        bdImportar.importarSueloVarillasErosion(pathUbicacion); // 12
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Suelo Cobertura");
+	        bdImportar.importarSueloCobertura(pathUbicacion); // 13
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
 
-		lblEstatus.setText("Importando evidencia de erosión del suelo...");
-		bdImportar.importarSueloEvidenciaErosion(pathUbicacion); // 14
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
-		lblEstatus.setText("Importando Pedestal...");
-		bdImportar.importarSueloPedestal(pathUbicacion); // 15
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
-		lblEstatus.setText("Importando Erosión laminar...");
-		bdImportar.importarSueloErosionLaminar(pathUbicacion); // 16
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
-		lblEstatus.setText("Importando Costras...");
-		bdImportar.importarSueloCostras(pathUbicacion); // 17
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
-		lblEstatus.setText("Importando Canalillo...");
-		bdImportar.importarSueloCanalillo(pathUbicacion); // 18
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
-		lblEstatus.setText("Importando Cárcava...");
-		bdImportar.importarSueloCarcava(pathUbicacion); // 19
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
-		lblEstatus.setText("Importando Pavimentos...");
-		bdImportar.importarSueloPavimentos(pathUbicacion); // 20
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
-		lblEstatus.setText("Importando Medición canalillos...");
-		bdImportar.importarSueloMedicionCanalillos(pathUbicacion); // 21
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
-		lblEstatus.setText("Importando Medición carcavas...");
-		bdImportar.importarSueloMedicionCarcavas(pathUbicacion); // 22
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
-		lblEstatus.setText("Importando Medición dunas...");
-		bdImportar.importarSueloMedicionDunas(pathUbicacion); // 23
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
-		lblEstatus.setText("Importando Erosión hídrica canalillo...");
-		bdImportar.importarSueloErosionHidricaCanalillo(pathUbicacion); // 24
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
-		lblEstatus.setText("Importando Longitud canalillo...");
-		bdImportar.importarSueloLongitudCanalillo(pathUbicacion); // 25
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
-		lblEstatus.setText("Importando Erosión hidrica carcava...");
-		bdImportar.importarSueloErosionHidricaCarcava(pathUbicacion); // 26
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
-		lblEstatus.setText("Importando longitud de carcava...");
-		bdImportar.importarSueloLongitudCarcava(pathUbicacion); // 27
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
-		lblEstatus.setText("Importando deformación por viento...");
-		bdImportar.importarSueloDeformacionViento(pathUbicacion); // 28
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
-		lblEstatus.setText("Importando longitud montículo...");
-		bdImportar.importarSueloLongitudMonticulo(pathUbicacion); // 29
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
-		lblEstatus.setText("Importando hojarasca...");
-		bdImportar.importarSueloHojarasca(pathUbicacion); // 30
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
-		lblEstatus.setText("Importando profundidad de suelo...");
-		bdImportar.importarSueloProfundidad(pathUbicacion); // 31
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
-		lblEstatus.setText("Importando perfil...");
-		bdImportar.importarSueloMuestrasPerfil(pathUbicacion); // 32
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
-		lblEstatus.setText("Importando muestras del perfil...");
-		bdImportar.importarSueloMuestras(pathUbicacion); // 33
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Suelo Evidencia Erosion");
+	        bdImportar.importarSueloEvidenciaErosion(pathUbicacion); // 14
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Suelo Pedestal");
+	        bdImportar.importarSueloPedestal(pathUbicacion); // 15
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Suelo Erosion Laminar");
+	        bdImportar.importarSueloErosionLaminar(pathUbicacion); // 16
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Suelo Costras");
+	        bdImportar.importarSueloCostras(pathUbicacion); // 17
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Suelo Canalillo");
+	        bdImportar.importarSueloCanalillo(pathUbicacion); // 18
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Suelo Carcava");
+	        bdImportar.importarSueloCarcava(pathUbicacion); // 19
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Suelo Pavimentos");
+	        bdImportar.importarSueloPavimentos(pathUbicacion); // 20
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Suelo Medicion Canalillos");
+	        bdImportar.importarSueloMedicionCanalillos(pathUbicacion); // 21
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Suelo Medicion Carcavas");
+	        bdImportar.importarSueloMedicionCarcavas(pathUbicacion); // 22
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Suelo Medicion Dunas");
+	        bdImportar.importarSueloMedicionDunas(pathUbicacion); // 23
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Suelo Erosion Hidrica Canalillo");
+	        bdImportar.importarSueloErosionHidricaCanalillo(pathUbicacion); // 24
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Suelo Longitud Canalillo");
+	        bdImportar.importarSueloLongitudCanalillo(pathUbicacion); // 25
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Suelo Erosion Hidrica Carcava");
+	        bdImportar.importarSueloErosionHidricaCarcava(pathUbicacion); // 26
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Suelo Longitud Carcava");
+	        bdImportar.importarSueloLongitudCarcava(pathUbicacion); // 27
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Suelo Deformacion Viento");
+	        bdImportar.importarSueloDeformacionViento(pathUbicacion); // 28
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Suelo Longitud Monticulo");
+	        bdImportar.importarSueloLongitudMonticulo(pathUbicacion); // 29
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Suelo Hojarasca");
+	        bdImportar.importarSueloHojarasca(pathUbicacion); // 30
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Suelo Profundidad");
+	        bdImportar.importarSueloProfundidad(pathUbicacion); // 31
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Suelo Muestras Perfil");
+	        bdImportar.importarSueloMuestrasPerfil(pathUbicacion); // 32
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Suelo Muestras");
+	        bdImportar.importarSueloMuestras(pathUbicacion); // 33
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
 
-		lblEstatus.setText("Importando Información de carbono e incendios...");
+	        lblEstatus.setText("Carbono Material Lenioso100");
+	        bdImportar.importarCarbonoMaterialLenioso100(pathUbicacion); // 34
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Carbono Material Lenioso1000");
+	        bdImportar.importarCarbonoMaterialLenioso1000(pathUbicacion); // 35
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Carbono Cubierta Vegetal");
+	        bdImportar.importarCarbonoCubiertaVegetal(pathUbicacion); // 36
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Carbono Cobertura Dosel");
+	        bdImportar.importarCarbonoCoberturaDosel(pathUbicacion); // 37
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Carbono Longitud Componente");
+	        bdImportar.importarCarbonoLongitudComponente(pathUbicacion); // 38
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
 
-		lblEstatus.setText("Importando Material leñoso caído de 100...");
-		bdImportar.importarCarbonoMaterialLenioso100(pathUbicacion); // 34
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
-		lblEstatus.setText("Importando Material leñoso caído de 1000...");
-		bdImportar.importarCarbonoMaterialLenioso1000(pathUbicacion); // 35
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
-		lblEstatus.setText("Importando cubierta vegetal...");
-		bdImportar.importarCarbonoCubiertaVegetal(pathUbicacion); // 36
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
-		lblEstatus.setText("Importando cobertura dosel...");
-		bdImportar.importarCarbonoCoberturaDosel(pathUbicacion); // 37
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
-		lblEstatus.setText("Importando longitud por componente...");
-		bdImportar.importarCarbonoLongitudComponente(pathUbicacion); // 38
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Taxonomia Arbolado");
+	        bdImportar.importarTaxonomiaArbolado(pathUbicacion); // 39
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Arbolado Danio Severidad");
+	        bdImportar.importarArboladoDanioSeveridad(pathUbicacion); // 40
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Submuestra");
+	        bdImportar.importarSubmuestra(pathUbicacion); // 41
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Submuestra Troza");
+	        bdImportar.importarSubmuestraTroza(pathUbicacion); // 42
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Submuestra Observaciones");
+	        bdImportar.importarSubmuestraObservaciones(pathUbicacion);
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
 
-		lblEstatus.setText("Importando Arbolado...");
-		bdImportar.importarTaxonomiaArbolado(pathUbicacion); // 39
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
-		bdImportar.importarArboladoDanioSeveridad(pathUbicacion); // 40
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
-		lblEstatus.setText("Importando Submuestra...");
-		bdImportar.importarSubmuestra(pathUbicacion); // 41
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
-		bdImportar.importarSubmuestraTroza(pathUbicacion); // 42
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
-		bdImportar.importarSubmuestraObservaciones(pathUbicacion);
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Taxonomia Repoblado");
+	        bdImportar.importarTaxonomiaRepoblado(pathUbicacion); // 43
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
 
-		lblEstatus.setText("Importando Repoblado...");
-		bdImportar.importarTaxonomiaRepoblado(pathUbicacion); // 43
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Taxonomia Repoblado V M");
+	        bdImportar.importarTaxonomiaRepobladoVM(pathUbicacion); // 44
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
 
-		lblEstatus.setText("Importando Repoblado vegetación menor...");
-		bdImportar.importarTaxonomiaRepobladoVM(pathUbicacion); // 44
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Repoblado Danio Severidad");
+	        bdImportar.importarRepobladoDanioSeveridad(pathUbicacion);//44.1
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
 
-		lblEstatus.setText("Importando Sotobosque...");
-		bdImportar.importarTaxonomiaSotoBosque(pathUbicacion); // 45
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Taxonomia Soto Bosque");
+	        bdImportar.importarTaxonomiaSotoBosque(pathUbicacion); // 45
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
 
-		lblEstatus.setText("Importando Vegetación mayor gregarios...");
-		bdImportar.importarTaxonomiaVegetacionMayorGregarios(pathUbicacion); // 46
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
-		bdImportar.importarVegetacionMayorGDanioSeveridad(pathUbicacion); // 47
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Taxonomia Vegetacion Mayor Gregarios");
+	        bdImportar.importarTaxonomiaVegetacionMayorGregarios(pathUbicacion); // 46
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Vegetacion Mayor Gregarios Danio Severidad");
+	        bdImportar.importarVegetacionMayorGDanioSeveridad(pathUbicacion); // 47
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
 
-		lblEstatus.setText("Importando Vegetación mayor individual...");
-		bdImportar.importarTaxonomiaVegetacionMayorIndividual(pathUbicacion); // 48
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
-		bdImportar.importarVegetacionMayorIDanioSeveridad(pathUbicacion); // 49
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Taxonomia Vegetacion Mayor Individual");
+	        bdImportar.importarTaxonomiaVegetacionMayorIndividual(pathUbicacion); // 48
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Vegetacion Mayor Individual Danio Severidad");
+	        bdImportar.importarVegetacionMayorIDanioSeveridad(pathUbicacion); // 49
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
 
-		lblEstatus.setText("Importando Vegetación menor...");
-		bdImportar.importarTaxonomiaVegetacionMenor(pathUbicacion); // 50
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
-		bdImportar.importarVegetacionMenorDanioSeveridad(pathUbicacion); // 51
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Taxonomia Vegetacion Menor");
+	        bdImportar.importarTaxonomiaVegetacionMenor(pathUbicacion); // 50
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Vegetacion Menor Danio Severidad");
+	        bdImportar.importarVegetacionMenorDanioSeveridad(pathUbicacion); // 51
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
 
-		lblEstatus.setText("Importando Colecta botánica...");
-		bdImportar.importarTaxonomiaColectaBotanica(pathUbicacion); // 52
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Taxonomia Colecta Botanica");
+	        bdImportar.importarTaxonomiaColectaBotanica(pathUbicacion); // 52
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
 
-		lblEstatus.setText("Importando datos de Brigada");
-		bdImportar.importarBrigadas(pathUbicacion); // 53
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Brigadas");
+	        bdImportar.importarBrigadas(pathUbicacion); // 53
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
 
-		lblEstatus.setText("Finalizando importacion...");
-		// bdImportar.importarSecuencias(pathUbicacion); //54
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
-		// bdImportar.importarUPMRevision(pathUbicacion);
-		txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+	        lblEstatus.setText("Observaciones Sitio");
+	        bdImportar.importarObservacionesSitio(pathUbicacion); // 54
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+
+	        // bdImportar.importarSecuencias(pathUbicacion); //54
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
+
+	        // bdImportar.importarUPMRevision(pathUbicacion);
+	        txtaMonitoreo.setText(txtaMonitoreo.getText() + "\n" + bdImportar.getState());
 
 	}
 }

@@ -304,6 +304,7 @@ public class ProgressExport extends SwingWorker<Integer, String> {
 					+ condicionQuery + queryFiltroUpm + " GROUP BY upm.UPMID ORDER BY upm.UPMID ";
 			
 			this.baseDatosExterna = ExternalConnection.getConnection(ruta);
+			System.out.println(query);
 
 			// before we open the file check to see if it already exists
 
@@ -456,6 +457,7 @@ public class ProgressExport extends SwingWorker<Integer, String> {
 					+ condicionQuery + queryFiltroUpm
 					+ " GROUP BY arbolado.UPMID, arbolado.SitioID, arbolado.ArboladoID ORDER BY arbolado.UPMID ";
 			this.baseDatosExterna = ExternalConnection.getConnection(ruta);
+			System.out.println(query);
 
 			try {
 				// use FileWriter constructor that specifies open for appending
@@ -623,6 +625,7 @@ public class ProgressExport extends SwingWorker<Integer, String> {
 					+ condicionQuery + queryFiltroUpm + " GROUP BY sitio.UPMID, sitio.SitioID ORDER BY sitio.UPMID";
 
 			this.baseDatosExterna = ExternalConnection.getConnection(ruta);
+			System.out.println(query);
 
 			// before we open the file check to see if it already exists
 
@@ -767,6 +770,7 @@ public class ProgressExport extends SwingWorker<Integer, String> {
 					+ condicionQuery + queryFiltroUpm
 					+ " GROUP BY repoblado.UPMID, repoblado.SitioID, repoblado.RepobladoID ORDER BY repoblado.UPMID";
 			this.baseDatosExterna = ExternalConnection.getConnection(ruta);
+			System.out.println(query);
 
 			// before we open the file check to see if it already exists
 
@@ -898,6 +902,7 @@ public class ProgressExport extends SwingWorker<Integer, String> {
 					+ condicionQuery + queryFiltroUpm;
 			//System.out.println(query);
 			this.baseDatosExterna = ExternalConnection.getConnection(ruta);
+			System.out.println(query);
 
 			try {
 				// use FileWriter constructor that specifies open for appending
@@ -1038,6 +1043,7 @@ public class ProgressExport extends SwingWorker<Integer, String> {
 					+ condicionQuery + queryFiltroUpm
 					+ " GROUP BY vegetacionMayorGregarios.UPMID, vegetacionMayorGregarios.SitioID, vegetacionMayorGregarios.VegetacionMayorID ORDER BY vegetacionMayorGregarios.UPMID";
 			this.baseDatosExterna = ExternalConnection.getConnection(ruta);
+			System.out.println(query);
 
 			try {
 				// use FileWriter constructor that specifies open for appending
@@ -1184,6 +1190,7 @@ public class ProgressExport extends SwingWorker<Integer, String> {
 					+ condicionQuery + queryFiltroUpm
 					+ " GROUP BY sotobosque.UPMID, sotobosque.SitioID, sotobosque.SotobosqueID ORDER BY sotobosque.UPMID";
 			this.baseDatosExterna = ExternalConnection.getConnection(ruta);
+			System.out.println(query);
 
 			try {
 				writer.write("UPMID");
@@ -1307,6 +1314,7 @@ public class ProgressExport extends SwingWorker<Integer, String> {
 					+ condicionQuery + queryFiltroUpm
 					+ " GROUP BY vegetacionMayorIndividual.UPMID, vegetacionMayorIndividual.SitioID, vegetacionMayorIndividual.VegetacionMayorID ORDER BY vegetacionMayorIndividual.UPMID ";
 			this.baseDatosExterna = ExternalConnection.getConnection(ruta);
+			System.out.println(query);
 
 			try {
 				// use FileWriter constructor that specifies open for appending
@@ -1451,6 +1459,7 @@ public class ProgressExport extends SwingWorker<Integer, String> {
 					+ condicionQuery + queryFiltroUpm
 					+ " GROUP BY vegetacionMenor.UPMID, vegetacionMenor.SitioID, vegetacionMenor.VegetacionMenorID ORDER BY vegetacionMenor.UPMID";
 			this.baseDatosExterna = ExternalConnection.getConnection(ruta);
+			System.out.println(query);
 
 			try {
 				// use FileWriter constructor that specifies open for appending
