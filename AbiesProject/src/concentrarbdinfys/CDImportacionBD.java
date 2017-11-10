@@ -238,7 +238,7 @@ public class CDImportacionBD {
 					JOptionPane.showMessageDialog(null,
 							"Error! al cerrar la base de datos al eliminar la información de inaccesibilidad del upm",
 							"Conexion BD", JOptionPane.ERROR_MESSAGE);
-				} 
+				}
 			}
 		}
 	}
@@ -412,7 +412,7 @@ public class CDImportacionBD {
 			if (messageError.equals("UNIQUE constraint failed") == true) {
 				System.out.println("ENTRO");
 			} else {
-				
+
 			}
 			e.printStackTrace();
 		} finally {
@@ -2951,8 +2951,8 @@ public class CDImportacionBD {
 		Integer punto = null;
 		Float profundidad030 = null;
 		Float pesoTotal030 = null;
-		Float equipo030 = null;
-		Float equipo3060 = null;
+		String equipo030 = null;
+		String equipo3060 = null;
 		String clave030 = null;
 		String clave3060 = null;
 		String observaciones = null;
@@ -2988,10 +2988,10 @@ public class CDImportacionBD {
 					pesoTotal030 = rs.getFloat("PesoTotal030");
 				}
 				if (rs.getObject("Equipo030") != null) {
-					equipo030 = rs.getFloat("Equipo030");
+					equipo030 = rs.getString("Equipo030");
 				}
 				if (rs.getObject("Equipo3060") != null) {
-					equipo3060 = rs.getFloat("Equipo3060");
+					equipo3060 = rs.getString("Equipo3060");
 				}
 				if (rs.getObject("Clave030") != null) {
 					clave030 = rs.getString("Clave030");
@@ -3004,10 +3004,10 @@ public class CDImportacionBD {
 				}
 				ps.executeUpdate(
 						"INSERT INTO SUELO_Profundidad(SitioID,UPMID,ProfundidadSueloID,  Punto, Profundidad030, Profundidad3060, PesoTotal030, PesoTotal3060, Equipo030, Equipo3060, "
-								+ "Observaciones)VALUES(" + sitioID + ", " + upmid + ", " + profundidadSueloID + ", "
-								+ punto + ", " + profundidad030 + ", " + profundidad3060 + ", " + pesoTotal030 + ", "
-								+ pesoTotal3060 + ", '" + equipo030 + "', '" + equipo3060 + "', '" + observaciones
-								+ "')");
+								+ "Observaciones,Clave030,Clave3060)VALUES(" + sitioID + ", " + upmid + ", "
+								+ profundidadSueloID + ", " + punto + ", " + profundidad030 + ", " + profundidad3060
+								+ ", " + pesoTotal030 + ", " + pesoTotal3060 + ", '" + equipo030 + "', '" + equipo3060
+								+ "', '" + observaciones + "','" + clave030 + "','" + clave3060 + "')");
 				this.baseDatosLocal.commit();
 				profundidad3060 = null;
 				pesoTotal3060 = null;
@@ -4576,7 +4576,8 @@ public class CDImportacionBD {
 				} else {
 					severidadID = rs.getInt("SeveridadID");
 				}
-				System.out.println("INSERT INTO ARBOLADO_DanioSeveridad(SitioID,UPMID,DanioSeveridadID, ArboladoID, NumeroDanio, AgenteDanioID, SeveridadID)VALUES("
+				System.out.println(
+						"INSERT INTO ARBOLADO_DanioSeveridad(SitioID,UPMID,DanioSeveridadID, ArboladoID, NumeroDanio, AgenteDanioID, SeveridadID)VALUES("
 								+ sitioID + ", " + upmID + ", " + danioSeveridadID + ", " + arbolID + ", " + noDanio
 								+ ", " + agenteDanioID + ", " + severidadID + ")");
 				ps.executeUpdate(
@@ -6343,7 +6344,7 @@ public class CDImportacionBD {
 			if (messageError.equals("UNIQUE constraint failed") == true) {
 				System.out.println("ENTRO");
 			} else {
-				
+
 			}
 			e.printStackTrace();
 		} finally {
@@ -6659,7 +6660,7 @@ public class CDImportacionBD {
 					JOptionPane.showMessageDialog(null,
 							"Error! al cerrar la base de datos al eliminar los datos del upm seleccionado ",
 							"Conexion BD", JOptionPane.ERROR_MESSAGE);
-				} 
+				}
 				e.printStackTrace();
 			}
 
