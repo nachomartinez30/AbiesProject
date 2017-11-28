@@ -150,36 +150,46 @@ public class ConcentradorAbies extends JFrame {
 		btnEjecutar = new JButton("Ejecutar");
 		btnEjecutar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				HiloImportacion importacion =new HiloImportacion(lblEstatus, pbExportacion, btnEjecutar, baseDatos, btnBuscar, txtUbicacion,txtaMonitoreo,chckbxContinuarSinRepetidos);
+				HiloImportacion importacion = new HiloImportacion(lblEstatus, pbExportacion, btnEjecutar, baseDatos,
+						btnBuscar, txtUbicacion, txtaMonitoreo, chckbxContinuarSinRepetidos);
 				importacion.execute();
 			}
 		});
 		btnEjecutar.setEnabled(false);
 		btnEjecutar.setBounds(351, 293, 111, 24);
 		panel.add(btnEjecutar);
-		
+
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(12, 395, 745, 112);
 		panel.add(scrollPane);
-		
+
 		txtaMonitoreo = new JTextArea();
 		scrollPane.setViewportView(txtaMonitoreo);
-		
+
 		chckbxContinuarSinRepetidos = new JCheckBox("Continuar sin repetidos");
 		chckbxContinuarSinRepetidos.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if(chckbxContinuarSinRepetidos.isSelected()==true) {
+				if (chckbxContinuarSinRepetidos.isSelected() == true) {
 					JOptionPane.showMessageDialog(null, "Si elije esta opcion, se omitirán todos los UPMs repetidos");
 				}
 			}
 		});
 		chckbxContinuarSinRepetidos.setBounds(564, 293, 166, 24);
 		panel.add(chckbxContinuarSinRepetidos);
+
+		JButton btnCambiar = new JButton("Cambiar");
+		btnCambiar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				cargarBaseDatosLocal();
+			}
+		});
+		btnCambiar.setBounds(128, 248, 80, 24);
+		panel.add(btnCambiar);
 	}
 
 	public void setPathConcentrador(String ruta) {
 		String query = "UPDATE configUserAbies SET pathConcentrador='" + ruta + "'";
-		//System.out.println(query);
+		// System.out.println(query);
 		Connection configConnection = ConfigUserConnection.getConnection(ruta);
 		try {
 			java.sql.Statement st = configConnection.createStatement();
@@ -192,12 +202,46 @@ public class ConcentradorAbies extends JFrame {
 
 	}
 
-	public void migrar(String pathUbicacion){
+	public void cargarBaseDatosLocal() {
+		JFileChooser fcBaseDatos = new JFileChooser();
+
+		fcBaseDatos.setDialogTitle("Base de datos a importar");
+		FileNameExtensionFilter filtro = new FileNameExtensionFilter("*.cons", "cons");
+		fcBaseDatos.setAcceptAllFileFilterUsed(false);
+		fcBaseDatos.setFileFilter(filtro);
+
+		int returnVal = fcBaseDatos.showOpenDialog(fcBaseDatos);
+		// fcBaseDatos.showOpenDialog(Main.main);
+		try {
+			File baseDatos = fcBaseDatos.getSelectedFile();
+			ruta = baseDatos.getAbsolutePath();
+			int tamanio = ruta.length();
+			int cadena = tamanio - 4;
+			String extension = ruta.substring(cadena, tamanio);
+
+			if (!extension.equals("cons")) {
+				// System.out.println(extension);
+				JOptionPane.showMessageDialog(null, "Debe seleccionar un base de datos valida a importar" + "",
+						"Importación", JOptionPane.INFORMATION_MESSAGE);
+
+			} else {
+
+				if (returnVal == JFileChooser.APPROVE_OPTION) { /* OBJETOS */
+					LocalConnection.setRuta(ruta);
+					txtRutaSalida.setText(LocalConnection.getRuta());
+					JOptionPane.showMessageDialog(null, "Se conectó satisfactoriamente");
+				}
+			}
+		} catch (Exception e) {
+		}
+	}
+
+	public void migrar(String pathUbicacion) {
 		lblEstatus.setText("Iniciando importación...");
 		pbExportacion.setValue(0);
 		btnEjecutar.setEnabled(false);
 		btnBuscar.setEnabled(false);
-		
+
 		try {
 			Thread.sleep(1000);
 		} catch (Exception e) {
@@ -206,7 +250,7 @@ public class ConcentradorAbies extends JFrame {
 
 		lblEstatus.setText("Importando UPM...");
 		bdImportar.validarRepetidos(pathUbicacion);
-		//bdImportar.eliminarRepetido(upmID);
+		// bdImportar.eliminarRepetido(upmID);
 		bdImportar.importarUPM_UPM(pathUbicacion); // 1
 
 		lblEstatus.setText("Importando Contacto...");
@@ -380,9 +424,9 @@ public class ConcentradorAbies extends JFrame {
 		// bdImportar.importarUPMRevision(pathUbicacion);
 		pbExportacion.setValue(100);
 		pbExportacion.repaint();
-	
+
 	}
-	
+
 	public void cargarBaseDatos() {
 		JFileChooser fcBaseDatos = new JFileChooser(ruta);
 		fcBaseDatos.setMultiSelectionEnabled(true);

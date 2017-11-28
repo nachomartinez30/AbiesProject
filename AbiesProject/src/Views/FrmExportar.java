@@ -34,7 +34,7 @@ import Database.ExternalConnection;
 import Database.ProgressExport;
 
 import com.csvreader.CsvWriter;
-import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
+//import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
 import com.toedter.calendar.JDateChooser;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;

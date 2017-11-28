@@ -55,7 +55,6 @@ public class Index extends JFrame {
 	private JTable table;
 	public String ruta = "";
 
-
 	private String configUser = "/ConfigUser.db";
 	private String background = "/Icons/";
 	private boolean leftPanel = true;
@@ -181,6 +180,7 @@ public class Index extends JFrame {
 		btnExportar.setEnabled(false);
 
 		btnInfPorUpm = new JButton("Inf. Por UPM");
+		btnInfPorUpm.setEnabled(false);
 		btnInfPorUpm.setMnemonic('i');
 		btnInfPorUpm.addActionListener(new ActionListener() {
 			@Override
@@ -203,7 +203,6 @@ public class Index extends JFrame {
 
 			}
 		});
-		btnInfPorUpm.setEnabled(false);
 
 		btnCalidad = new JButton("Ctrl. Calidad");
 		btnCalidad.setMnemonic('c');
@@ -335,11 +334,11 @@ public class Index extends JFrame {
 
 		Component horizontalStrut_1 = Box.createHorizontalStrut(20);
 		menuBar.add(horizontalStrut_1);
-		
+
 		mnHerramientas = new JMenu("Herramientas");
 		mnHerramientas.setMnemonic('h');
 		menuBar.add(mnHerramientas);
-		
+
 		mntmConversorXy = new JMenuItem("Conversor X,Y");
 		mntmConversorXy.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -348,7 +347,7 @@ public class Index extends JFrame {
 			}
 		});
 		mnHerramientas.add(mntmConversorXy);
-		
+
 		horizontalStrut_3 = Box.createHorizontalStrut(20);
 		menuBar.add(horizontalStrut_3);
 
@@ -395,7 +394,6 @@ public class Index extends JFrame {
 				.addGroup(gl_desktopPanelCentral.createSequentialGroup()
 						.addComponent(lblBackground, GroupLayout.DEFAULT_SIZE, 705, Short.MAX_VALUE).addGap(64)));
 		desktopPanelCentral.setLayout(gl_desktopPanelCentral);
-		
 
 		getUserConfigs(configUser);
 	}

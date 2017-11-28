@@ -1,5 +1,6 @@
 package concentrarbdinfys;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -7,18 +8,25 @@ import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+import Views.Index;
 
 public class LocalConnection {
 
 	private static String driver = "org.sqlite.JDBC";
 	private static Connection connect;
+	public static String ruta ="";
+
+
 
 
 	public static Connection getConnection() {
 		try {
 			Class.forName(driver);
-			connect = DriverManager.getConnection(getURL());
+			connect = DriverManager.getConnection(ruta);
 						connect.setAutoCommit(false);
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null,
@@ -46,6 +54,14 @@ public class LocalConnection {
 		return "jdbc:sqlite:" + path + "/MuestreoINF_2016.cons"; // Para distribuir
 
 		//return "jdbc:sqlite:" + path + "/src/db/MuestreoINF_2016.cons"; //En producción.
+	}
+	
+	public static String getRuta() {
+		return ruta;
+	}
+
+	public static void setRuta(String ruta) {
+		LocalConnection.ruta = ruta;
 	}
 
 }
