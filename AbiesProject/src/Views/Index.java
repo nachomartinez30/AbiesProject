@@ -83,7 +83,7 @@ public class Index extends JFrame {
 	private JMenu mnHerramientas;
 	private JMenuItem mntmConversorXy;
 	private Component horizontalStrut_3;
-
+/*comentario de prueba*/
 	/**
 	 * Launch the application.
 	 */
