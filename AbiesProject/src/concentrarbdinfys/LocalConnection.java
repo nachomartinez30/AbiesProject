@@ -26,7 +26,7 @@ public class LocalConnection {
 	public static Connection getConnection() {
 		try {
 			Class.forName(driver);
-			connect = DriverManager.getConnection(ruta);
+			connect = DriverManager.getConnection("jdbc:sqlite:" + ruta);
 						connect.setAutoCommit(false);
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null,
