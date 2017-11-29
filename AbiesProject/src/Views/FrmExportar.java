@@ -60,7 +60,7 @@ import java.awt.Color;
 import javax.swing.JTextArea;
 
 public class FrmExportar extends JInternalFrame {
-
+/*comentario prueba*/
 	private JButton btnExportar;
 	private JProgressBar pbProgresoExportacion;
 	public String ruta;
