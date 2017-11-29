@@ -38,7 +38,7 @@ public class FrmCalidad extends JInternalFrame {
 	private java.sql.Statement sqlExterno;
 	public JProgressBar progressBar;
 	private JButton btnDistribucin;
-
+/* COMENTARIO DE PRUEBA */
 	public FrmCalidad(String ruta) {
 		setIconifiable(true);
 		this.ruta = ruta;
